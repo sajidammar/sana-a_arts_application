@@ -11,7 +11,7 @@ import '../academies/academy_view.dart';
 import '../community/community_view.dart';
 import '../exhibitions/exhibitions_view.dart';
 import '../profile/profile_view.dart';
-import '../store/store_view.dart';
+import '../store/home_page.dart';
 
 import '../wishlist/wishlist_view.dart';
 

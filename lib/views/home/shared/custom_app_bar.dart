@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../providers/store/cart_provider.dart';
+import '../../../providers/store/product_provider.dart';
 import '../../../providers/theme_provider.dart';
+
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onMenuPressed;
@@ -9,12 +13,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onNotificationsPressed;
 
   const CustomAppBar({
-    Key? key,
+    super.key,
     required this.onMenuPressed,
     required this.onSearchPressed,
     required this.onWishlistPressed,
     required this.onNotificationsPressed,
-  }) : super(key: key);
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(100);
@@ -22,6 +26,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    Provider.of<ProductProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
 
     return AppBar(
       backgroundColor: themeProvider.isDarkMode
@@ -100,6 +106,40 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: 28
           ),
           onPressed: onWishlistPressed,
+        ),
+        IconButton(
+          icon: Stack(
+            children: [
+              Icon(Icons.shopping_cart, color: Theme.of(context).primaryColor),
+              if (cartProvider.cartItems.isNotEmpty)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${cartProvider.cartItems.length}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          },
         ),
       ],
     );
