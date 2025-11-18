@@ -6,7 +6,6 @@ import 'package:sanaa_artl/views/store/cart/cart_page.dart';
 import 'package:sanaa_artl/views/store/home_page.dart';
 import 'package:sanaa_artl/views/store/invoice/invoice_page.dart';
 import 'package:sanaa_artl/views/store/order/order_history_page.dart';
-import 'package:sanaa_artl/views/store/settings/settings_page.dart';
 
 // Providers
 import 'providers/theme_provider.dart';
@@ -47,7 +46,6 @@ class MyApp extends StatelessWidget {
             '/cart': (context) => CartPage(),
             '/order-history': (context) => OrderHistoryPage(),
             '/invoice': (context) => InvoicePage(),
-            '/settings': (context) => SettingsPage(),
           },
         );
       },

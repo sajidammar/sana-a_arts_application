@@ -94,7 +94,7 @@ class _StorePageState extends State<StorePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeroSection(context),
+            // _buildHeroSection(context),
             _buildSearchAndFilters(productProvider, context),
             _buildProductsGrid(productProvider, cartProvider, context),
           ],
@@ -103,92 +103,92 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildHeroSection(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      height: 300,
-      decoration: BoxDecoration(
-        gradient: isDark
-            ? LinearGradient(
-          colors: [Color(0xFF2D2D2D), Color(0xFF404040), Color(0xFF5A5A5A)],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        )
-            : LinearGradient(
-          colors: [Color(0xFFFF6B35), Color(0xFFF7931E), Color(0xFFFFD700)],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'المتجر الفني',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'اقتني أروع الأعمال الفنية',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'تسوق أجمل الأعمال الفنية التشكيلية اليمنية الأصيلة',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: isDark ? Colors.black : AppConstants.primaryColor,
-                  backgroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Icon(Icons.shopping_bag),
-                    SizedBox(width: 8),
-                    Text('تسوق الآن'),
-                  ],
-                ),
-              ),
-              SizedBox(width: 16),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.white),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Icon(Icons.auto_awesome, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text('تجربة AR', style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildHeroSection(BuildContext context) {
+  //   final isDark = Theme.of(context).brightness == Brightness.dark;
+  //
+  //   return Container(
+  //     height: 300,
+  //     decoration: BoxDecoration(
+  //       gradient: isDark
+  //           ? LinearGradient(
+  //         colors: [Color(0xFF2D2D2D), Color(0xFF404040), Color(0xFF5A5A5A)],
+  //         begin: Alignment.topRight,
+  //         end: Alignment.bottomLeft,
+  //       )
+  //           : LinearGradient(
+  //         colors: [Color(0xFFFF6B35), Color(0xFFF7931E), Color(0xFFFFD700)],
+  //         begin: Alignment.topRight,
+  //         end: Alignment.bottomLeft,
+  //       ),
+  //     ),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Text(
+  //           'المتجر الفني',
+  //           style: TextStyle(
+  //             fontSize: 36,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //         SizedBox(height: 8),
+  //         Text(
+  //           'اقتني أروع الأعمال الفنية',
+  //           style: TextStyle(
+  //             fontSize: 18,
+  //             color: Colors.white,
+  //           ),
+  //         ),
+  //         SizedBox(height: 16),
+  //         Text(
+  //           'تسوق أجمل الأعمال الفنية التشكيلية اليمنية الأصيلة',
+  //           style: TextStyle(
+  //             fontSize: 16,
+  //             color: Colors.white,
+  //           ),
+  //           textAlign: TextAlign.center,
+  //         ),
+  //         SizedBox(height: 24),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             ElevatedButton(
+  //               style: ElevatedButton.styleFrom(
+  //                 foregroundColor: isDark ? Colors.black : AppConstants.primaryColor,
+  //                 backgroundColor: Colors.white,
+  //                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //               ),
+  //               onPressed: () {},
+  //               child: Row(
+  //                 children: [
+  //                   Icon(Icons.shopping_bag),
+  //                   SizedBox(width: 8),
+  //                   Text('تسوق الآن'),
+  //                 ],
+  //               ),
+  //             ),
+  //             SizedBox(width: 16),
+  //             OutlinedButton(
+  //               style: OutlinedButton.styleFrom(
+  //                 side: BorderSide(color: Colors.white),
+  //                 padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  //               ),
+  //               onPressed: () {},
+  //               child: Row(
+  //                 children: [
+  //                   Icon(Icons.auto_awesome, color: Colors.white),
+  //                   SizedBox(width: 8),
+  //                   Text('تجربة AR', style: TextStyle(color: Colors.white)),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildSearchAndFilters(ProductProvider productProvider, BuildContext context) {
     return Container(
@@ -288,7 +288,7 @@ class _StorePageState extends State<StorePage> {
 
   Widget _buildProductCard(Product product, CartProvider cartProvider, BuildContext context) {
     final productController = ProductController(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
