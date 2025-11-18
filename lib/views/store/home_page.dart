@@ -196,28 +196,28 @@ class _StorePageState extends State<StorePage> {
       color: Theme.of(context).cardTheme.color,
       child: Column(
         children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'ابحث عن لوحة أو فنان...',
-              prefixIcon: Icon(Icons.search, color: Theme.of(context).iconTheme.color),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              filled: true,
-              fillColor: Theme.of(context).brightness == Brightness.dark
-                  ? Color(0xFF2D2D2D)
-                  : Colors.white,
-              hintStyle: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey.shade500
-                    : Colors.grey.shade600,
-              ),
-            ),
-            style: TextStyle(
-              color: AppTheme.getTextColor(context),
-            ),
-          ),
-          SizedBox(height: 16),
+          // TextField(
+          //   decoration: InputDecoration(
+          //     hintText: 'ابحث عن لوحة أو فنان...',
+          //     prefixIcon: Icon(Icons.search, color: Theme.of(context).iconTheme.color),
+          //     border: OutlineInputBorder(
+          //       borderRadius: BorderRadius.circular(15),
+          //     ),
+          //     filled: true,
+          //     fillColor: Theme.of(context).brightness == Brightness.dark
+          //         ? Color(0xFF2D2D2D)
+          //         : Colors.white,
+          //     hintStyle: TextStyle(
+          //       color: Theme.of(context).brightness == Brightness.dark
+          //           ? Colors.grey.shade500
+          //           : Colors.grey.shade600,
+          //     ),
+          //   ),
+          //   style: TextStyle(
+          //     color: AppTheme.getTextColor(context),
+          //   ),
+          // ),
+          // SizedBox(height: 16),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
