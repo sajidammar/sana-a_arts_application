@@ -17,7 +17,6 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
-  int _cartCount = 0;
 
   @override
   void initState() {
@@ -34,63 +33,22 @@ class _StorePageState extends State<StorePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      //   elevation: 1,
-      //   title: Row(
-      //     children: [
-      //       Icon(Icons.palette, color: Theme.of(context).primaryColor),
-      //       SizedBox(width: 8),
-      //       Text('المتجر', style: TextStyle(
-      //         color: Theme.of(context).primaryColor,
-      //         fontWeight: FontWeight.bold,
-      //         fontSize: 20,
-      //       )),
-      //     ],
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: Stack(
-      //         children: [
-      //           Icon(Icons.shopping_cart, color: Theme.of(context).primaryColor),
-      //           if (cartProvider.cartItems.isNotEmpty)
-      //             Positioned(
-      //               right: 0,
-      //               top: 0,
-      //               child: Container(
-      //                 padding: EdgeInsets.all(2),
-      //                 decoration: BoxDecoration(
-      //                   color: Colors.red,
-      //                   borderRadius: BorderRadius.circular(10),
-      //                 ),
-      //                 constraints: BoxConstraints(
-      //                   minWidth: 16,
-      //                   minHeight: 16,
-      //                 ),
-      //                 child: Text(
-      //                   '${cartProvider.cartItems.length}',
-      //                   style: TextStyle(
-      //                     color: Colors.white,
-      //                     fontSize: 10,
-      //                   ),
-      //                   textAlign: TextAlign.center,
-      //                 ),
-      //               ),
-      //             ),
-      //         ],
-      //       ),
-      //       onPressed: () {
-      //         Navigator.pushNamed(context, '/cart');
-      //       },
-      //     ),
-      //     IconButton(
-      //       icon: Icon(Icons.settings, color: Theme.of(context).primaryColor),
-      //       onPressed: () {
-      //         Navigator.pushNamed(context, '/settings');
-      //       },
-      //     ),
-      //   ],
-      // ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        elevation: 1,
+        title: Row(
+
+          children: [
+            Text('المتجر', style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            )),
+
+          ],
+        ),
+
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
