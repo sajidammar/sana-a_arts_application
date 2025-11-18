@@ -7,7 +7,6 @@ import 'package:sanaa_artl/themes/exhibition/colors.dart' show AppColors;
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
-import '../../../../utils/constants.dart';
 
 class ExhibitionTypesSection extends StatelessWidget {
   final AnimationController animationController;

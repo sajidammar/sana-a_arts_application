@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
 import 'package:sanaa_artl/views/home/shared/custom_app_bar.dart';
 import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
@@ -9,27 +10,26 @@ import '../../providers/theme_provider.dart';
 import '../about/about_view.dart';
 import '../academies/academy_view.dart';
 import '../community/community_view.dart';
-import '../exhibitions/exhibitions_view.dart';
+
 import '../profile/profile_view.dart';
 import '../store/home_page.dart';
 
 import '../wishlist/wishlist_view.dart';
 
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Home_Page extends StatefulWidget {
+  const Home_Page({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _Home_PageState createState() => _Home_PageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _Home_PageState extends State<Home_Page> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
     const _HomeContent(),
-    const ExhibitionsPage(),
+    const ExhibitionHomePage(),
     const AcademyPage(),
     const StorePage(),
     const CommunityPage(),

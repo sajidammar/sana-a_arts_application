@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import '../../../providers/theme_provider.dart';
 
 class ExhibitionCard extends StatelessWidget {
@@ -11,7 +12,7 @@ class ExhibitionCard extends StatelessWidget {
     Key? key,
     required this.title,
     required this.description,
-    required this.imageUrl,
+    required this.imageUrl, required Exhibition exhibition, required Duration animationDelay, required void Function() onTap,
   }) : super(key: key);
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../models/artwork_model.dart';
+import 'package:sanaa_artl/models/exhibition/artwork.dart';
+import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 
 
 class AppProvider with ChangeNotifier {
@@ -39,8 +40,8 @@ class AppProvider with ChangeNotifier {
         description: 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',
         imageUrl: '',
         startDate: DateTime(2024, 1, 1),
-        endDate: DateTime(2024, 12, 31),
-        location: 'صنعاء',
+        endDate: DateTime(2024, 12, 31),isActive: true, 
+        location: 'صنعاء', curator: '', type: ExhibitionType.open, status: '', date: '', artworksCount: 2000, visitorsCount: 1000,
       ),
       Exhibition(
         id: '2',
@@ -48,8 +49,8 @@ class AppProvider with ChangeNotifier {
         description: 'أعمال فنية معاصرة تجمع بين الأصالة والحداثة',
         imageUrl: '',
         startDate: DateTime(2024, 1, 1),
-        endDate: DateTime(2024, 12, 31),
-        location: 'صنعاء',
+        endDate: DateTime(2024, 12, 31),isActive: true, 
+        location: 'صنعاء', curator: '', type: ExhibitionType.open, status: '', date: '', artworksCount: 2000, visitorsCount: 1000,
       ),
     ];
   }
@@ -64,7 +65,7 @@ class AppProvider with ChangeNotifier {
         price: 1500.0,
         imageUrl: '',
         category: 'تراث',
-        createdAt: DateTime(2024, 1, 1),
+        createdAt: DateTime(2024, 1, 1), artistId: '', year: 2025, technique: '', dimensions: '', rating: 20.1, ratingCount: 3000, currency: '', tags: [],
       ),
     ];
   }
