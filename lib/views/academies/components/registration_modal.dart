@@ -23,7 +23,7 @@ class RegistrationModal extends StatelessWidget {
     return GestureDetector(
       onTap: () => registrationProvider.closeRegistrationModal(),
       child: Container(
-        color: Colors.black.withOpacity(0.8),
+        color: Colors.black.withValues(alpha: 0.8),
         child: Center(
           child: GestureDetector(
             onTap: () {}, // Prevent closing when clicking on modal
@@ -40,7 +40,7 @@ class RegistrationModal extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: AppColors.goldGradient,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(15),
@@ -74,7 +74,8 @@ class RegistrationModal extends StatelessWidget {
                           left: 0,
                           top: 0,
                           child: IconButton(
-                            onPressed: () => registrationProvider.closeRegistrationModal(),
+                            onPressed: () =>
+                                registrationProvider.closeRegistrationModal(),
                             icon: const Icon(Icons.close, color: Colors.white),
                           ),
                         ),
@@ -130,7 +131,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
           _buildFormField(
             controller: registrationProvider.getController('name'),
             label: 'الاسم الكامل *',
-            validator: (value) => registrationProvider.validateField('name', value!),
+            validator: (value) =>
+                registrationProvider.validateField('name', value!),
           ),
           const SizedBox(height: 16),
 
@@ -139,7 +141,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
             controller: registrationProvider.getController('email'),
             label: 'البريد الإلكتروني *',
             keyboardType: TextInputType.emailAddress,
-            validator: (value) => registrationProvider.validateField('email', value!),
+            validator: (value) =>
+                registrationProvider.validateField('email', value!),
           ),
           const SizedBox(height: 16),
 
@@ -148,7 +151,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
             controller: registrationProvider.getController('phone'),
             label: 'رقم الهاتف *',
             keyboardType: TextInputType.phone,
-            validator: (value) => registrationProvider.validateField('phone', value!),
+            validator: (value) =>
+                registrationProvider.validateField('phone', value!),
           ),
           const SizedBox(height: 16),
 
@@ -179,7 +183,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   ? null
                   : () async {
                       if (_formKey.currentState!.validate()) {
-                        final success = await registrationProvider.submitRegistration(workshopProvider);
+                        final success = await registrationProvider
+                            .submitRegistration(workshopProvider);
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -191,7 +196,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         } else if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('حدث خطأ في التسجيل. يرجى المحاولة مرة أخرى.'),
+                              content: Text(
+                                'حدث خطأ في التسجيل. يرجى المحاولة مرة أخرى.',
+                              ),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -241,12 +248,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:  BorderSide(color: AppColors.primaryColor),
+          borderSide: BorderSide(color: AppColors.primaryColor),
         ),
       ),
     );
@@ -265,9 +270,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
       items: items,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -281,12 +284,10 @@ class _RegistrationFormState extends State<RegistrationForm> {
       maxLines: 3,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide:  BorderSide(color: AppColors.primaryColor),
+          borderSide: BorderSide(color: AppColors.primaryColor),
         ),
       ),
     );

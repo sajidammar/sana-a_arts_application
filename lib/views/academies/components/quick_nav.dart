@@ -66,7 +66,7 @@ class QuickNavCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // ✅ إضافة functionality هنا عند الضغط على العنصر
-        _handleNavigation(context, title);
+        handleNavigation(context, title);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -136,7 +136,7 @@ class QuickNavCard extends StatelessWidget {
     );
   }
 
-  void _handleNavigation(BuildContext context, String title) {
+  static void handleNavigation(BuildContext context, String title) {
     // ✅ إضافة التنقل حسب العنصر
     switch (title) {
       case 'التسجيل في ورشة':

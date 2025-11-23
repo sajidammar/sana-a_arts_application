@@ -1,6 +1,7 @@
 // views/components/workshop_card.dart
 import 'package:flutter/material.dart';
 import 'package:sanaa_artl/models/academy/workshop.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class WorkshopCard extends StatelessWidget {
   final Workshop workshop;
@@ -61,7 +62,7 @@ class WorkshopCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: _getLevelColor(workshop.level),
+                          color: AppColors.getLevelColor(workshop.level),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -77,7 +78,7 @@ class WorkshopCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // معلومات الورشة
               Expanded(
                 child: Padding(
@@ -128,8 +129,11 @@ class WorkshopCard extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  const Icon(Icons.star, 
-                                      color: Color(0xFFFFD700), size: 16),
+                                  const Icon(
+                                    Icons.star,
+                                    color: Color(0xFFFFD700),
+                                    size: 16,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     workshop.rating.toString(),
@@ -143,7 +147,7 @@ class WorkshopCard extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          
+
                           // زر التسجيل
                           Container(
                             width: double.infinity,
@@ -206,7 +210,7 @@ class WorkshopCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // المحتوى
             Padding(
               padding: const EdgeInsets.all(12),
@@ -237,8 +241,11 @@ class WorkshopCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.star, 
-                              color: Color(0xFFFFD700), size: 14),
+                          const Icon(
+                            Icons.star,
+                            color: Color(0xFFFFD700),
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             workshop.rating.toString(),
@@ -292,18 +299,5 @@ class WorkshopCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getLevelColor(String level) {
-    switch (level.toLowerCase()) {
-      case 'مبتدئ':
-        return const Color(0xFF28a745);
-      case 'متوسط':
-        return const Color(0xFFffc107);
-      case 'متقدم':
-        return const Color(0xFFdc3545);
-      default:
-        return const Color(0xFFB8860B);
-    }
   }
 }

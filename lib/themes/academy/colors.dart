@@ -29,4 +29,17 @@ class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFF667eea), Color(0xFF764ba2)],
   );
+
+   static  Color getLevelColor(String level) {
+    switch (level.toLowerCase()) {
+      case 'مبتدئ':
+        return const Color(0xFF28a745);
+      case 'متوسط':
+        return const Color(0xFFffc107);
+      case 'متقدم':
+        return const Color(0xFFdc3545);
+      default:
+        return const Color(0xFFB8860B);
+    }
+  }
 }

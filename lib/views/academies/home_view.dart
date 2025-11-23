@@ -20,7 +20,10 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {
-      final workshopProvider = Provider.of<WorkshopProvider>(context, listen: false);
+      final workshopProvider = Provider.of<WorkshopProvider>(
+        context,
+        listen: false,
+      );
       workshopProvider.loadSampleData();
     });
   }
@@ -28,56 +31,48 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            // Header
-            // SliverAppBar(
-            //   pinned: true,
-            //   floating: false,
-            //   snap: false,
-            //   expandedHeight: 120,
-            //   collapsedHeight: 120,
-            //   toolbarHeight: 120,
-            //   backgroundColor: Colors.white,
-            //   elevation: 3,
-            //   flexibleSpace: const AppHeader(),
-            // ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              // Header
+              // SliverAppBar(
+              //   pinned: true,
+              //   floating: false,
+              //   snap: false,
+              //   expandedHeight: 120,
+              //   collapsedHeight: 120,
+              //   toolbarHeight: 120,
+              //   backgroundColor: Colors.white,
+              //   elevation: 3,
+              //   flexibleSpace: const AppHeader(),
+              // ),
 
-            // Hero Section
-            const SliverToBoxAdapter(
-              child: HeroSection(),
-            ),
+              // Hero Section
+              const SliverToBoxAdapter(child: HeroSection()),
 
-            // Quick Navigation
-            const SliverToBoxAdapter(
-              child: QuickNavigationSection(),
-            ),
+              // Quick Navigation
+              const SliverToBoxAdapter(child: QuickNavigationSection()),
 
-            // Categories Section
-            const SliverToBoxAdapter(
-              child: CategoriesSection(),
-            ),
+              // Categories Section
+              const SliverToBoxAdapter(child: CategoriesSection()),
 
-            // الورش المميزة (أفقية)
-            const SliverToBoxAdapter(
-              child: HorizontalWorkshopsGrid(),
-            ),
+              // الورش المميزة (أفقية)
+              const SliverToBoxAdapter(child: HorizontalWorkshopsGrid()),
 
-            // ✅ جميع الورش التدريبية (أفقية جديدة)
-            _buildAllWorkshopsSection(),
+              // ✅ جميع الورش التدريبية (أفقية جديدة)
+              _buildAllWorkshopsSection(),
 
-            // المدربون المتخصصون (أفقية)
-            const SliverToBoxAdapter(
-              child: HorizontalInstructorsSection(),
-            ),
+              // المدربون المتخصصون (أفقية)
+              const SliverToBoxAdapter(child: HorizontalInstructorsSection()),
 
-            // Footer
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 40),
-            ),
-          ],
+              // Footer
+              const SliverToBoxAdapter(child: SizedBox(height: 40)),
+            ],
+          ),
         ),
       ),
     );
@@ -96,7 +91,8 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
               children: [
                 const SectionTitle(
                   title: 'جميع الورش التدريبية',
-                  description: 'اكتشف مجموعة متنوعة من الورش المصممة لتطوير مهاراتك الفنية',
+                  description:
+                      'اكتشف مجموعة متنوعة من الورش المصممة لتطوير مهاراتك الفنية',
                 ),
                 const SizedBox(height: 32),
                 _buildFilterTabs(workshopProvider),
@@ -133,8 +129,8 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
                 },
                 selectedColor: const Color(0xFFB8860B),
                 labelStyle: TextStyle(
-                  color: workshopProvider.currentFilter == filter.value 
-                      ? Colors.white 
+                  color: workshopProvider.currentFilter == filter.value
+                      ? Colors.white
                       : const Color(0xFF2C1810),
                 ),
               ),
@@ -149,8 +145,5 @@ class _FilterTab {
   final String label;
   final String value;
 
-  const _FilterTab({
-    required this.label,
-    required this.value,
-  });
+  const _FilterTab({required this.label, required this.value});
 }

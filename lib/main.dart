@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/academy/registration_provider.dart';
+import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
@@ -41,6 +43,8 @@ void main() {
         ChangeNotifierProvider(create: (context) => NavigationProvider()),
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => WorkshopProvider()),
+        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
       ],
       child: const MyApp(),
     ),

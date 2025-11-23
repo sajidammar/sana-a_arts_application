@@ -1,33 +1,40 @@
 // views/components/categories_section.dart
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/views/academies/components/quick_nav.dart';
 
 class CategoriesSection extends StatelessWidget {
   const CategoriesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      color: Colors.white,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SectionTitle(
-            title: 'الفئات الفنية',
-            description: 'استكشف مختلف المجالات الفنية واختر ما يناسب موهبتك',
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            height: 120, // ✅ ارتفاع محدد
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                return CategoryCard(category: _categories[index]);
-              },
+    return InkWell(
+      onTap: () => QuickNavCard.handleNavigation(
+        context,
+        'سوف يتم نقلك إلى الصفحة المخصصة حالياً',
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        color: Colors.white,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SectionTitle(
+              title: 'الفئات الفنية',
+              description: 'استكشف مختلف المجالات الفنية واختر ما يناسب موهبتك',
             ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            SizedBox(
+              height: 120, // ✅ ارتفاع محدد
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  return CategoryCard(category: _categories[index]);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -66,6 +73,7 @@ class CategoryCard extends StatelessWidget {
     );
   }
 }
+
 // في ملف مستقل أو في نفس الملف
 class SectionTitle extends StatelessWidget {
   final String title;
@@ -104,16 +112,14 @@ class SectionTitle extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           description,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFF5D4E37),
-          ),
+          style: const TextStyle(fontSize: 16, color: Color(0xFF5D4E37)),
           textAlign: TextAlign.center,
         ),
       ],
     );
   }
 }
+
 class Category {
   final String name;
   final IconData icon;

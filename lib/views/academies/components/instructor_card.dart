@@ -22,7 +22,7 @@ class InstructorCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -33,7 +33,7 @@ class InstructorCard extends StatelessWidget {
           children: [
             // صورة المدرب
             Container(
-              height: 140,
+              // height: 140,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.vertical(
@@ -45,7 +45,7 @@ class InstructorCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // معلومات المدرب
             Expanded(
               child: Padding(
@@ -86,8 +86,11 @@ class InstructorCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.star, 
-                                color: Color(0xFFFFD700), size: 16),
+                            const Icon(
+                              Icons.star,
+                              color: Color(0xFFFFD700),
+                              size: 16,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               instructor.rating.toString(),
@@ -108,7 +111,7 @@ class InstructorCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        
+
                         // عدد الورش
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -144,7 +147,7 @@ class InstructorCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -166,7 +169,7 @@ class InstructorCard extends StatelessWidget {
                 ),
               ),
             ),
-            
+
             // معلومات المدرب
             Padding(
               padding: const EdgeInsets.all(12),
@@ -194,8 +197,11 @@ class InstructorCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.star, 
-                          color: Color(0xFFFFD700), size: 16),
+                      const Icon(
+                        Icons.star,
+                        color: Color(0xFFFFD700),
+                        size: 16,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         instructor.rating.toString(),
