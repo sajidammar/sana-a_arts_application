@@ -55,6 +55,14 @@ dependencies:
   vector_math: ^2.1.4
   path_drawing: ^1.0.1
   intl: ^0.20.2
+  test_api: ^0.7.6
+  meta: ^1.16.0
+  material_color_utilities: ^0.11.1
+  l: ^5.0.1
+  lints: ^5.1.1
+  flutter_lints: ^5.0.0
+  characters: ^1.4.0
+
 
 
 dev_dependencies:
@@ -85,6 +93,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
+    - assets/fonts/
     - assets/icons/
     - assets/patterns/
     - assets/animations/
