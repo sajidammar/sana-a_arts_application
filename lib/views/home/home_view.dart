@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/views/academies/home_view.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
 import 'package:sanaa_artl/views/home/shared/custom_app_bar.dart';
@@ -8,7 +9,7 @@ import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
 import '../../providers/theme_provider.dart';
 import '../about/about_view.dart';
-import '../academies/academy_view.dart';
+
 import '../community/community_view.dart';
 
 import '../profile/profile_view.dart';
@@ -30,7 +31,7 @@ class _Home_PageState extends State<Home_Page> {
   final List<Widget> _pages = [
     const _HomeContent(),
     const ExhibitionHomePage(),
-    const AcademyPage(),
+    const AcademyHomeView(),
     const StorePage(),
     const CommunityPage(),
   ];
