@@ -122,9 +122,9 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: _getCrossAxisCount(),
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.8,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.7,
       ),
       itemCount: provider.filteredExhibitions.length,
       itemBuilder: (context, index) {
@@ -166,50 +166,46 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
   void _bookRealityExhibition(BuildContext context, Exhibition exhibition) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              'حجز تذكرة',
-              style: TextStyle(
-                fontFamily: 'Tajawal',
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            content: Text(
-              'جاري حجز تذكرة لمعرض: ${exhibition.title}',
-              style: TextStyle(
-                fontFamily: 'Tajawal',
-                color: Theme.of(context).primaryColorDark,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  'إلغاء',
-                  style: TextStyle(fontFamily: 'Tajawal'),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'تم حجز التذكرة بنجاح!',
-                        style: TextStyle(fontFamily: 'Tajawal'),
-                      ),
-                      backgroundColor: AppThemes.getSuccessColor(context),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'تأكيد الحجز',
-                  style: TextStyle(fontFamily: 'Tajawal'),
-                ),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(
+          'حجز تذكرة',
+          style: TextStyle(
+            fontFamily: 'Tajawal',
+            color: Theme.of(context).colorScheme.onSurface,
           ),
+        ),
+        content: Text(
+          'جاري حجز تذكرة لمعرض: ${exhibition.title}',
+          style: TextStyle(
+            fontFamily: 'Tajawal',
+            color: Theme.of(context).primaryColorDark,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إلغاء', style: TextStyle(fontFamily: 'Tajawal')),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'تم حجز التذكرة بنجاح!',
+                    style: TextStyle(fontFamily: 'Tajawal'),
+                  ),
+                  backgroundColor: AppThemes.getSuccessColor(context),
+                ),
+              );
+            },
+            child: const Text(
+              'تأكيد الحجز',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

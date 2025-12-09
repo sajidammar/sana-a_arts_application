@@ -23,9 +23,13 @@ class ExhibitionCard extends StatelessWidget {
     return ScaleAnimation(
       delay: animationDelay,
       child: Card(
-        elevation: 8,
+        elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+          side: BorderSide(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
         ),
         child: InkWell(
           onTap: onTap,
@@ -33,6 +37,14 @@ class ExhibitionCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).colorScheme.surface,
+                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
+                ],
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +67,7 @@ class ExhibitionCard extends StatelessWidget {
       children: [
         // صورة الخلفية
         Container(
-          height: 140,
+          height: 120,
           decoration: BoxDecoration(
             // gradient: exhibition.type.gradient,
             color: Theme.of(context).primaryColor,
@@ -87,7 +99,7 @@ class ExhibitionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: exhibition.type.color.withValues(alpha:0.9),
+        color: exhibition.type.color.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -148,19 +160,22 @@ class ExhibitionCard extends StatelessWidget {
 
   Widget _buildContentSection(dynamic context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // العنوان
           Text(
             exhibition.title,
-            style: Theme.of(context).textTheme.titleLarge,
-            maxLines: 2,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
           // المنسق
           Row(
@@ -187,24 +202,24 @@ class ExhibitionCard extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
 
           // الوصف
-          Expanded(
-            child: Text(
-              exhibition.description,
-              style: Theme.of(context).textTheme.bodyMedium,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+          Text(
+            exhibition.description,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontSize: 11),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
           // التفاصيل
           _buildDetailsGrid(context),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
 
           // الأزرار
           _buildActionButtons(context),
@@ -215,19 +230,23 @@ class ExhibitionCard extends StatelessWidget {
 
   Widget _buildDetailsGrid(dynamic context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          width: 1,
+        ),
       ),
       child: GridView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          childAspectRatio: 3,
+          crossAxisSpacing: 6,
+          mainAxisSpacing: 6,
+          childAspectRatio: 3.5,
         ),
         children: [
           _buildDetailItem(Icons.calendar_today, exhibition.date, context),
@@ -274,10 +293,10 @@ class ExhibitionCard extends StatelessWidget {
         Expanded(
           child: _buildActionButton(
             exhibition.type == ExhibitionType.virtual
-                ? 'دخول افتراضي'
+                ? 'دخول'
                 : exhibition.type == ExhibitionType.reality
-                ? 'حجز تذكرة'
-                : 'مشاهدة الأعمال',
+                ? 'حجز'
+                : 'عرض',
             exhibition.type == ExhibitionType.virtual
                 ? Icons.card_membership_sharp
                 : exhibition.type == ExhibitionType.reality
@@ -287,14 +306,14 @@ class ExhibitionCard extends StatelessWidget {
             context,
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         Expanded(
           child: _buildActionButton(
             exhibition.type == ExhibitionType.virtual
                 ? 'مشاركة'
                 : exhibition.type == ExhibitionType.reality
-                ? 'الاتجاهات'
-                : 'تصويت',
+                ? 'اتجاهات'
+                : 'إعجاب',
             exhibition.type == ExhibitionType.virtual
                 ? Icons.share
                 : exhibition.type == ExhibitionType.reality
@@ -317,35 +336,34 @@ class ExhibitionCard extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            isPrimary
-                ? Theme.of(context!).primaryColor
-                : Theme.of(context!).colorScheme.onSurface,
-        foregroundColor:
-            isPrimary
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).primaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        backgroundColor: isPrimary
+            ? Theme.of(context!).primaryColor
+            : Theme.of(context!).colorScheme.surface,
+        foregroundColor: isPrimary
+            ? Theme.of(context).colorScheme.surface
+            : Theme.of(context).primaryColor,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color:
-                isPrimary
-                    ? Theme.of(context).colorScheme.surface
-                    : Theme.of(context).primaryColor,
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
         ),
-        elevation: 0,
+        elevation: isPrimary ? 2 : 0,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 14),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: TextStyle(color: Theme.of(context).colorScheme.surface),
+          Icon(icon, size: 13),
+          const SizedBox(width: 3),
+          Flexible(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Tajawal',
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
