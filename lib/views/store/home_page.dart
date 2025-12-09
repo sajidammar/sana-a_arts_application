@@ -7,8 +7,6 @@ import '../../providers/store/product_provider.dart';
 import '../../themes/store/app_theme.dart';
 import '../../utils/store/app_constants.dart';
 
-
-
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
 
@@ -17,7 +15,6 @@ class StorePage extends StatefulWidget {
 }
 
 class _StorePageState extends State<StorePage> {
-
   @override
   void initState() {
     super.initState();
@@ -37,17 +34,17 @@ class _StorePageState extends State<StorePage> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 1,
         title: Row(
-
           children: [
-            Text('المتجر', style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            )),
-
+            Text(
+              'المتجر',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
           ],
         ),
-
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -148,7 +145,10 @@ class _StorePageState extends State<StorePage> {
   //   );
   // }
 
-  Widget _buildSearchAndFilters(ProductProvider productProvider, BuildContext context) {
+  Widget _buildSearchAndFilters(
+    ProductProvider productProvider,
+    BuildContext context,
+  ) {
     return Container(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
       color: Theme.of(context).cardTheme.color,
@@ -197,7 +197,8 @@ class _StorePageState extends State<StorePage> {
                     },
                     selectedColor: Theme.of(context).primaryColor,
                     checkmarkColor: Colors.white,
-                    backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    backgroundColor:
+                        Theme.of(context).brightness == Brightness.dark
                         ? Color(0xFF2D2D2D)
                         : Colors.grey.shade200,
                   ),
@@ -210,7 +211,11 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildProductsGrid(ProductProvider productProvider, CartProvider cartProvider, BuildContext context) {
+  Widget _buildProductsGrid(
+    ProductProvider productProvider,
+    CartProvider cartProvider,
+    BuildContext context,
+  ) {
     return Padding(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
       child: Column(
@@ -236,7 +241,11 @@ class _StorePageState extends State<StorePage> {
             ),
             itemCount: productProvider.filteredProducts.length,
             itemBuilder: (context, index) {
-              return _buildProductCard(productProvider.filteredProducts[index], cartProvider, context);
+              return _buildProductCard(
+                productProvider.filteredProducts[index],
+                cartProvider,
+                context,
+              );
             },
           ),
         ],
@@ -244,7 +253,11 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildProductCard(Product product, CartProvider cartProvider, BuildContext context) {
+  Widget _buildProductCard(
+    Product product,
+    CartProvider cartProvider,
+    BuildContext context,
+  ) {
     final productController = ProductController(context);
     // final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -252,25 +265,79 @@ class _StorePageState extends State<StorePage> {
       onTap: () {
         productController.navigateToProductDetails(product);
       },
-      child: Card(
-        elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color, // Using card theme color
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
-        color: Theme.of(context).cardTheme.color,
-        child: SingleChildScrollView(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // Important for fitting
             children: [
-              Container(
-                height: 200,
-                decoration: AppTheme.getGradientDecoration(context),
-                child: Center(
-                  child: Icon(Icons.image, color: Colors.white, size: 40),
+              // Image Section
+              SizedBox(
+                height: 200, // Reduced height slightly
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    product.image.isNotEmpty
+                        ? Image.asset(
+                            product.image,
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            decoration: AppTheme.getGradientDecoration(context),
+                            child: const Center(
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                    if (product.isNew || product.discount > 0)
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: product.discount > 0
+                                ? Colors.red
+                                : Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            product.discount > 0
+                                ? 'خصم ${product.discount}%'
+                                : 'جديد',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11, // Reduced font size
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(12), // Reduced padding
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -278,49 +345,73 @@ class _StorePageState extends State<StorePage> {
                       product.title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16, // Restored font size
                         color: AppTheme.getTextColor(context),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       product.artist,
                       style: TextStyle(
                         color: AppTheme.getSecondaryTextColor(context),
-                        fontSize: 14,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
+                    // Removed Description to save space as per user request implicit context of overflow
+                    // Or keep it but very short
                     Text(
                       product.description,
                       style: TextStyle(
-                        color: AppTheme.getSecondaryTextColor(context),
-                        fontSize: 14,
+                        color: Colors.grey[600],
+                        fontSize: 12,
+                        height: 1.2,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '\$${product.price}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (product.discount > 0)
+                              Text(
+                                '\$${product.originalPrice.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            Text(
+                              '\$${product.price}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.amber, size: 16),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 2),
                             Text(
                               '${product.rating}',
                               style: TextStyle(
                                 fontSize: 12,
+                                fontWeight: FontWeight.bold,
                                 color: AppTheme.getTextColor(context),
                               ),
                             ),
@@ -328,29 +419,37 @@ class _StorePageState extends State<StorePage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () {
-                        cartProvider.addToCart(product);
-                        productController.showAddToCartSnackBar(product);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.black
-                            : Colors.white,
-                        minimumSize: Size(double.infinity, 36),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          cartProvider.addToCart(product);
+                          productController.showAddToCartSnackBar(product);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.shopping_cart, size: 16),
-                          SizedBox(width: 4),
-                          Text('أضف للسلة'),
-                        ],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.shopping_cart_outlined, size: 18),
+                            SizedBox(width: 6),
+                            Text(
+                              'أضف للسلة',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

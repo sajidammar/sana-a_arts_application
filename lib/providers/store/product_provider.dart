@@ -16,7 +16,7 @@ class ProductProvider with ChangeNotifier {
     'منحوتات',
     'فن رقمي',
     'تخفيضات',
-    'جديد'
+    'جديد',
   ];
 
   List<String> get filters => _filters;
@@ -39,6 +39,7 @@ class ProductProvider with ChangeNotifier {
         medium: "ألوان زيتية على كانفاس",
         isNew: true,
         inStock: true,
+        image: 'assets/images/image1.jpg',
       ),
       Product(
         id: 2,
@@ -50,12 +51,14 @@ class ProductProvider with ChangeNotifier {
         discount: 0,
         rating: 4.9,
         reviews: 18,
-        description: "بورتريه لامرأة يمنية بالزي التراثي مرسوم بالألوان المائية",
+        description:
+            "بورتريه لامرأة يمنية بالزي التراثي مرسوم بالألوان المائية",
         size: "50x70 سم",
         year: "2024",
         medium: "ألوان مائية",
         isNew: false,
         inStock: true,
+        image: 'assets/images/image2.jpg',
       ),
       Product(
         id: 3,
@@ -73,6 +76,7 @@ class ProductProvider with ChangeNotifier {
         medium: "حجر طبيعي",
         isNew: false,
         inStock: true,
+        image: 'assets/images/image3.jpg',
       ),
     ];
     _filteredProducts = _products;
@@ -86,12 +90,18 @@ class ProductProvider with ChangeNotifier {
     } else {
       _filteredProducts = _products.where((product) {
         switch (index) {
-          case 1: return product.category.contains('لوحة');
-          case 2: return product.category.contains('منحوتة');
-          case 3: return product.category.contains('رقمي');
-          case 4: return product.discount > 0;
-          case 5: return product.isNew;
-          default: return true;
+          case 1:
+            return product.category.contains('لوحة');
+          case 2:
+            return product.category.contains('منحوتة');
+          case 3:
+            return product.category.contains('رقمي');
+          case 4:
+            return product.discount > 0;
+          case 5:
+            return product.isNew;
+          default:
+            return true;
         }
       }).toList();
     }

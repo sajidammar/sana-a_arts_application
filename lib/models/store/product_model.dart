@@ -14,6 +14,7 @@ class Product {
   final String medium;
   final bool isNew;
   final bool inStock;
+  final String image;
 
   Product({
     required this.id,
@@ -31,5 +32,6 @@ class Product {
     required this.medium,
     required this.isNew,
     required this.inStock,
+    this.image = '',
   });
 }
