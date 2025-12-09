@@ -6,6 +6,7 @@ import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
+import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/themes/app_theme.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/home_view.dart';
@@ -45,6 +46,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => WorkshopProvider()),
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (context) => CommunityProvider()),
       ],
       child: const MyApp(),
     ),
