@@ -5,6 +5,7 @@ import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
 import 'package:sanaa_artl/views/academies/category_view.dart';
 import 'package:sanaa_artl/views/academies/components/workshops_grid.dart';
 import 'package:sanaa_artl/views/academies/instructor_view.dart';
+import 'package:sanaa_artl/views/academies/components/section_title.dart';
 import 'components/hero_section.dart';
 import 'components/quick_nav.dart';
 

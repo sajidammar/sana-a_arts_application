@@ -1,40 +1,35 @@
 // views/components/categories_section.dart
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/views/academies/components/quick_nav.dart';
+import 'package:sanaa_artl/views/academies/category_details_view.dart';
+import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
 class CategoriesSection extends StatelessWidget {
   const CategoriesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => QuickNavCard.handleNavigation(
-        context,
-        'سوف يتم نقلك إلى الصفحة المخصصة حالياً',
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        color: Colors.white,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SectionTitle(
-              title: 'الفئات الفنية',
-              description: 'استكشف مختلف المجالات الفنية واختر ما يناسب موهبتك',
+    return Container(
+      padding: const EdgeInsets.all(32),
+      color: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SectionTitle(
+            title: 'الفئات الفنية',
+            description: 'استكشف مختلف المجالات الفنية واختر ما يناسب موهبتك',
+          ),
+          const SizedBox(height: 32),
+          SizedBox(
+            height: 120, // ✅ ارتفاع محدد
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _categories.length,
+              itemBuilder: (context, index) {
+                return CategoryCard(category: _categories[index]);
+              },
             ),
-            const SizedBox(height: 32),
-            SizedBox(
-              height: 120, // ✅ ارتفاع محدد
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _categories.length,
-                itemBuilder: (context, index) {
-                  return CategoryCard(category: _categories[index]);
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -47,78 +42,48 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5E6D3),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(category.icon, size: 40, color: const Color(0xFFB8860B)),
-          const SizedBox(height: 8),
-          Text(
-            category.name,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2C1810),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryDetailsView(
+              categoryName: category.name,
+              categoryId: category.name, // Using name as ID for demo
             ),
-            textAlign: TextAlign.center,
           ),
-        ],
+        );
+      },
+      child: Container(
+        width: 100,
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5E6D3),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(category.icon, size: 40, color: const Color(0xFFB8860B)),
+            const SizedBox(height: 8),
+            Text(
+              category.name,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2C1810),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 // في ملف مستقل أو في نفس الملف
-class SectionTitle extends StatelessWidget {
-  final String title;
-  final String description;
-
-  const SectionTitle({
-    super.key,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFFB8860B),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Container(
-          width: 100,
-          height: 4,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
-            ),
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          description,
-          style: const TextStyle(fontSize: 16, color: Color(0xFF5D4E37)),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-}
+// SectionTitle class moved to components/section_title.dart
 
 class Category {
   final String name;

@@ -1,6 +1,7 @@
 // views/components/quick_nav.dart
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/views/academies/category_view.dart';
+import 'package:sanaa_artl/views/academies/quick_access_pages.dart';
+import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
 class QuickNavigationSection extends StatelessWidget {
   const QuickNavigationSection({super.key});
@@ -18,7 +19,7 @@ class QuickNavigationSection extends StatelessWidget {
             description: 'تصفح الخدمات والوظائف الرئيسية بسرعة وسهولة',
           ),
           const SizedBox(height: 32),
-          
+
           // ✅ القائمة الأفقية للوصول السريع
           SizedBox(
             height: 140, // ارتفاع ثابت للقائمة الأفقية
@@ -96,7 +97,7 @@ class QuickNavCard extends StatelessWidget {
               child: Icon(icon, color: Colors.white, size: 24),
             ),
             const SizedBox(height: 12),
-            
+
             // العنوان
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -114,7 +115,7 @@ class QuickNavCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            
+
             // الوصف
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -138,40 +139,36 @@ class QuickNavCard extends StatelessWidget {
 
   static void handleNavigation(BuildContext context, String title) {
     // ✅ إضافة التنقل حسب العنصر
-    switch (title) {
-      case 'التسجيل في ورشة':
-        // انتقل إلى شاشة التسجيل
-        break;
-      case 'ورشي التدريبية':
-        // انتقل إلى شاشة الورش
-        break;
-      case 'المدربين':
-        // انتقل إلى شاشة المدربين
-        break;
-      case 'الجدول الزمني':
-        // انتقل إلى شاشة الجدول
-        break;
-      case 'الشهادات':
-        // انتقل إلى شاشة الشهادات
-        break;
-      case 'التقييمات':
-        // انتقل إلى شاشة التقييمات
-        break;
-      case 'الدفع والتسعير':
-        // انتقل إلى شاشة الدفع
-        break;
-      case 'المسابقات':
-        // انتقل إلى شاشة المسابقات
-        break;
-    }
-    
-    // ✅ عرض رسالة مؤقتة (يمكن استبدالها بالتنقل الفعلي)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم النقر على: $title'),
-        duration: const Duration(milliseconds: 800),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GenericQuickAccessPage(
+          title: title,
+          description: _getDescriptionForTitle(title),
+          icon: _getIconForTitle(title),
+        ),
       ),
     );
+  }
+
+  static String _getDescriptionForTitle(String title) {
+    final item = _navItems.firstWhere(
+      (element) => element.title == title,
+      orElse: () => const NavItem(
+        title: '',
+        description: 'صفحة تفاصيل',
+        icon: Icons.info,
+      ),
+    );
+    return item.description;
+  }
+
+  static IconData _getIconForTitle(String title) {
+    final item = _navItems.firstWhere(
+      (element) => element.title == title,
+      orElse: () => const NavItem(title: '', description: '', icon: Icons.info),
+    );
+    return item.icon;
   }
 }
 

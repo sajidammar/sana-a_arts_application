@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/views/academies/category_view.dart';
+import 'package:sanaa_artl/views/academies/components/section_title.dart';
 import 'workshop_card.dart';
 
 class FeaturedWorkshopSection extends StatelessWidget {
@@ -46,7 +46,7 @@ class FeaturedWorkshopSection extends StatelessWidget {
           }
 
           // الحصول على الورشة المميزة (أول ورشة في القائمة)
- final featuredWorkshops = workshopProvider.workshops.take(3).toList();
+          final featuredWorkshops = workshopProvider.workshops.take(3).toList();
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -55,7 +55,7 @@ class FeaturedWorkshopSection extends StatelessWidget {
                 description: 'اكتشف الورشة الأكثر تميزاً هذا الأسبوع',
               ),
               const SizedBox(height: 32),
- // ✅ الحل: ListView أفقي مع ارتفاع محدد
+              // ✅ الحل: ListView أفقي مع ارتفاع محدد
               SizedBox(
                 height: 240, // ارتفاع محدد
                 child: ListView.builder(
@@ -70,9 +70,7 @@ class FeaturedWorkshopSection extends StatelessWidget {
                         left: index == 0 ? 0 : 16,
                         right: index == featuredWorkshops.length - 1 ? 0 : 16,
                       ),
-                      child: WorkshopCard(
-                        workshop: workshop,
-                      ),
+                      child: WorkshopCard(workshop: workshop),
                     );
                   },
                 ),
@@ -83,4 +81,4 @@ class FeaturedWorkshopSection extends StatelessWidget {
       ),
     );
   }
-}          
+}

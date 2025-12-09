@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/views/academies/category_view.dart';
 import 'package:sanaa_artl/views/academies/components/instructor_card.dart';
+import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
 class HorizontalInstructorsSection extends StatelessWidget {
   const HorizontalInstructorsSection({super.key});
