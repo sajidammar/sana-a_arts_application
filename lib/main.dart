@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/registration_provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
@@ -63,6 +64,13 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'فنون صنعاء التشكيلية',
           debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('ar', 'AE')],
+          locale: const Locale('ar', 'AE'),
           theme: themeProvider.isDarkMode ? AppTheme.dark : AppTheme.light,
           home: const Home_Page(),
           routes: {
