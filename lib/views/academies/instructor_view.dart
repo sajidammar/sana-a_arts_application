@@ -50,10 +50,11 @@ class HorizontalInstructorsSection extends StatelessWidget {
             children: [
               const SectionTitle(
                 title: 'المدربون المتخصصون',
-                description: 'تعرف على فريق المدربين الخبراء في مختلف مجالات الفنون',
+                description:
+                    'تعرف على فريق المدربين الخبراء في مختلف مجالات الفنون',
               ),
               const SizedBox(height: 32),
-              
+
               // ✅ القائمة الأفقية للمدربين
               SizedBox(
                 height: 280, // ارتفاع ثابت للقائمة الأفقية
@@ -67,7 +68,9 @@ class HorizontalInstructorsSection extends StatelessWidget {
                       width: 220, // عرض ثابت لكل عنصر
                       margin: EdgeInsets.only(
                         left: index == 0 ? 0 : 16,
-                        right: index == workshopProvider.instructors.length - 1 ? 16 : 0,
+                        right: index == workshopProvider.instructors.length - 1
+                            ? 16
+                            : 0,
                       ),
                       child: InstructorCard(
                         instructor: instructor,

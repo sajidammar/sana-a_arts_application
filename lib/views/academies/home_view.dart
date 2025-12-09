@@ -83,7 +83,7 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.all(32),
-        color: Theme.of(context).cardTheme.color,
+        color: const Color(0xFFF5E6D3),
         child: Consumer<WorkshopProvider>(
           builder: (context, workshopProvider, child) {
             return Column(

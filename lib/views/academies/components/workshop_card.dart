@@ -23,7 +23,7 @@ class WorkshopCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).cardTheme.color,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -103,10 +103,10 @@ class WorkshopCard extends StatelessWidget {
                       // العنوان
                       Text(
                         workshop.title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textTheme.titleLarge?.color,
+                          color: Color(0xFF2C1810),
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -116,9 +116,9 @@ class WorkshopCard extends StatelessWidget {
                       // الوصف
                       Text(
                         workshop.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
-                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                          color: Color(0xFF5D4E37),
                           height: 1.4,
                         ),
                         maxLines: 2,
@@ -134,27 +134,25 @@ class WorkshopCard extends StatelessWidget {
                             children: [
                               Text(
                                 '${workshop.price} ر.س',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
+                                  color: Color(0xFFB8860B),
                                 ),
                               ),
                               Row(
                                 children: [
                                   const Icon(
                                     Icons.star,
-                                    color: Colors.amber,
+                                    color: Color(0xFFFFD700),
                                     size: 16,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     workshop.rating.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium?.color,
+                                      color: Color(0xFF5D4E37),
                                     ),
                                   ),
                                 ],
@@ -168,7 +166,9 @@ class WorkshopCard extends StatelessWidget {
                             width: double.infinity,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Center(
@@ -196,7 +196,7 @@ class WorkshopCard extends StatelessWidget {
       // ✅ تصميم للعرض العمودي (إذا كنت تحتاجه في أماكن أخرى)
       return Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -243,10 +243,10 @@ class WorkshopCard extends StatelessWidget {
                 children: [
                   Text(
                     workshop.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.titleLarge?.color,
+                      color: Color(0xFF2C1810),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -257,23 +257,25 @@ class WorkshopCard extends StatelessWidget {
                     children: [
                       Text(
                         '${workshop.price} ر.س',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                          color: Color(0xFFB8860B),
                         ),
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 14),
+                          const Icon(
+                            Icons.star,
+                            color: Color(0xFFFFD700),
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             workshop.rating.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
-                              color: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.color,
+                              color: Color(0xFF5D4E37),
                             ),
                           ),
                         ],

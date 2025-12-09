@@ -74,8 +74,7 @@ class WorkshopProvider with ChangeNotifier {
         bio: "فنان تشكيلي محترف بخبرة تزيد عن 15 عاماً",
         education: ["دبلوم الفنون الجميلة - جامعة صنعاء"],
         achievements: ["مشارك في 20+ معرض محلي وإقليمي"],
-        imageUrl:
-            'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&w=400',
+        imageUrl: 'assets/images/image2.jpg',
       ),
     ];
 

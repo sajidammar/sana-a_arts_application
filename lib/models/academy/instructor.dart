@@ -33,7 +33,7 @@ class Instructor with ChangeNotifier {
     required this.bio,
     required this.education,
     required this.achievements,
-    required this.imageUrl
+    required this.imageUrl,
   });
 
   factory Instructor.fromJson(Map<String, dynamic> json) {
@@ -50,11 +50,10 @@ class Instructor with ChangeNotifier {
       workshops: json['workshops'],
       status: json['status'],
       bio: json['bio'],
-      
+
       education: List<String>.from(json['education']),
-      achievements: List<String>.from(json['achievements']), imageUrl: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&w=400',
+      achievements: List<String>.from(json['achievements']),
+      imageUrl: json['imageUrl'] ?? 'assets/images/image2.jpg',
     );
   }
-
-
 }
