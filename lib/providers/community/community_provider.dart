@@ -17,7 +17,7 @@ class CommunityProvider with ChangeNotifier {
     name: 'أنت',
     email: 'user@example.com',
     phone: '',
-    profileImage: '',
+    profileImage: 'assets/images/image7.jpg',
     role: UserRole.user,
     joinDate: DateTime.now(),
     preferences: UserPreferences(),
@@ -29,7 +29,7 @@ class CommunityProvider with ChangeNotifier {
       name: 'أحمد المقطري',
       email: 'ahmed@art.com',
       phone: '',
-      profileImage: '',
+      profileImage: 'assets/images/image5.jpg',
       role: UserRole.artist,
       joinDate: DateTime(2023),
       preferences: UserPreferences(),
@@ -40,7 +40,7 @@ class CommunityProvider with ChangeNotifier {
       name: 'فاطمة الحمادي',
       email: 'fatima@art.com',
       phone: '',
-      profileImage: '',
+      profileImage: 'assets/images/image6.jpg',
       role: UserRole.artist,
       joinDate: DateTime(2023),
       preferences: UserPreferences(),
@@ -51,7 +51,7 @@ class CommunityProvider with ChangeNotifier {
       name: 'سارة العريقي',
       email: 'sara@art.com',
       phone: '',
-      profileImage: '',
+      profileImage: 'assets/images/image3.jpg',
       role: UserRole.artist,
       joinDate: DateTime(2024),
       preferences: UserPreferences(),
@@ -133,6 +133,33 @@ class CommunityProvider with ChangeNotifier {
     );
     _posts.insert(0, newPost);
     notifyListeners();
+  }
+
+  void deletePost(String postId) {
+    _posts.removeWhere((p) => p.id == postId);
+    notifyListeners();
+  }
+
+  void addComment(String postId, String content) {
+    final index = _posts.indexWhere((p) => p.id == postId);
+    if (index != -1) {
+      final post = _posts[index];
+      final newComment = Comment(
+        id: DateTime.now().toString(),
+        author: _currentUser,
+        content: content,
+        timestamp: DateTime.now(),
+      );
+
+      final updatedComments = List<Comment>.from(post.comments)
+        ..add(newComment);
+
+      _posts[index] = post.copyWith(
+        comments: updatedComments,
+        commentsCount: post.commentsCount + 1,
+      );
+      notifyListeners();
+    }
   }
 
   // Helper method for formatting date

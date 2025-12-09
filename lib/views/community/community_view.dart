@@ -4,6 +4,7 @@ import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/community/widgets/artist_card.dart';
 import 'package:sanaa_artl/views/community/widgets/post_card.dart';
+import 'package:sanaa_artl/views/community/add_post_page.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -64,9 +65,9 @@ class _CommunityPageState extends State<CommunityPage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Implement add post
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('سيتم إضافة هذه الميزة قريباً')),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddPostPage()),
           );
         },
         backgroundColor: Theme.of(context).primaryColor,

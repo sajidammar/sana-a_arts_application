@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/community/post.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/views/community/widgets/comments_sheet.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -68,7 +69,60 @@ class PostCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.more_horiz),
                   color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF1E1E1E)
+                              : Colors.white,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (post.author.id == 'current_user')
+                              ListTile(
+                                leading: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                title: const Text(
+                                  'حذف المنشور',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                onTap: () {
+                                  context.read<CommunityProvider>().deletePost(
+                                    post.id,
+                                  );
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.flag,
+                                color: Colors.orange,
+                              ),
+                              title: const Text('إبلاغ عن محتوى'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('تم إرسال البلاغ للمراجعة'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -122,12 +176,11 @@ class PostCard extends StatelessWidget {
                   icon: Icons.comment_outlined,
                   label: '${post.commentsCount}',
                   onTap: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('التعليقات غير متاحة حالياً'),
-                        duration: Duration(seconds: 1),
-                      ),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => CommentsSheet(postId: post.id),
                     );
                   },
                 ),
