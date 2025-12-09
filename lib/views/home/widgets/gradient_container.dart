@@ -12,13 +12,13 @@ class HeritageGradientContainer extends StatelessWidget {
   final bool useCardGradient;
 
   const HeritageGradientContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.padding,
     this.margin,
     this.borderRadius,
     this.useCardGradient = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +68,13 @@ class HeritageText extends StatelessWidget {
   final bool useGoldColor;
 
   const HeritageText({
-    Key? key,
+    super.key,
     required this.text,
     this.style,
     this.textAlign,
     this.isTitle = false,
     this.useGoldColor = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -107,12 +107,12 @@ class HeritageButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const HeritageButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.isPrimary = true,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -9,11 +9,11 @@ class ExhibitionCard extends StatelessWidget {
   final String imageUrl;
 
   const ExhibitionCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.imageUrl, required Exhibition exhibition, required Duration animationDelay, required void Function() onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

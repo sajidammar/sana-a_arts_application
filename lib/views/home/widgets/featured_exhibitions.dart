@@ -5,7 +5,7 @@ import '../../../providers/theme_provider.dart';
 import 'exhibition_card.dart';
 
 class FeaturedExhibitions extends StatelessWidget {
-  const FeaturedExhibitions({Key? key}) : super(key: key);
+  const FeaturedExhibitions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class FeaturedExhibitions extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Container(
+        SizedBox(
           height: 450,
           child: ListView(
             scrollDirection: Axis.horizontal,
@@ -147,7 +147,7 @@ class FeaturedExhibitions extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Container(
+        SizedBox(
           height: 450,
           child: ListView(
             scrollDirection: Axis.horizontal,

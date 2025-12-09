@@ -6,7 +6,7 @@ import '../../models/store/product_model.dart';
 class CartProvider with ChangeNotifier {
   List<CartItem> _cartItems = [];
   double _subtotal = 0;
-  double _shipping = 25.0;
+  final double _shipping = 25.0;
   double _tax = 0;
   double _total = 0;
 

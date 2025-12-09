@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {

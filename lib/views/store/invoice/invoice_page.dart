@@ -388,7 +388,7 @@ class InvoicePage extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16),
-          ...invoice.items.map((item) => _buildOrderItem(item, context)).toList(),
+          ...invoice.items.map((item) => _buildOrderItem(item, context)),
         ],
       ),
     );

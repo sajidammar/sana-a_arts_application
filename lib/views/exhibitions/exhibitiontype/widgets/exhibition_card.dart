@@ -66,66 +66,47 @@ class ExhibitionCard extends StatelessWidget {
     return Stack(
       children: [
         // صورة الخلفية
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(AppConstants.borderRadius),
-            topRight: Radius.circular(AppConstants.borderRadius),
+        Container(
+          height: 140,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(AppConstants.borderRadius),
+              topRight: Radius.circular(AppConstants.borderRadius),
+            ),
+            image: exhibition.imageUrl.isNotEmpty
+                ? DecorationImage(
+                    image: AssetImage(exhibition.imageUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
-          child: Stack(
-            children: [
-              // الصورة الفعلية
-              Container(
-                height: 150,
-                width: double.infinity,
-                child: exhibition.imageUrl.isNotEmpty
-                    ? Image.asset(
-                        exhibition.imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          // في حالة فشل تحميل الصورة، عرض الأيقونة
-                          return Container(
-                            color: Theme.of(context).primaryColor,
-                            child: Center(
-                              child: Icon(
-                                exhibition.type.icon,
-                                size: 60,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.8),
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    : Container(
-                        color: Theme.of(context).primaryColor,
-                        child: Center(
-                          child: Icon(
-                            exhibition.type.icon,
-                            size: 60,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surface.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ),
-              ),
-              // Gradient overlay للجمالية
-              Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.3),
-                    ],
+          child: exhibition.imageUrl.isEmpty
+              ? Center(
+                  child: Icon(
+                    exhibition.type.icon,
+                    size: 60,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surface.withValues(alpha: 0.8),
+                  ),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(AppConstants.borderRadius),
+                      topRight: Radius.circular(AppConstants.borderRadius),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.3),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
         ),
 
         // الشارات

@@ -7,6 +7,8 @@ import '../../../themes/store/app_theme.dart';
 import '../../../utils/store/app_constants.dart';
 
 class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/cart_item_model.dart';
 
 class CartController with ChangeNotifier {
-  List<CartItem> _items = [];
+  final List<CartItem> _items = [];
 
   List<CartItem> get items => _items;
   int get itemCount => _items.length;

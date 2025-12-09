@@ -18,7 +18,7 @@ import '../store/home_page.dart';
 import '../wishlist/wishlist_view.dart';
 
 class Home_Page extends StatefulWidget {
-  const Home_Page({Key? key}) : super(key: key);
+  const Home_Page({super.key});
 
   @override
   _Home_PageState createState() => _Home_PageState();
@@ -110,7 +110,7 @@ class _Home_PageState extends State<Home_Page> {
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({Key? key}) : super(key: key);
+  const _HomeContent({super.key});
 
   @override
   Widget build(BuildContext context) {

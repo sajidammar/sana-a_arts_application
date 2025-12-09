@@ -19,7 +19,7 @@ class SideDrawer extends StatelessWidget {
   final VoidCallback onLogoutPressed;
 
   const SideDrawer({
-    Key? key,
+    super.key,
     required this.onProfilePressed,
     required this.onAboutPressed,
     required this.onContactPressed,
@@ -29,7 +29,7 @@ class SideDrawer extends StatelessWidget {
     required this.onSettingsPressed,
     required this.onHelpPressed,
     required this.onLogoutPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomeController with ChangeNotifier {
-  List<Map<String, dynamic>> _featuredExhibitions = [
+  final List<Map<String, dynamic>> _featuredExhibitions = [
     {
       'title': 'معرض التراث اليمني',
       'description': 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',

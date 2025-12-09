@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {

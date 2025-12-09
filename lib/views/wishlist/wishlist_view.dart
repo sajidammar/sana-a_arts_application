@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 
 class WishlistPage extends StatelessWidget {
-  const WishlistPage({Key? key}) : super(key: key);
+  const WishlistPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class WishlistPage extends StatelessWidget {
                   onPressed: () {},
                 ),
                 const SizedBox(height: 8),
-                Container(
+                SizedBox(
                   width: 120,
                   height: 36,
                   child: ElevatedButton(

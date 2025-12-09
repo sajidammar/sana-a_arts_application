@@ -17,7 +17,7 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  int _selectedImageIndex = 0;
+  final int _selectedImageIndex = 0;
   bool _isFavorite = false;
 
   @override
@@ -72,7 +72,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   Widget _buildProductImages(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 300,
       child: Stack(
         children: [
