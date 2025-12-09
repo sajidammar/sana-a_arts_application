@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:sanaa_artl/models/exhibition/artwork.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 
-
 class ExhibitionProvider with ChangeNotifier {
   List<Exhibition> _exhibitions = [];
   List<Artwork> _artworks = [];
@@ -26,7 +25,8 @@ class ExhibitionProvider with ChangeNotifier {
       curator: 'أحمد المقطري',
       type: ExhibitionType.virtual,
       status: 'مفتوح الآن',
-      description: 'معرض افتراضي يعرض 50 لوحة تجسد جمال التراث المعماري في صنعاء القديمة',
+      description:
+          'معرض افتراضي يعرض 50 لوحة تجسد جمال التراث المعماري في صنعاء القديمة',
       date: '15 يناير - 28 فبراير 2025',
       location: 'معرض افتراضي',
       artworksCount: 50,
@@ -36,7 +36,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2025, 2, 28),
       tags: ['تراث', 'عمارة', 'صنعاء'],
       rating: 4.5,
-      ratingCount: 127,isActive: true, imageUrl: '',
+      ratingCount: 127,
+      isActive: true,
+      imageUrl: 'assets/images/image1.jpg',
     ),
     Exhibition(
       id: '2',
@@ -44,7 +46,8 @@ class ExhibitionProvider with ChangeNotifier {
       curator: 'فاطمة الحمادي',
       type: ExhibitionType.reality,
       status: 'قريباً',
-      description: 'معرض واقعي في قاعة الفنون بصنعاء يضم أعمال 20 فناناً يمنياً معاصراً',
+      description:
+          'معرض واقعي في قاعة الفنون بصنعاء يضم أعمال 20 فناناً يمنياً معاصراً',
       date: '5 مارس - 20 مارس 2025',
       location: 'قاعة الفنون، صنعاء',
       artworksCount: 75,
@@ -53,7 +56,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2025, 3, 20),
       tags: ['معاصر', 'فنون', 'صنعاء'],
       rating: 0.0,
-      ratingCount: 0, imageUrl: '', isActive: true,
+      ratingCount: 0,
+      imageUrl: 'assets/images/image2.jpg',
+      isActive: true,
     ),
     Exhibition(
       id: '3',
@@ -61,7 +66,8 @@ class ExhibitionProvider with ChangeNotifier {
       curator: 'محمد الشامي',
       type: ExhibitionType.open,
       status: 'مفتوح للمشاركة',
-      description: 'معرض مفتوح للفنانين الشباب تحت سن 30 لعرض أعمالهم الإبداعية',
+      description:
+          'معرض مفتوح للفنانين الشباب تحت سن 30 لعرض أعمالهم الإبداعية',
       date: 'مستمر',
       location: 'منصة رقمية',
       artworksCount: 120,
@@ -70,7 +76,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2025, 12, 31),
       tags: ['شباب', 'إبداع', 'مفتوح'],
       rating: 4.2,
-      ratingCount: 89,isActive: true, imageUrl: '',
+      ratingCount: 89,
+      isActive: true,
+      imageUrl: 'assets/images/image3.jpg',
     ),
     Exhibition(
       id: '4',
@@ -88,7 +96,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2025, 3, 15),
       tags: ['طبيعة', 'حضرموت', 'مناظر'],
       rating: 4.7,
-      ratingCount: 45,isActive: true, imageUrl: '',
+      ratingCount: 45,
+      isActive: true,
+      imageUrl: 'assets/images/image4.jpg',
     ),
     Exhibition(
       id: '5',
@@ -105,7 +115,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2024, 12, 25),
       tags: ['خط عربي', 'تراث', 'حديث'],
       rating: 4.8,
-      ratingCount: 156,isActive: true, imageUrl: '',
+      ratingCount: 156,
+      isActive: true,
+      imageUrl: 'assets/images/image5.jpg',
     ),
     Exhibition(
       id: '6',
@@ -113,7 +125,8 @@ class ExhibitionProvider with ChangeNotifier {
       curator: 'نادية القاضي',
       type: ExhibitionType.open,
       status: 'مفتوح للمشاركة',
-      description: 'معرض مفتوح لرسم البورتريه والوجوه اليمنية التراثية والمعاصرة',
+      description:
+          'معرض مفتوح لرسم البورتريه والوجوه اليمنية التراثية والمعاصرة',
       date: 'مستمر',
       location: 'منصة رقمية',
       artworksCount: 95,
@@ -122,7 +135,9 @@ class ExhibitionProvider with ChangeNotifier {
       endDate: DateTime(2025, 12, 31),
       tags: ['بورتريه', 'وجوه', 'تراث'],
       rating: 4.4,
-      ratingCount: 78,isActive: true, imageUrl: '',
+      ratingCount: 78,
+      isActive: true,
+      imageUrl: 'assets/images/image6.jpg',
     ),
   ];
 
@@ -136,7 +151,8 @@ class ExhibitionProvider with ChangeNotifier {
       year: 2024,
       technique: 'ألوان زيتية',
       dimensions: '120×80 سم',
-      description: 'لوحة فنية تجسد جمال البوابات التراثية في صنعاء القديمة، مع التركيز على التفاصيل المعمارية الفريدة والألوان التقليدية التي تعكس روح الحضارة اليمنية العريقة.',
+      description:
+          'لوحة فنية تجسد جمال البوابات التراثية في صنعاء القديمة، مع التركيز على التفاصيل المعمارية الفريدة والألوان التقليدية التي تعكس روح الحضارة اليمنية العريقة.',
       rating: 4.5,
       ratingCount: 127,
       price: 1200,
@@ -157,7 +173,8 @@ class ExhibitionProvider with ChangeNotifier {
       year: 2023,
       technique: 'ألوان مائية',
       dimensions: '100×70 سم',
-      description: 'عمل فني يصور جمال العمارة اليمنية التقليدية في البيوت الطينية متعددة الطوابق التي تميز صنعاء القديمة.',
+      description:
+          'عمل فني يصور جمال العمارة اليمنية التقليدية في البيوت الطينية متعددة الطوابق التي تميز صنعاء القديمة.',
       rating: 4.7,
       ratingCount: 89,
       price: 800,
@@ -177,7 +194,8 @@ class ExhibitionProvider with ChangeNotifier {
       year: 2024,
       technique: 'أكريليك',
       dimensions: '90×120 سم',
-      description: 'لوحة تعكس الحياة التجارية التراثية في الأسواق الشعبية القديمة، مع إبراز الألوان والحركة الدائمة في هذه الأماكن العريقة.',
+      description:
+          'لوحة تعكس الحياة التجارية التراثية في الأسواق الشعبية القديمة، مع إبراز الألوان والحركة الدائمة في هذه الأماكن العريقة.',
       rating: 4.3,
       ratingCount: 156,
       price: 950,
@@ -197,7 +215,8 @@ class ExhibitionProvider with ChangeNotifier {
       year: 2024,
       technique: 'ألوان زيتية',
       dimensions: '140×100 سم',
-      description: 'منظر خلاب لغروب الشمس فوق مدينة صنعاء القديمة، حيث تتداخل الألوان الذهبية مع العمارة التراثية في لوحة فنية ساحرة.',
+      description:
+          'منظر خلاب لغروب الشمس فوق مدينة صنعاء القديمة، حيث تتداخل الألوان الذهبية مع العمارة التراثية في لوحة فنية ساحرة.',
       rating: 4.9,
       ratingCount: 203,
       price: 1500,
@@ -218,7 +237,8 @@ class ExhibitionProvider with ChangeNotifier {
       year: 2023,
       technique: 'فحم وباستيل',
       dimensions: '80×60 سم',
-      description: 'بورتريه فني يجسد جمال وقوة المرأة اليمنية، مع التركيز على التفاصيل الدقيقة في الملامح والزي التقليدي.',
+      description:
+          'بورتريه فني يجسد جمال وقوة المرأة اليمنية، مع التركيز على التفاصيل الدقيقة في الملامح والزي التقليدي.',
       rating: 4.6,
       ratingCount: 142,
       price: 700,
@@ -240,7 +260,7 @@ class ExhibitionProvider with ChangeNotifier {
     try {
       // محاكاة جلب البيانات من API
       await Future.delayed(const Duration(seconds: 2));
-      
+
       _exhibitions = _demoExhibitions;
       _error = '';
     } catch (e) {
@@ -259,7 +279,7 @@ class ExhibitionProvider with ChangeNotifier {
     try {
       // محاكاة جلب البيانات من API
       await Future.delayed(const Duration(seconds: 1));
-      
+
       _artworks = _demoArtworks;
       _error = '';
     } catch (e) {
@@ -295,12 +315,20 @@ class ExhibitionProvider with ChangeNotifier {
 
     // التصفية حسب البحث
     if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((ex) =>
-        ex.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        ex.curator.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        ex.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        ex.tags.any((tag) => tag.toLowerCase().contains(_searchQuery.toLowerCase()))
-      ).toList();
+      filtered = filtered
+          .where(
+            (ex) =>
+                ex.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                ex.curator.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                ex.description.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ||
+                ex.tags.any(
+                  (tag) =>
+                      tag.toLowerCase().contains(_searchQuery.toLowerCase()),
+                ),
+          )
+          .toList();
     }
 
     return filtered;
@@ -386,12 +414,17 @@ class ExhibitionProvider with ChangeNotifier {
     if (exhibition != null) {
       // محاكاة تحديث التقييم
       final newRatingCount = exhibition.ratingCount + 1;
-      final newRating = ((exhibition.rating * exhibition.ratingCount) + rating) / newRatingCount;
-      
-      updateExhibition(id, exhibition.copyWith(
-        rating: double.parse(newRating.toStringAsFixed(1)),
-        ratingCount: newRatingCount,
-      ));
+      final newRating =
+          ((exhibition.rating * exhibition.ratingCount) + rating) /
+          newRatingCount;
+
+      updateExhibition(
+        id,
+        exhibition.copyWith(
+          rating: double.parse(newRating.toStringAsFixed(1)),
+          ratingCount: newRatingCount,
+        ),
+      );
     }
   }
 
@@ -400,12 +433,16 @@ class ExhibitionProvider with ChangeNotifier {
     if (artwork != null) {
       // محاكاة تحديث التقييم
       final newRatingCount = artwork.ratingCount + 1;
-      final newRating = ((artwork.rating * artwork.ratingCount) + rating) / newRatingCount;
-      
-      updateArtwork(id, artwork.copyWith(
-        rating: double.parse(newRating.toStringAsFixed(1)),
-        ratingCount: newRatingCount,
-      ));
+      final newRating =
+          ((artwork.rating * artwork.ratingCount) + rating) / newRatingCount;
+
+      updateArtwork(
+        id,
+        artwork.copyWith(
+          rating: double.parse(newRating.toStringAsFixed(1)),
+          ratingCount: newRatingCount,
+        ),
+      );
     }
   }
 }
@@ -448,7 +485,8 @@ extension ExhibitionCopyWith on Exhibition {
       endDate: endDate ?? this.endDate,
       tags: tags ?? this.tags,
       rating: rating ?? this.rating,
-      ratingCount: ratingCount ?? this.ratingCount,isActive: true, 
+      ratingCount: ratingCount ?? this.ratingCount,
+      isActive: true,
     );
   }
 }

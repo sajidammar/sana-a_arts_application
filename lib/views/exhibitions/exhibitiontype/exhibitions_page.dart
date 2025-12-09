@@ -124,7 +124,7 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
         crossAxisCount: _getCrossAxisCount(),
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 0.7,
+        childAspectRatio: 0.68,
       ),
       itemCount: provider.filteredExhibitions.length,
       itemBuilder: (context, index) {
