@@ -83,7 +83,7 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
     return SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.all(32),
-        color: const Color(0xFFF5E6D3),
+        color: Theme.of(context).cardTheme.color,
         child: Consumer<WorkshopProvider>(
           builder: (context, workshopProvider, child) {
             return Column(
@@ -127,11 +127,11 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
                 onSelected: (selected) {
                   workshopProvider.setFilter(filter.value);
                 },
-                selectedColor: const Color(0xFFB8860B),
+                selectedColor: Theme.of(context).primaryColor,
                 labelStyle: TextStyle(
                   color: workshopProvider.currentFilter == filter.value
                       ? Colors.white
-                      : const Color(0xFF2C1810),
+                      : Theme.of(context).primaryColor,
                 ),
               ),
             ),

@@ -19,16 +19,15 @@ class WorkshopCard extends StatelessWidget {
       // ✅ تصميم للعرض الأفقي
       return GestureDetector(
         onTap: () {
-          // ✅ إضافة functionality هنا عند الضغط على الورشة
           _showWorkshopDetails(context, workshop);
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -41,41 +40,55 @@ class WorkshopCard extends StatelessWidget {
               Container(
                 height: 160,
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                ),
+                child: ClipRRect(
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(15),
                   ),
-                  image: DecorationImage(
-                    image: NetworkImage(workshop.imageUrl!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    // مستوى الصعوبة
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.getLevelColor(workshop.level),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          workshop.level,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        workshop.image,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
+                      ),
+                      // مستوى الصعوبة
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.getLevelColor(workshop.level),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            workshop.level,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
 
@@ -90,10 +103,10 @@ class WorkshopCard extends StatelessWidget {
                       // العنوان
                       Text(
                         workshop.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2C1810),
+                          color: Theme.of(context).textTheme.titleLarge?.color,
                           height: 1.3,
                         ),
                         maxLines: 2,
@@ -103,9 +116,9 @@ class WorkshopCard extends StatelessWidget {
                       // الوصف
                       Text(
                         workshop.description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF5D4E37),
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
                           height: 1.4,
                         ),
                         maxLines: 2,
@@ -121,25 +134,27 @@ class WorkshopCard extends StatelessWidget {
                             children: [
                               Text(
                                 '${workshop.price} ر.س',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFB8860B),
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
                               Row(
                                 children: [
                                   const Icon(
                                     Icons.star,
-                                    color: Color(0xFFFFD700),
+                                    color: Colors.amber,
                                     size: 16,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     workshop.rating.toString(),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: Color(0xFF5D4E37),
+                                      color: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium?.color,
                                     ),
                                   ),
                                 ],
@@ -153,9 +168,7 @@ class WorkshopCard extends StatelessWidget {
                             width: double.infinity,
                             height: 36,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
-                              ),
+                              color: Theme.of(context).primaryColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Center(
@@ -183,11 +196,11 @@ class WorkshopCard extends StatelessWidget {
       // ✅ تصميم للعرض العمودي (إذا كنت تحتاجه في أماكن أخرى)
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.08),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -200,17 +213,28 @@ class WorkshopCard extends StatelessWidget {
             Container(
               height: 120,
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              ),
+              child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(15),
                 ),
-                image: DecorationImage(
-                  image: NetworkImage(workshop.imageUrl!),
+                child: Image.asset(
+                  workshop.image,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: const Icon(
+                        Icons.image_not_supported,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
-
             // المحتوى
             Padding(
               padding: const EdgeInsets.all(12),
@@ -219,10 +243,10 @@ class WorkshopCard extends StatelessWidget {
                 children: [
                   Text(
                     workshop.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C1810),
+                      color: Theme.of(context).textTheme.titleLarge?.color,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -233,25 +257,23 @@ class WorkshopCard extends StatelessWidget {
                     children: [
                       Text(
                         '${workshop.price} ر.س',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFB8860B),
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       Row(
                         children: [
-                          const Icon(
-                            Icons.star,
-                            color: Color(0xFFFFD700),
-                            size: 14,
-                          ),
+                          const Icon(Icons.star, color: Colors.amber, size: 14),
                           const SizedBox(width: 4),
                           Text(
                             workshop.rating.toString(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF5D4E37),
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.color,
                             ),
                           ),
                         ],

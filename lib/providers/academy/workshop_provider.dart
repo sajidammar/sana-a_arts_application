@@ -54,6 +54,7 @@ class WorkshopProvider with ChangeNotifier {
         tags: ["رسم", "أساسيات", "فن تشكيلي"],
         requirements: ["لا يتطلب خبرة سابقة"],
         learningOutcomes: ["إتقان أساسيات الرسم والخطوط"],
+        image: 'assets/images/image4.jpg',
       ),
     ];
 
@@ -72,7 +73,9 @@ class WorkshopProvider with ChangeNotifier {
         status: "available",
         bio: "فنان تشكيلي محترف بخبرة تزيد عن 15 عاماً",
         education: ["دبلوم الفنون الجميلة - جامعة صنعاء"],
-        achievements: ["مشارك في 20+ معرض محلي وإقليمي"], imageUrl: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&w=400',
+        achievements: ["مشارك في 20+ معرض محلي وإقليمي"],
+        imageUrl:
+            'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&w=400',
       ),
     ];
 

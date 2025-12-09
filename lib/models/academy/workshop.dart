@@ -26,6 +26,8 @@ class Workshop {
   final List<String> requirements;
   final List<String> learningOutcomes;
 
+  final String image;
+
   const Workshop({
     required this.id,
     required this.title,
@@ -52,6 +54,7 @@ class Workshop {
     required this.tags,
     required this.requirements,
     required this.learningOutcomes,
+    required this.image,
   });
 
   double get progress => enrolled / seats;
@@ -87,11 +90,9 @@ class Workshop {
       tags: List<String>.from(json['tags']),
       requirements: List<String>.from(json['requirements']),
       learningOutcomes: List<String>.from(json['learningOutcomes']),
+      image: json['image'] ?? 'assets/images/image1.jpg',
     );
   }
-
-  String? get imageUrl =>
-      "https://images.unsplash.com/photo-1586773860418-d37222d8fce3?ixlib=rb-4.0.3&w=500";
 
   void updateEnrollment(int i) {}
 }

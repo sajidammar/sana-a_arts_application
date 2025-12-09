@@ -19,17 +19,23 @@ class WorkshopController with ChangeNotifier {
 
     // Apply category filter
     if (_currentFilter != 'all') {
-      filtered = filtered.where((workshop) => workshop.category == _currentFilter).toList();
+      filtered = filtered
+          .where((workshop) => workshop.category == _currentFilter)
+          .toList();
     }
 
     // Apply search query
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
-      filtered = filtered.where((workshop) =>
-          workshop.title.toLowerCase().contains(query) ||
-          workshop.description.toLowerCase().contains(query) ||
-          workshop.instructor.toLowerCase().contains(query) ||
-          workshop.tags.any((tag) => tag.toLowerCase().contains(query))).toList();
+      filtered = filtered
+          .where(
+            (workshop) =>
+                workshop.title.toLowerCase().contains(query) ||
+                workshop.description.toLowerCase().contains(query) ||
+                workshop.instructor.toLowerCase().contains(query) ||
+                workshop.tags.any((tag) => tag.toLowerCase().contains(query)),
+          )
+          .toList();
     }
 
     return filtered;
@@ -91,14 +97,15 @@ class WorkshopController with ChangeNotifier {
         requirements: [
           "لا يتطلب خبرة سابقة",
           "الرغبة في التعلم والممارسة",
-          "الالتزام بحضور الجلسات"
+          "الالتزام بحضور الجلسات",
         ],
         learningOutcomes: [
           "إتقان أساسيات الرسم والخطوط",
           "فهم قواعد الضوء والظل",
           "رسم الأشكال الهندسية البسيطة",
-          "رسم الطبيعة الصامتة"
+          "رسم الطبيعة الصامتة",
         ],
+        image: 'assets/images/image4.jpg',
       ),
       // Add other workshops similarly...
     ];
@@ -117,16 +124,18 @@ class WorkshopController with ChangeNotifier {
         students: 250,
         workshops: 15,
         status: "available",
-        bio: "فنان تشكيلي محترف بخبرة تزيد عن 15 عاماً في مجال الفنون التشكيلية. متخصص في تدريس أساسيات الرسم والألوان المائية والزيتية.",
+        bio:
+            "فنان تشكيلي محترف بخبرة تزيد عن 15 عاماً في مجال الفنون التشكيلية. متخصص في تدريس أساسيات الرسم والألوان المائية والزيتية.",
         education: [
           "دبلوم الفنون الجميلة - جامعة صنعاء",
-          "دورات تخصصية في الرسم الأكاديمي"
+          "دورات تخصصية في الرسم الأكاديمي",
         ],
         achievements: [
           "مشارك في 20+ معرض محلي وإقليمي",
           "حائز على جائزة أفضل مدرب فنون 2023",
-          "مدرب معتمد من اتحاد الفنانين العرب"
-        ], imageUrl: '',
+          "مدرب معتمد من اتحاد الفنانين العرب",
+        ],
+        imageUrl: '',
       ),
       // Add other instructors similarly...
     ];

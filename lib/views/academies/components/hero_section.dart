@@ -10,7 +10,7 @@ class HeroSection extends StatelessWidget {
       height: 250,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF667eea), Color(0xFF764ba2)],
+          colors: [Color(0xFF8B4513), Color(0xFFD2691E)], // Brown shades
         ),
       ),
       child: const Center(
@@ -28,10 +28,7 @@ class HeroSection extends StatelessWidget {
             SizedBox(height: 10),
             Text(
               'تعلم الفن من أمهر الأساتذة',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.white),
             ),
           ],
         ),
