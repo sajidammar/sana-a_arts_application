@@ -20,8 +20,8 @@ class ExhibitionCard extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Container(
-      width: 250,
-      height: 500,
+      width: 300,
+      height: 400,
       decoration: BoxDecoration(
         color: themeProvider.isDarkMode
             ? const Color(0xFF1E1E1E)
@@ -39,7 +39,8 @@ class ExhibitionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 150,
+            height: 250,
+            width: double.infinity,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 begin: Alignment.topRight,
@@ -54,13 +55,19 @@ class ExhibitionCard extends StatelessWidget {
                 topRight: Radius.circular(15),
               ),
             ),
-            child: Center(
-              child: Icon(
-                Icons.photo_library,
-                size: 60,
-                color: Colors.white,
-              ),
-            ),
+            child:
+              Image.asset(
+
+                imageUrl,
+                fit: BoxFit.cover,
+              )
+            // Center(
+            //   child: Icon(
+            //     Icons.photo_library,
+            //     size: 60,
+            //     color: Colors.white,
+            //   ),
+            // ),
           ),
           Padding(
             padding: const EdgeInsets.all(12),
@@ -76,7 +83,7 @@ class ExhibitionCard extends StatelessWidget {
                         ? Colors.white
                         : const Color(0xFF2C1810),
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(
@@ -90,7 +97,7 @@ class ExhibitionCard extends StatelessWidget {
                           : Colors.grey[600],
                       height: 1.4,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

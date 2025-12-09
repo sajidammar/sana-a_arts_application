@@ -29,7 +29,7 @@ class FeaturedExhibitions extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Container(
-          height: 350,
+          height: 450,
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -37,7 +37,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'معرض التراث اليمني',
                 description: 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',
-                imageUrl: '',
+                imageUrl: "assets/images/image1.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -51,7 +51,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: '',
+                  imageUrl: "assets/images/image1.jpg",
                   isActive: true,
                 ),
                 animationDelay: Duration(),
@@ -61,7 +61,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'فنون معاصرة',
                 description: 'أعمال فنية معاصرة تجمع بين الأصالة والحداثة',
-                imageUrl: '',
+                imageUrl: "assets/images/image2.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -85,7 +85,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'مناظر طبيعية',
                 description: 'استكشف جمال الطبيعة اليمنية عبر ريشة الفنانين',
-                imageUrl: '',
+                imageUrl: "assets/images/image3.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -109,7 +109,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'بورتريهات',
                 description: 'صور شخصية تعبر عن هوية المجتمع اليمني',
-                imageUrl: '',
+                imageUrl: "assets/images/image4.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -123,7 +123,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: '',
+                  imageUrl: "assets/images/image5.jpg",
                   isActive: true,
                 ),
                 animationDelay: Duration(),
@@ -148,7 +148,7 @@ class FeaturedExhibitions extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Container(
-          height: 350,
+          height: 450,
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -156,7 +156,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'معرض التراث اليمني',
                 description: 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',
-                imageUrl: '',
+                imageUrl: "assets/images/image5.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -180,7 +180,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'فنون معاصرة',
                 description: 'أعمال فنية معاصرة تجمع بين الأصالة والحداثة',
-                imageUrl: '',
+                imageUrl: "assets/images/image6.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -204,7 +204,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'مناظر طبيعية',
                 description: 'استكشف جمال الطبيعة اليمنية عبر ريشة الفنانين',
-                imageUrl: '',
+                imageUrl: "assets/images/image1.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -228,7 +228,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'بورتريهات',
                 description: 'صور شخصية تعبر عن هوية المجتمع اليمني',
-                imageUrl: '',
+                imageUrl: "assets/images/image5.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -242,7 +242,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: '',
+                  imageUrl: "assets/images/image5.jpg",
                   isActive: true,
                 ),
                 animationDelay: Duration(),

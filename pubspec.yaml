@@ -33,34 +33,34 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  cupertino_icons: any
   provider: any
-  font_awesome_flutter: ^10.9.1
-  google_fonts: ^6.3.2
-  shimmer: ^3.0.0
-  cached_network_image: ^3.4.1
-  url_launcher: ^6.3.2
-  share_plus: ^7.0.1
-  connectivity_plus: ^7.0.0
-  flutter_animate: ^4.5.2
-  carousel_slider: ^5.1.1
-  flutter_staggered_animations: ^1.1.1
-  liquid_progress_indicator: ^0.4.0
-  curved_navigation_bar: ^1.0.6
-  badges: ^3.1.2
-  flutter_rating_bar: ^4.0.1
-  expandable: ^5.0.1
-  pull_to_refresh: ^2.0.0
-  flutter_svg: ^2.2.1
-  vector_math: ^2.1.4
-  path_drawing: ^1.0.1
-  intl: ^0.20.2
-  test_api: ^0.7.6
-  meta: ^1.16.0
-  material_color_utilities: ^0.11.1
-  l: ^5.0.1
-  lints: ^5.1.1
-  characters: ^1.4.0
+  #  font_awesome_flutter: ^10.9.1
+  #  google_fonts: ^6.3.2
+  #  shimmer: ^3.0.0
+  #  cached_network_image: ^3.4.1
+  #  url_launcher: ^6.3.2
+  #  share_plus: ^7.0.1
+  #  connectivity_plus: ^7.0.0
+  #  flutter_animate: ^4.5.2
+  #  carousel_slider: ^5.1.1
+  #  flutter_staggered_animations: ^1.1.1
+  #  liquid_progress_indicator: ^0.4.0
+  #  curved_navigation_bar: ^1.0.6
+  #  badges: ^3.1.2
+  #  flutter_rating_bar: ^4.0.1
+  #  expandable: ^5.0.1
+  #  pull_to_refresh: ^2.0.0
+  #  flutter_svg: ^2.2.1
+  #  vector_math: ^2.1.4
+  #  path_drawing: ^1.0.1
+  intl: any
+  #  test_api: ^0.7.4
+  #  meta: ^1.16.0
+  #  material_color_utilities: ^0.11.1
+  #  l: ^5.0.1
+  #  lints: ^5.1.1
+  #  characters: ^1.4.0
 
 
 

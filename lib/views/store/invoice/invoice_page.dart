@@ -93,7 +93,7 @@ class InvoicePage extends StatelessWidget {
           colors: [
             Theme.of(context).primaryColor.withValues(alpha:0.9),
             Theme.of(context).primaryColor,
-            Theme.of(context).primaryColorDark ?? Theme.of(context).primaryColor,
+            Theme.of(context).primaryColorDark,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

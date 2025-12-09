@@ -116,6 +116,7 @@ class _HomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+
         children: [
           const AdsBanner(),
           const FeaturedExhibitions(),
