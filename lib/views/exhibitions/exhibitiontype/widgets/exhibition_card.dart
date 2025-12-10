@@ -86,9 +86,7 @@ class ExhibitionCard extends StatelessWidget {
                   child: Icon(
                     exhibition.type.icon,
                     size: 60,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surface.withValues(alpha: 0.8),
+                    color: Colors.white.withOpacity(0.8),
                   ),
                 )
               : Container(
@@ -127,7 +125,7 @@ class ExhibitionCard extends StatelessWidget {
       child: Text(
         exhibition.type.badgeText,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.surface,
+          color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.bold,
           fontFamily: 'Tajawal',
@@ -152,7 +150,7 @@ class ExhibitionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+        color: Theme.of(context).primaryColor.withOpacity(0.9),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -170,7 +168,7 @@ class ExhibitionCard extends StatelessWidget {
           Text(
             exhibition.status,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
+              color: Colors.white,
               fontSize: 10,
               fontFamily: 'Tajawal',
             ),
@@ -189,9 +187,13 @@ class ExhibitionCard extends StatelessWidget {
           // العنوان
           Text(
             exhibition.title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
+              fontFamily: 'Tajawal',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Theme.of(context).textTheme.titleLarge?.color,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -212,7 +214,9 @@ class ExhibitionCard extends StatelessWidget {
                 child: Text(
                   'المنسق: ${exhibition.curator}',
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.9)
+                        : Theme.of(context).primaryColor,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Tajawal',
@@ -229,9 +233,13 @@ class ExhibitionCard extends StatelessWidget {
           // الوصف
           Text(
             exhibition.description,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontSize: 11),
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'Tajawal',
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withOpacity(0.8)
+                  : Theme.of(context).textTheme.bodyMedium?.color,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -297,7 +305,9 @@ class ExhibitionCard extends StatelessWidget {
           child: Text(
             text,
             style: TextStyle(
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withOpacity(0.85)
+                  : Theme.of(context).primaryColorDark,
               fontSize: 10,
               fontFamily: 'Tajawal',
             ),
@@ -360,9 +370,9 @@ class ExhibitionCard extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: isPrimary
             ? Theme.of(context!).primaryColor
-            : Theme.of(context!).colorScheme.surface,
+            : Colors.transparent,
         foregroundColor: isPrimary
-            ? Theme.of(context).colorScheme.surface
+            ? Colors.white
             : Theme.of(context).primaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         shape: RoundedRectangleBorder(
