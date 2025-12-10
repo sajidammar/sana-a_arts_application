@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import 'edit_profile_page.dart';
+import 'change_password_page.dart';
+import '../settings/notifications_page.dart';
+import '../settings/privacy_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -39,19 +43,16 @@ class ProfilePage extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color(0xFFFFD700),
-                    Color(0xFFB8860B),
-                  ],
+                border: Border.all(
+                  color: themeProvider.isDarkMode
+                      ? const Color(0xFFD4AF37)
+                      : const Color(0xFFB8860B),
+                  width: 3,
                 ),
-              ),
-              child: const Icon(
-                Icons.person,
-                size: 60,
-                color: Colors.white,
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/image1.jpg'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -96,7 +97,7 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(height: 24),
             _buildInfoCard(themeProvider.isDarkMode),
             const SizedBox(height: 16),
-            _buildSettingsCard(themeProvider.isDarkMode),
+            _buildSettingsCard(themeProvider.isDarkMode, context),
           ],
         ),
       ),
@@ -111,7 +112,9 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+            color: isDarkMode
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
           ),
         ),
         Text(
@@ -175,7 +178,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsCard(bool isDarkMode) {
+  Widget _buildSettingsCard(bool isDarkMode, BuildContext context) {
     return Card(
       elevation: 2,
       color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
@@ -193,21 +196,41 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            _buildSettingItem('تعديل الملف الشخصي', Icons.edit, isDarkMode),
-            _buildSettingItem('تغيير كلمة المرور', Icons.lock, isDarkMode),
-            _buildSettingItem('الإشعارات', Icons.notifications, isDarkMode),
-            _buildSettingItem('الخصوصية', Icons.security, isDarkMode),
+            _buildSettingItem(
+              'تعديل الملف الشخصي',
+              Icons.edit,
+              isDarkMode,
+              context,
+            ),
+            _buildSettingItem(
+              'تغيير كلمة المرور',
+              Icons.lock,
+              isDarkMode,
+              context,
+            ),
+            _buildSettingItem(
+              'الإشعارات',
+              Icons.notifications,
+              isDarkMode,
+              context,
+            ),
+            _buildSettingItem('الخصوصية', Icons.security, isDarkMode, context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSettingItem(String title, IconData icon, bool isDarkMode) {
+  Widget _buildSettingItem(
+    String title,
+    IconData icon,
+    bool isDarkMode,
+    BuildContext context,
+  ) {
     return ListTile(
       leading: Icon(
-          icon,
-          color: isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B)
+        icon,
+        color: isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
       ),
       title: Text(
         title,
@@ -220,7 +243,29 @@ class ProfilePage extends StatelessWidget {
         color: isDarkMode ? const Color(0xFFD4AF37) : Colors.grey,
         size: 16,
       ),
-      onTap: () {},
+      onTap: () {
+        if (title == 'تعديل الملف الشخصي') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EditProfilePage()),
+          );
+        } else if (title == 'تغيير كلمة المرور') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
+          );
+        } else if (title == 'الإشعارات') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NotificationsPage()),
+          );
+        } else if (title == 'الخصوصية') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PrivacyPage()),
+          );
+        }
+      },
     );
   }
 }

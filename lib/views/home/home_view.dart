@@ -14,8 +14,11 @@ import '../community/community_view.dart';
 
 import '../profile/profile_view.dart';
 import '../store/home_page.dart';
-
 import '../wishlist/wishlist_view.dart';
+import '../help/help_page.dart';
+import '../settings/privacy_page.dart';
+import '../store/order/order_history_page.dart';
+import '../notifications/notifications_view.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -81,7 +84,12 @@ class _Home_PageState extends State<Home_Page> {
         onMenuPressed: _openDrawer,
         onSearchPressed: () {},
         onWishlistPressed: _navigateToWishlist,
-        onNotificationsPressed: () {},
+        onNotificationsPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NotificationsView()),
+          );
+        },
       ),
       drawer: SideDrawer(
         onProfilePressed: _navigateToProfile,
@@ -91,10 +99,66 @@ class _Home_PageState extends State<Home_Page> {
         onThemeChanged: () {
           themeProvider.toggleTheme();
         },
-        onShareApp: () {},
-        onSettingsPressed: () {},
-        onHelpPressed: () {},
-        onLogoutPressed: () {},
+        onShareApp: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('سيتم مشاركة التطبيق قريباً')),
+          );
+        },
+        onSettingsPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PrivacyPage()),
+          );
+        },
+        onHelpPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HelpPage()),
+          );
+        },
+        onLogoutPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text(
+                'تسجيل الخروج',
+                style: TextStyle(fontFamily: 'Tajawal'),
+              ),
+              content: const Text(
+                'هل أنت متأكد من رغبتك في تسجيل الخروج؟',
+                style: TextStyle(fontFamily: 'Tajawal'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'إلغاء',
+                    style: TextStyle(fontFamily: 'Tajawal'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم تسجيل الخروج')),
+                    );
+                  },
+                  child: const Text(
+                    'تسجيل الخروج',
+                    style: TextStyle(fontFamily: 'Tajawal', color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        onOrdersPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const OrderHistoryPage()),
+          );
+        },
+        onWishlistPressed: _navigateToWishlist,
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
@@ -116,7 +180,6 @@ class _HomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-
         children: [
           const AdsBanner(),
           const FeaturedExhibitions(),

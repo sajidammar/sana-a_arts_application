@@ -3,20 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:sanaa_artl/views/academies/category_details_view.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
+import 'package:provider/provider.dart';
+import '../../providers/theme_provider.dart';
+
 class CategoriesSection extends StatelessWidget {
   const CategoriesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Container(
       padding: const EdgeInsets.all(32),
-      color: Colors.white,
+      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SectionTitle(
+          SectionTitle(
             title: 'الفئات الفنية',
             description: 'استكشف مختلف المجالات الفنية واختر ما يناسب موهبتك',
+            isDark: isDark,
           ),
           const SizedBox(height: 32),
           SizedBox(
@@ -25,7 +32,10 @@ class CategoriesSection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: _categories.length,
               itemBuilder: (context, index) {
-                return CategoryCard(category: _categories[index]);
+                return CategoryCard(
+                  category: _categories[index],
+                  isDark: isDark,
+                );
               },
             ),
           ),
@@ -37,8 +47,9 @@ class CategoriesSection extends StatelessWidget {
 
 class CategoryCard extends StatelessWidget {
   final Category category;
+  final bool isDark;
 
-  const CategoryCard({super.key, required this.category});
+  const CategoryCard({super.key, required this.category, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -58,20 +69,27 @@ class CategoryCard extends StatelessWidget {
         width: 100,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          color: const Color(0xFFF5E6D3),
+          color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF5E6D3),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(category.icon, size: 40, color: const Color(0xFFB8860B)),
+            Icon(
+              category.icon,
+              size: 40,
+              color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+            ),
             const SizedBox(height: 8),
             Text(
               category.name,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2C1810),
+                color: isDark
+                    ? const Color(0xFFD4AF37)
+                    : const Color(0xFF2C1810),
+                fontFamily: 'Tajawal',
               ),
               textAlign: TextAlign.center,
             ),

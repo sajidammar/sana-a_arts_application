@@ -8,6 +8,7 @@ import 'package:sanaa_artl/views/academies/instructor_view.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 import 'components/hero_section.dart';
 import 'components/quick_nav.dart';
+import '../../providers/theme_provider.dart';
 
 class AcademyHomeView extends StatefulWidget {
   const AcademyHomeView({super.key});
@@ -82,27 +83,33 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
   // ✅ دالة جديدة للقائمة الأفقية لجميع الورش
   Widget _buildAllWorkshopsSection() {
     return SliverToBoxAdapter(
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        color: const Color(0xFFF5E6D3),
-        child: Consumer<WorkshopProvider>(
-          builder: (context, workshopProvider, child) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SectionTitle(
-                  title: 'جميع الورش التدريبية',
-                  description:
-                      'اكتشف مجموعة متنوعة من الورش المصممة لتطوير مهاراتك الفنية',
-                ),
-                const SizedBox(height: 32),
-                _buildFilterTabs(workshopProvider),
-                const SizedBox(height: 32),
-                const HorizontalWorkshopsGrid(), // ✅ استخدام المكون الجديد
-              ],
-            );
-          },
-        ),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          final isDark = themeProvider.isDarkMode;
+          return Container(
+            padding: const EdgeInsets.all(32),
+            color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF5E6D3),
+            child: Consumer<WorkshopProvider>(
+              builder: (context, workshopProvider, child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SectionTitle(
+                      title: 'جميع الورش التدريبية',
+                      description:
+                          'اكتشف مجموعة متنوعة من الورش المصممة لتطوير مهاراتك الفنية',
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 32),
+                    _buildFilterTabs(workshopProvider),
+                    const SizedBox(height: 32),
+                    const HorizontalWorkshopsGrid(), // ✅ استخدام المكون الجديد
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

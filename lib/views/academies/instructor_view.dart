@@ -4,30 +4,36 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
 import 'package:sanaa_artl/views/academies/components/instructor_card.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
+import '../../providers/theme_provider.dart';
 
 class HorizontalInstructorsSection extends StatelessWidget {
   const HorizontalInstructorsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Container(
       padding: const EdgeInsets.all(32),
-      color: Colors.white,
+      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       child: Consumer<WorkshopProvider>(
         builder: (context, workshopProvider, child) {
           if (workshopProvider.isLoading) {
-            return const SizedBox(
+            return SizedBox(
               height: 200,
               child: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8860B)),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+                  ),
                 ),
               ),
             );
           }
 
           if (workshopProvider.instructors.isEmpty) {
-            return const SizedBox(
+            return SizedBox(
               height: 200,
               child: Center(
                 child: Column(
@@ -48,10 +54,11 @@ class HorizontalInstructorsSection extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SectionTitle(
+              SectionTitle(
                 title: 'المدربون المتخصصون',
                 description:
                     'تعرف على فريق المدربين الخبراء في مختلف مجالات الفنون',
+                isDark: isDark,
               ),
               const SizedBox(height: 32),
 

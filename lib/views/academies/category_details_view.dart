@@ -30,8 +30,17 @@ class CategoryDetailsView extends StatelessWidget {
           final workshops = provider.workshops;
 
           if (workshops.isEmpty) {
-            return const Center(
-              child: Text('لا توجد ورش متاحة في هذه الفئة حالياً'),
+            return Center(
+              child: Text(
+                'لا توجد ورش متاحة في هذه الفئة حالياً',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[400]
+                      : Colors.grey,
+                  fontFamily: 'Tajawal',
+                ),
+              ),
             );
           }
 

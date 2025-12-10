@@ -3,20 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:sanaa_artl/views/academies/quick_access_pages.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
+import 'package:provider/provider.dart';
+import '../../../providers/theme_provider.dart';
+
 class QuickNavigationSection extends StatelessWidget {
   const QuickNavigationSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Container(
       padding: const EdgeInsets.all(32),
-      color: Colors.white,
+      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SectionTitle(
+          SectionTitle(
             title: 'الوصول السريع',
             description: 'تصفح الخدمات والوظائف الرئيسية بسرعة وسهولة',
+            isDark: isDark,
           ),
           const SizedBox(height: 32),
 
@@ -39,6 +46,7 @@ class QuickNavigationSection extends StatelessWidget {
                     title: navItem.title,
                     description: navItem.description,
                     icon: navItem.icon,
+                    isDark: isDark,
                   ),
                 );
               },
@@ -54,12 +62,14 @@ class QuickNavCard extends StatelessWidget {
   final String title;
   final String description;
   final IconData icon;
+  final bool isDark;
 
   const QuickNavCard({
     super.key,
     required this.title,
     required this.description,
     required this.icon,
+    required this.isDark,
   });
 
   @override
@@ -71,7 +81,7 @@ class QuickNavCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF5E6D3),
+          color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF5E6D3),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -88,9 +98,11 @@ class QuickNavCard extends StatelessWidget {
             Container(
               width: 50,
               height: 50,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
+                  colors: isDark
+                      ? [const Color(0xFFD4AF37), const Color(0xFFB8860B)]
+                      : [const Color(0xFFFFD700), const Color(0xFFB8860B)],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -103,11 +115,14 @@ class QuickNavCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFB8860B),
+                  color: isDark
+                      ? const Color(0xFFD4AF37)
+                      : const Color(0xFFB8860B),
                   height: 1.2,
+                  fontFamily: 'Tajawal',
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -121,10 +136,11 @@ class QuickNavCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
-                  color: Color(0xFF5D4E37),
+                  color: isDark ? Colors.grey[400] : const Color(0xFF5D4E37),
                   height: 1.2,
+                  fontFamily: 'Tajawal',
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

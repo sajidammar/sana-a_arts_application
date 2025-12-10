@@ -1,7 +1,9 @@
 // views/components/workshop_card.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/academy/workshop.dart';
 import 'package:sanaa_artl/themes/academy/colors.dart';
+import '../../../providers/theme_provider.dart';
 
 class WorkshopCard extends StatelessWidget {
   final Workshop workshop;
@@ -15,6 +17,9 @@ class WorkshopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     if (isHorizontal) {
       // ✅ تصميم للعرض الأفقي
       return GestureDetector(
@@ -23,7 +28,7 @@ class WorkshopCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -56,10 +61,10 @@ class WorkshopCard extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Colors.grey[300],
-                            child: const Icon(
+                            color: isDark ? Colors.grey[800] : Colors.grey[300],
+                            child: Icon(
                               Icons.image_not_supported,
-                              color: Colors.grey,
+                              color: isDark ? Colors.grey[600] : Colors.grey,
                             ),
                           );
                         },
@@ -83,6 +88,7 @@ class WorkshopCard extends StatelessWidget {
                               fontSize: 10,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'Tajawal',
                             ),
                           ),
                         ),
@@ -103,11 +109,14 @@ class WorkshopCard extends StatelessWidget {
                       // العنوان
                       Text(
                         workshop.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2C1810),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF2C1810),
                           height: 1.3,
+                          fontFamily: 'Tajawal',
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -116,10 +125,13 @@ class WorkshopCard extends StatelessWidget {
                       // الوصف
                       Text(
                         workshop.description,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF5D4E37),
+                          color: isDark
+                              ? Colors.grey[400]
+                              : const Color(0xFF5D4E37),
                           height: 1.4,
+                          fontFamily: 'Tajawal',
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -134,10 +146,13 @@ class WorkshopCard extends StatelessWidget {
                             children: [
                               Text(
                                 '${workshop.price} ر.س',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFB8860B),
+                                  color: isDark
+                                      ? const Color(0xFFD4AF37)
+                                      : const Color(0xFFB8860B),
+                                  fontFamily: 'Tajawal',
                                 ),
                               ),
                               Row(
@@ -150,9 +165,12 @@ class WorkshopCard extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     workshop.rating.toString(),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: Color(0xFF5D4E37),
+                                      color: isDark
+                                          ? Colors.grey[300]
+                                          : const Color(0xFF5D4E37),
+                                      fontFamily: 'Tajawal',
                                     ),
                                   ),
                                 ],
@@ -166,8 +184,16 @@ class WorkshopCard extends StatelessWidget {
                             width: double.infinity,
                             height: 36,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
+                              gradient: LinearGradient(
+                                colors: isDark
+                                    ? [
+                                        const Color(0xFFD4AF37),
+                                        const Color(0xFFB8860B),
+                                      ]
+                                    : [
+                                        const Color(0xFFFFD700),
+                                        const Color(0xFFB8860B),
+                                      ],
                               ),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -178,6 +204,7 @@ class WorkshopCard extends StatelessWidget {
                                   fontSize: 14,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: 'Tajawal',
                                 ),
                               ),
                             ),
@@ -196,7 +223,7 @@ class WorkshopCard extends StatelessWidget {
       // ✅ تصميم للعرض العمودي (إذا كنت تحتاجه في أماكن أخرى)
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -225,10 +252,10 @@ class WorkshopCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      color: Colors.grey[300],
-                      child: const Icon(
+                      color: isDark ? Colors.grey[800] : Colors.grey[300],
+                      child: Icon(
                         Icons.image_not_supported,
-                        color: Colors.grey,
+                        color: isDark ? Colors.grey[600] : Colors.grey,
                       ),
                     );
                   },
@@ -243,10 +270,11 @@ class WorkshopCard extends StatelessWidget {
                 children: [
                   Text(
                     workshop.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C1810),
+                      color: isDark ? Colors.white : const Color(0xFF2C1810),
+                      fontFamily: 'Tajawal',
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -257,10 +285,13 @@ class WorkshopCard extends StatelessWidget {
                     children: [
                       Text(
                         '${workshop.price} ر.س',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFB8860B),
+                          color: isDark
+                              ? const Color(0xFFD4AF37)
+                              : const Color(0xFFB8860B),
+                          fontFamily: 'Tajawal',
                         ),
                       ),
                       Row(
@@ -273,9 +304,12 @@ class WorkshopCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             workshop.rating.toString(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF5D4E37),
+                              color: isDark
+                                  ? Colors.grey[300]
+                                  : const Color(0xFF5D4E37),
+                              fontFamily: 'Tajawal',
                             ),
                           ),
                         ],
@@ -292,33 +326,80 @@ class WorkshopCard extends StatelessWidget {
   }
 
   void _showWorkshopDetails(BuildContext context, Workshop workshop) {
-    // ✅ عرض تفاصيل الورشة (يمكن استبدالها بالتنقل لشاشة التفاصيل)
+    // ✅ عرض تفاصيل الورشة
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(workshop.title),
+        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        title: Text(
+          workshop.title,
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontFamily: 'Tajawal',
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(workshop.description),
+            Text(
+              workshop.description,
+              style: TextStyle(
+                color: isDark ? Colors.grey[300] : Colors.black87,
+                fontFamily: 'Tajawal',
+              ),
+            ),
             const SizedBox(height: 16),
-            Text('المستوى: ${workshop.level}'),
-            Text('السعر: ${workshop.price} ر.س'),
-            Text('التقييم: ${workshop.rating}'),
+            Text(
+              'المستوى: ${workshop.level}',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontFamily: 'Tajawal',
+              ),
+            ),
+            Text(
+              'السعر: ${workshop.price} ر.س',
+              style: TextStyle(
+                color: isDark
+                    ? const Color(0xFFD4AF37)
+                    : const Color(0xFFB8860B),
+                fontFamily: 'Tajawal',
+              ),
+            ),
+            Text(
+              'التقييم: ${workshop.rating}',
+              style: TextStyle(
+                color: isDark ? Colors.white : Colors.black,
+                fontFamily: 'Tajawal',
+              ),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إغلاق'),
+            child: const Text('إغلاق', style: TextStyle(fontFamily: 'Tajawal')),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark
+                  ? const Color(0xFFD4AF37)
+                  : const Color(0xFFB8860B),
+              foregroundColor: Colors.white,
+            ),
             onPressed: () {
               Navigator.pop(context);
               // إضافة logic للتسجيل هنا
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('تم إرسال طلب التسجيل بنجاح')),
+              );
             },
-            child: const Text('التسجيل في الورشة'),
+            child: const Text(
+              'التسجيل في الورشة',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
           ),
         ],
       ),

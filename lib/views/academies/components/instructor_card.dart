@@ -1,7 +1,9 @@
 // views/components/instructor_card.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/academy/instructor.dart';
 import 'package:sanaa_artl/views/academies/instructor_details_view.dart';
+import '../../../providers/theme_provider.dart';
 
 class InstructorCard extends StatelessWidget {
   final Instructor instructor;
@@ -15,6 +17,9 @@ class InstructorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     if (isHorizontal) {
       // ✅ تصميم للعرض الأفقي
       return GestureDetector(
@@ -29,7 +34,7 @@ class InstructorCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -58,11 +63,11 @@ class InstructorCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.grey[300],
-                        child: const Icon(
+                        color: isDark ? Colors.grey[800] : Colors.grey[300],
+                        child: Icon(
                           Icons.person,
                           size: 50,
-                          color: Colors.grey,
+                          color: isDark ? Colors.grey[600] : Colors.grey,
                         ),
                       );
                     },
@@ -84,10 +89,13 @@ class InstructorCard extends StatelessWidget {
                         children: [
                           Text(
                             instructor.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF2C1810),
+                              color: isDark
+                                  ? const Color(0xFFD4AF37)
+                                  : const Color(0xFF2C1810),
+                              fontFamily: 'Tajawal',
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -95,9 +103,12 @@ class InstructorCard extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             instructor.specialties.join(", "),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF5D4E37),
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : const Color(0xFF5D4E37),
+                              fontFamily: 'Tajawal',
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -118,18 +129,24 @@ class InstructorCard extends StatelessWidget {
                               const SizedBox(width: 4),
                               Text(
                                 instructor.rating.toString(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Color(0xFF5D4E37),
+                                  color: isDark
+                                      ? Colors.grey[300]
+                                      : const Color(0xFF5D4E37),
+                                  fontFamily: 'Tajawal',
                                 ),
                               ),
                               const Spacer(),
                               Text(
                                 '${instructor.experience} سنوات',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFFB8860B),
+                                  color: isDark
+                                      ? const Color(0xFFD4AF37)
+                                      : const Color(0xFFB8860B),
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: 'Tajawal',
                                 ),
                               ),
                             ],
@@ -143,14 +160,19 @@ class InstructorCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF5E6D3),
+                              color: isDark
+                                  ? const Color(0xFF1E1E1E)
+                                  : const Color(0xFFF5E6D3),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '${instructor.workshops} ورشة',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
-                                color: Color(0xFF5D4E37),
+                                color: isDark
+                                    ? Colors.grey[300]
+                                    : const Color(0xFF5D4E37),
+                                fontFamily: 'Tajawal',
                               ),
                             ),
                           ),
@@ -168,7 +190,7 @@ class InstructorCard extends StatelessWidget {
       // ✅ تصميم للعرض العمودي (إذا كنت تحتاجه في أماكن أخرى)
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -196,11 +218,11 @@ class InstructorCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      color: Colors.grey[300],
-                      child: const Icon(
+                      color: isDark ? Colors.grey[800] : Colors.grey[300],
+                      child: Icon(
                         Icons.person,
                         size: 50,
-                        color: Colors.grey,
+                        color: isDark ? Colors.grey[600] : Colors.grey,
                       ),
                     );
                   },
@@ -215,19 +237,25 @@ class InstructorCard extends StatelessWidget {
                 children: [
                   Text(
                     instructor.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C1810),
+                      color: isDark
+                          ? const Color(0xFFD4AF37)
+                          : const Color(0xFF2C1810),
+                      fontFamily: 'Tajawal',
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     instructor.specialties.join(", "),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF5D4E37),
+                      color: isDark
+                          ? Colors.grey[400]
+                          : const Color(0xFF5D4E37),
+                      fontFamily: 'Tajawal',
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -243,9 +271,12 @@ class InstructorCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         instructor.rating.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF5D4E37),
+                          color: isDark
+                              ? Colors.grey[300]
+                              : const Color(0xFF5D4E37),
+                          fontFamily: 'Tajawal',
                         ),
                       ),
                     ],

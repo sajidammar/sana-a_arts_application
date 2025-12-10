@@ -3,10 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/theme_provider.dart';
 
-
-
-
-
 class SideDrawer extends StatelessWidget {
   final VoidCallback onProfilePressed;
   final VoidCallback onAboutPressed;
@@ -17,6 +13,8 @@ class SideDrawer extends StatelessWidget {
   final VoidCallback onSettingsPressed;
   final VoidCallback onHelpPressed;
   final VoidCallback onLogoutPressed;
+  final VoidCallback onOrdersPressed;
+  final VoidCallback onWishlistPressed;
 
   const SideDrawer({
     super.key,
@@ -29,6 +27,8 @@ class SideDrawer extends StatelessWidget {
     required this.onSettingsPressed,
     required this.onHelpPressed,
     required this.onLogoutPressed,
+    required this.onOrdersPressed,
+    required this.onWishlistPressed,
   });
 
   @override
@@ -53,12 +53,12 @@ class SideDrawer extends StatelessWidget {
           _buildDrawerItem(
             icon: Icons.shopping_bag,
             title: 'طلباتي',
-            onTap: () {},
+            onTap: onOrdersPressed,
           ),
           _buildDrawerItem(
             icon: Icons.favorite,
             title: 'المفضلة',
-            onTap: () {},
+            onTap: onWishlistPressed,
           ),
           _buildSectionHeader('الإعدادات'),
           Consumer<ThemeProvider>(
@@ -134,10 +134,7 @@ class SideDrawer extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: [
-            Color(0xFF8B4513),
-            Color(0xFFB8860B),
-          ],
+          colors: [Color(0xFF8B4513), Color(0xFFB8860B)],
         ),
       ),
       child: Stack(
@@ -164,11 +161,10 @@ class SideDrawer extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 30,
-                    color: Colors.white,
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/image1.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -217,11 +213,7 @@ class SideDrawer extends StatelessWidget {
     Color? color,
   }) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: color ?? const Color(0xFFB8860B),
-        size: 22,
-      ),
+      leading: Icon(icon, color: color ?? const Color(0xFFB8860B), size: 22),
       title: Text(
         title,
         style: TextStyle(
@@ -230,7 +222,9 @@ class SideDrawer extends StatelessWidget {
           color: color,
         ),
       ),
-      trailing: color == null ? const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16) : null,
+      trailing: color == null
+          ? const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16)
+          : null,
       onTap: onTap,
     );
   }
@@ -245,20 +239,14 @@ class SideDrawer extends StatelessWidget {
       leading: Icon(icon, color: const Color(0xFFB8860B), size: 22),
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-        ),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             trailing,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
+            style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
           const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
         ],
@@ -277,10 +265,7 @@ class SideDrawer extends StatelessWidget {
       leading: Icon(icon, color: const Color(0xFFB8860B), size: 22),
       title: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-        ),
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
       ),
       trailing: Switch(
         value: value,
