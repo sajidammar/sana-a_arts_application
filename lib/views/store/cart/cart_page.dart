@@ -38,14 +38,19 @@ class CartPage extends StatelessWidget {
                 child: cartProvider.cartItems.isEmpty
                     ? _buildEmptyCart(context)
                     : ListView.builder(
-                  padding: EdgeInsets.all(AppConstants.defaultPadding),
-                  itemCount: cartProvider.cartItems.length,
-                  itemBuilder: (context, index) {
-                    return _buildCartItem(cartProvider.cartItems[index], index, context);
-                  },
-                ),
+                        padding: EdgeInsets.all(AppConstants.defaultPadding),
+                        itemCount: cartProvider.cartItems.length,
+                        itemBuilder: (context, index) {
+                          return _buildCartItem(
+                            cartProvider.cartItems[index],
+                            index,
+                            context,
+                          );
+                        },
+                      ),
               ),
-              if (cartProvider.cartItems.isNotEmpty) _buildOrderSummary(cartProvider, context),
+              if (cartProvider.cartItems.isNotEmpty)
+                _buildOrderSummary(cartProvider, context),
             ],
           );
         },
@@ -58,11 +63,7 @@ class CartPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.shopping_cart_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[400]),
           SizedBox(height: 20),
           Text(
             'سلة التسوق فارغة',
@@ -75,10 +76,7 @@ class CartPage extends StatelessWidget {
           SizedBox(height: 10),
           Text(
             'أضف بعض الأعمال الفنية إلى سلتك',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
           ),
           SizedBox(height: 30),
           ElevatedButton(
@@ -87,13 +85,12 @@ class CartPage extends StatelessWidget {
               backgroundColor: AppConstants.primaryColor,
               padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                borderRadius: BorderRadius.circular(
+                  AppConstants.defaultBorderRadius,
+                ),
               ),
             ),
-            child: Text(
-              'تصفح المتجر',
-              style: TextStyle(fontSize: 16),
-            ),
+            child: Text('تصفح المتجر', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
@@ -106,7 +103,9 @@ class CartPage extends StatelessWidget {
 
     return Card(
       margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+      ),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Row(
@@ -115,9 +114,9 @@ class CartPage extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: AppTheme.getGradientDecoration(context).copyWith(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: AppTheme.getGradientDecoration(
+                context,
+              ).copyWith(borderRadius: BorderRadius.circular(8)),
               child: Icon(Icons.image, color: Colors.white, size: 30),
             ),
             SizedBox(width: 16),
@@ -150,33 +149,50 @@ class CartPage extends StatelessWidget {
                         'الكمية:',
                         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 4),
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[300]!),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
+                          mainAxisSize:
+                              MainAxisSize.min, // Ensure it takes minimum space
                           children: [
                             IconButton(
-                              icon: Icon(Icons.remove, size: 18),
-                              onPressed: () => cartProvider.updateQuantity(index, item.quantity - 1),
-                              padding: EdgeInsets.all(4),
-                              constraints: BoxConstraints(minWidth: 36),
+                              icon: const Icon(Icons.remove, size: 16),
+                              onPressed: () => cartProvider.updateQuantity(
+                                index,
+                                item.quantity - 1,
+                              ),
+                              padding: const EdgeInsets.all(2),
+                              constraints: const BoxConstraints(
+                                minWidth: 28,
+                                minHeight: 28, // Fix height too
+                              ),
                             ),
                             Container(
-                              width: 40,
+                              width: 30,
                               alignment: Alignment.center,
                               child: Text(
                                 item.quantity.toString(),
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.add, size: 18),
-                              onPressed: () => cartProvider.updateQuantity(index, item.quantity + 1),
-                              padding: EdgeInsets.all(4),
-                              constraints: BoxConstraints(minWidth: 36),
+                              icon: const Icon(Icons.add, size: 16),
+                              onPressed: () => cartProvider.updateQuantity(
+                                index,
+                                item.quantity + 1,
+                              ),
+                              padding: const EdgeInsets.all(2),
+                              constraints: const BoxConstraints(
+                                minWidth: 28,
+                                minHeight: 28,
+                              ),
                             ),
                           ],
                         ),
@@ -223,11 +239,7 @@ class CartPage extends StatelessWidget {
           topRight: Radius.circular(20),
         ),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
+          BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 1),
         ],
       ),
       child: Column(
@@ -236,7 +248,11 @@ class CartPage extends StatelessWidget {
           _buildSummaryRow('الشحن', cartProvider.shipping),
           _buildSummaryRow('الضريبة (15%)', cartProvider.tax),
           Divider(height: 24, thickness: 1),
-          _buildSummaryRow('المجموع النهائي', cartProvider.total, isTotal: true),
+          _buildSummaryRow(
+            'المجموع النهائي',
+            cartProvider.total,
+            isTotal: true,
+          ),
           SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
@@ -246,7 +262,9 @@ class CartPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppConstants.primaryColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                  borderRadius: BorderRadius.circular(
+                    AppConstants.defaultBorderRadius,
+                  ),
                 ),
                 elevation: 2,
               ),
@@ -274,20 +292,25 @@ class CartPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: isTotal ? 18 : 16,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              color: isTotal ? AppConstants.textColor : Colors.grey[700],
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: isTotal ? 18 : 16,
+                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                color: isTotal ? AppConstants.textColor : Colors.grey[700],
+              ),
             ),
           ),
+          SizedBox(width: 8),
           Text(
             '\$${amount.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: isTotal ? 20 : 16,
               fontWeight: FontWeight.bold,
-              color: isTotal ? AppConstants.primaryColor : AppConstants.textColor,
+              color: isTotal
+                  ? AppConstants.primaryColor
+                  : AppConstants.textColor,
             ),
           ),
         ],
@@ -302,7 +325,7 @@ class CartPage extends StatelessWidget {
       cartController.showEmptyCartSnackBar();
       return;
     }
-      Navigator.pushNamed(context, '/order-history');
+    Navigator.pushNamed(context, '/order-history');
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(

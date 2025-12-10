@@ -79,7 +79,8 @@ class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
               ),
               const SizedBox(height: 16),
               SizedBox(
-                height: 420, // Increased height to prevent pixel overflow
+                height:
+                    440, // Increased height further to prevent pixel overflow
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: currentExhibitions.length,

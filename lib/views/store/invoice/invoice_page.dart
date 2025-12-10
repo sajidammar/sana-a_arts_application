@@ -4,8 +4,6 @@ import '../../../controllers/store/invoice_controller.dart';
 import '../../../models/store/invoice_model.dart';
 import '../../../providers/store/invoice_provider.dart';
 
-
-
 class InvoicePage extends StatelessWidget {
   const InvoicePage({super.key});
 
@@ -53,34 +51,36 @@ class InvoicePage extends StatelessWidget {
       ),
       body: invoiceProvider.currentInvoice == null
           ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Theme.of(context).primaryColor),
-            SizedBox(height: 16),
-            Text(
-              'جاري تحميل الفاتورة...',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'جاري تحميل الفاتورة...',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            )
           : SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildInvoiceHeader(context),
-            SizedBox(height: 24),
-            _buildInvoiceInfo(invoiceProvider.currentInvoice!, context),
-            SizedBox(height: 24),
-            _buildOrderItems(invoiceProvider.currentInvoice!, context),
-            SizedBox(height: 24),
-            _buildTotals(invoiceProvider.currentInvoice!, context),
-            SizedBox(height: 16),
-            _buildFooter(context),
-          ],
-        ),
-      ),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildInvoiceHeader(context),
+                  SizedBox(height: 24),
+                  _buildInvoiceInfo(invoiceProvider.currentInvoice!, context),
+                  SizedBox(height: 24),
+                  _buildOrderItems(invoiceProvider.currentInvoice!, context),
+                  SizedBox(height: 24),
+                  _buildTotals(invoiceProvider.currentInvoice!, context),
+                  SizedBox(height: 16),
+                  _buildFooter(context),
+                ],
+              ),
+            ),
     );
   }
 
@@ -91,7 +91,7 @@ class InvoicePage extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withValues(alpha:0.9),
+            Theme.of(context).primaryColor.withValues(alpha: 0.9),
             Theme.of(context).primaryColor,
             Theme.of(context).primaryColorDark,
           ],
@@ -101,7 +101,7 @@ class InvoicePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: Offset(0, 4),
           ),
@@ -109,11 +109,7 @@ class InvoicePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.receipt_long,
-            size: 48,
-            color: Colors.white,
-          ),
+          Icon(Icons.receipt_long, size: 48, color: Colors.white),
           SizedBox(height: 16),
           Text(
             'فـــاتــورة',
@@ -129,7 +125,7 @@ class InvoicePage extends StatelessWidget {
             'منصة فنون صنعاء التشكيلية',
             style: TextStyle(
               fontSize: 18,
-              color: Colors.white.withValues(alpha:0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               fontFamily: 'Tajawal',
             ),
           ),
@@ -142,38 +138,29 @@ class InvoicePage extends StatelessWidget {
     return Column(
       children: [
         // معلومات الشركة والفاتورة
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        _buildInfoCard(
+          context,
+          title: 'معلومات الشركة',
+          icon: Icons.business,
           children: [
-            Expanded(
-              child: _buildInfoCard(
-                context,
-                title: 'معلومات الشركة',
-                icon: Icons.business,
-                children: [
-                  _buildInfoItem('الاسم:', 'فنون صنعاء التشكيلية', context),
-                  _buildInfoItem('العنوان:', 'صنعاء، الجمهورية اليمنية', context),
-                  _buildInfoItem('الهاتف:', '+967 1 234567', context),
-                  _buildInfoItem('البريد:', 'info@sanaafineart.com', context),
-                  _buildInfoItem('الموقع:', 'www.sanaafineart.com', context),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: _buildInfoCard(
-                context,
-                title: 'معلومات الفاتورة',
-                icon: Icons.description,
-                children: [
-                  _buildInfoItem('رقم الفاتورة:', invoice.id, context),
-                  _buildInfoItem('رقم الطلب:', invoice.orderId, context),
-                  _buildInfoItem('تاريخ الفاتورة:', '10 يناير 2024', context),
-                  _buildInfoItem('تاريخ الاستحقاق:', '17 يناير 2024', context),
-                  _buildStatusBadge('تم التسليم', Colors.green, context),
-                ],
-              ),
-            ),
+            _buildInfoItem('الاسم:', 'فنون صنعاء التشكيلية', context),
+            _buildInfoItem('العنوان:', 'صنعاء، الجمهورية اليمنية', context),
+            _buildInfoItem('الهاتف:', '+967 1 234567', context),
+            _buildInfoItem('البريد:', 'info@sanaafineart.com', context),
+            _buildInfoItem('الموقع:', 'www.sanaafineart.com', context),
+          ],
+        ),
+        SizedBox(height: 16),
+        _buildInfoCard(
+          context,
+          title: 'معلومات الفاتورة',
+          icon: Icons.description,
+          children: [
+            _buildInfoItem('رقم الفاتورة:', invoice.id, context),
+            _buildInfoItem('رقم الطلب:', invoice.orderId, context),
+            _buildInfoItem('تاريخ الفاتورة:', '10 يناير 2024', context),
+            _buildInfoItem('تاريخ الاستحقاق:', '17 يناير 2024', context),
+            _buildStatusBadge('تم التسليم', Colors.green, context),
           ],
         ),
         SizedBox(height: 16),
@@ -183,40 +170,21 @@ class InvoicePage extends StatelessWidget {
           title: 'معلومات العميل',
           icon: Icons.person,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfoItem('الاسم:', invoice.customer.name, context),
-                      _buildInfoItem('البريد:', invoice.customer.email, context),
-                      _buildInfoItem('الهاتف:', invoice.customer.phone, context),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfoItem('المدينة:', invoice.customer.city, context),
-                      _buildInfoItem('البلد:', invoice.customer.country, context),
-                      _buildInfoItem('العنوان:', invoice.customer.address, context),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
+            _buildInfoItem('الاسم:', invoice.customer.name, context),
+            _buildInfoItem('البريد:', invoice.customer.email, context),
+            _buildInfoItem('الهاتف:', invoice.customer.phone, context),
+            Divider(height: 24),
+            _buildInfoItem('المدينة:', invoice.customer.city, context),
+            _buildInfoItem('البلد:', invoice.customer.country, context),
+            _buildInfoItem('العنوان:', invoice.customer.address, context),
+            SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: Theme.of(context).primaryColor.withValues(alpha:0.3),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Row(
@@ -246,11 +214,11 @@ class InvoicePage extends StatelessWidget {
   }
 
   Widget _buildInfoCard(
-      BuildContext context, {
-        required String title,
-        required IconData icon,
-        required List<Widget> children,
-      }) {
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -258,7 +226,7 @@ class InvoicePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -269,11 +237,7 @@ class InvoicePage extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                color: Theme.of(context).primaryColor,
-                size: 20,
-              ),
+              Icon(icon, color: Theme.of(context).primaryColor, size: 20),
               SizedBox(width: 8),
               Text(
                 title,
@@ -326,18 +290,14 @@ class InvoicePage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha:0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.check_circle,
-            color: color,
-            size: 14,
-          ),
+          Icon(Icons.check_circle, color: color, size: 14),
           SizedBox(width: 4),
           Text(
             text,
@@ -360,7 +320,7 @@ class InvoicePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -400,7 +360,7 @@ class InvoicePage extends StatelessWidget {
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey.shade800.withValues(alpha:0.3)
+            ? Colors.grey.shade800.withValues(alpha: 0.3)
             : Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
@@ -417,7 +377,7 @@ class InvoicePage extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).primaryColor.withValues(alpha:0.8),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.8),
                   Theme.of(context).primaryColor,
                 ],
                 begin: Alignment.topLeft,
@@ -425,11 +385,7 @@ class InvoicePage extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              Icons.image,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(Icons.image, color: Colors.white, size: 24),
           ),
           SizedBox(width: 16),
           // تفاصيل المنتج
@@ -459,16 +415,19 @@ class InvoicePage extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildQuantityBadge(item.quantity, context),
-                    Spacer(),
+                    // Spacer removed
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           'السعر: \$${item.price}',
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.color,
                             fontSize: 14,
                           ),
                         ),
@@ -497,7 +456,7 @@ class InvoicePage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -530,7 +489,7 @@ class InvoicePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -558,33 +517,47 @@ class InvoicePage extends StatelessWidget {
           ),
           SizedBox(height: 16),
           _buildTotalItem('المجموع الفرعي', invoice.subtotal, context),
-          _buildTotalItem('خصم العضوية (5%)', -invoice.discount, context, isDiscount: true),
+          _buildTotalItem(
+            'خصم العضوية (5%)',
+            -invoice.discount,
+            context,
+            isDiscount: true,
+          ),
           _buildTotalItem('الشحن والتوصيل', invoice.shipping, context),
           _buildTotalItem('التأمين', 15.0, context),
           _buildTotalItem('الضريبة (15%)', invoice.tax, context),
           Divider(height: 24),
-          _buildTotalItem('المجموع الإجمالي', invoice.total, context, isTotal: true),
+          _buildTotalItem(
+            'المجموع الإجمالي',
+            invoice.total,
+            context,
+            isTotal: true,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTotalItem(String label, double amount, BuildContext context,
-      {bool isDiscount = false, bool isTotal = false}) {
+  Widget _buildTotalItem(
+    String label,
+    double amount,
+    BuildContext context, {
+    bool isDiscount = false,
+    bool isTotal = false,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: isTotal ? 18 : 16,
-                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                color: isTotal
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).textTheme.bodyLarge?.color,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: isTotal ? 18 : 16,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              color: isTotal
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
           Text(
@@ -595,8 +568,8 @@ class InvoicePage extends StatelessWidget {
               color: isDiscount
                   ? Colors.green
                   : (isTotal
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).textTheme.bodyLarge?.color),
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).textTheme.bodyLarge?.color),
             ),
           ),
         ],
@@ -608,10 +581,10 @@ class InvoicePage extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha:0.05),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha:0.1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         ),
       ),
       child: Column(
