@@ -17,129 +17,8 @@ class ExhibitionProvider with ChangeNotifier {
   String get error => _error;
   String get searchQuery => _searchQuery;
 
-  // بيانات تجريبية للمعارض
-  final List<Exhibition> _demoExhibitions = [
-    Exhibition(
-      id: '1',
-      title: 'تراث صنعاء الخالد',
-      curator: 'أحمد المقطري',
-      type: ExhibitionType.virtual,
-      status: 'مفتوح الآن',
-      description:
-          'معرض افتراضي يعرض 50 لوحة تجسد جمال التراث المعماري في صنعاء القديمة',
-      date: '15 يناير - 28 فبراير 2025',
-      location: 'معرض افتراضي',
-      artworksCount: 50,
-      visitorsCount: 1250,
-      isFeatured: true,
-      startDate: DateTime(2025, 1, 15),
-      endDate: DateTime(2025, 2, 28),
-      tags: ['تراث', 'عمارة', 'صنعاء'],
-      rating: 4.5,
-      ratingCount: 127,
-      isActive: true,
-      imageUrl: 'assets/images/image1.jpg',
-    ),
-    Exhibition(
-      id: '2',
-      title: 'ألوان من اليمن السعيد',
-      curator: 'فاطمة الحمادي',
-      type: ExhibitionType.reality,
-      status: 'قريباً',
-      description:
-          'معرض واقعي في قاعة الفنون بصنعاء يضم أعمال 20 فناناً يمنياً معاصراً',
-      date: '5 مارس - 20 مارس 2025',
-      location: 'قاعة الفنون، صنعاء',
-      artworksCount: 75,
-      visitorsCount: 0,
-      startDate: DateTime(2025, 3, 5),
-      endDate: DateTime(2025, 3, 20),
-      tags: ['معاصر', 'فنون', 'صنعاء'],
-      rating: 0.0,
-      ratingCount: 0,
-      imageUrl: 'assets/images/image2.jpg',
-      isActive: true,
-    ),
-    Exhibition(
-      id: '3',
-      title: 'إبداعات شابة',
-      curator: 'محمد الشامي',
-      type: ExhibitionType.open,
-      status: 'مفتوح للمشاركة',
-      description:
-          'معرض مفتوح للفنانين الشباب تحت سن 30 لعرض أعمالهم الإبداعية',
-      date: 'مستمر',
-      location: 'منصة رقمية',
-      artworksCount: 120,
-      visitorsCount: 2100,
-      startDate: DateTime(2024, 1, 1),
-      endDate: DateTime(2025, 12, 31),
-      tags: ['شباب', 'إبداع', 'مفتوح'],
-      rating: 4.2,
-      ratingCount: 89,
-      isActive: true,
-      imageUrl: 'assets/images/image3.jpg',
-    ),
-    Exhibition(
-      id: '4',
-      title: 'طبيعة حضرموت الساحرة',
-      curator: 'عائشة بامطرف',
-      type: ExhibitionType.virtual,
-      status: 'مفتوح الآن',
-      description: 'جولة افتراضية في المناظر الطبيعية الخلابة لوادي حضرموت',
-      date: '1 فبراير - 15 مارس 2025',
-      location: 'معرض افتراضي 360°',
-      artworksCount: 35,
-      visitorsCount: 850,
-      isFeatured: true,
-      startDate: DateTime(2025, 2, 1),
-      endDate: DateTime(2025, 3, 15),
-      tags: ['طبيعة', 'حضرموت', 'مناظر'],
-      rating: 4.7,
-      ratingCount: 45,
-      isActive: true,
-      imageUrl: 'assets/images/image4.jpg',
-    ),
-    Exhibition(
-      id: '5',
-      title: 'فن الخط العربي المعاصر',
-      curator: 'سالم الحكيمي',
-      type: ExhibitionType.reality,
-      status: 'انتهى',
-      description: 'معرض متخصص في فن الخط العربي وتطوره في العصر الحديث',
-      date: '10 ديسمبر - 25 ديسمبر 2024',
-      location: 'مركز الفنون، عدن',
-      artworksCount: 40,
-      visitorsCount: 1800,
-      startDate: DateTime(2024, 12, 10),
-      endDate: DateTime(2024, 12, 25),
-      tags: ['خط عربي', 'تراث', 'حديث'],
-      rating: 4.8,
-      ratingCount: 156,
-      isActive: true,
-      imageUrl: 'assets/images/image5.jpg',
-    ),
-    Exhibition(
-      id: '6',
-      title: 'وجوه يمنية',
-      curator: 'نادية القاضي',
-      type: ExhibitionType.open,
-      status: 'مفتوح للمشاركة',
-      description:
-          'معرض مفتوح لرسم البورتريه والوجوه اليمنية التراثية والمعاصرة',
-      date: 'مستمر',
-      location: 'منصة رقمية',
-      artworksCount: 95,
-      visitorsCount: 1600,
-      startDate: DateTime(2024, 1, 1),
-      endDate: DateTime(2025, 12, 31),
-      tags: ['بورتريه', 'وجوه', 'تراث'],
-      rating: 4.4,
-      ratingCount: 78,
-      isActive: true,
-      imageUrl: 'assets/images/image6.jpg',
-    ),
-  ];
+  // بيانات تجريبية للمعارض (تم تفريغها لاستخدام التوليد الديناميكي)
+  final List<Exhibition> _demoExhibitions = [];
 
   // بيانات تجريبية للأعمال الفنية
   final List<Artwork> _demoArtworks = [
@@ -259,9 +138,15 @@ class ExhibitionProvider with ChangeNotifier {
 
     try {
       // محاكاة جلب البيانات من API
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
 
-      _exhibitions = _demoExhibitions;
+      // إذا كانت القائمة فارغة، قم بتوليد بيانات ديناميكية
+      if (_demoExhibitions.isEmpty) {
+        _exhibitions = _generateDynamicExhibitions();
+      } else {
+        _exhibitions = _demoExhibitions;
+      }
+
       _error = '';
     } catch (e) {
       _error = 'فشل في تحميل المعارض: ${e.toString()}';
@@ -269,6 +154,87 @@ class ExhibitionProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  List<Exhibition> _generateDynamicExhibitions() {
+    final titles = [
+      'أطياف يمنية',
+      'رحلة في صنعاء',
+      'فنون المرتفعات',
+      'ذاكرة المكان',
+      'شموخ الجبال',
+      'إيقاع الألوان',
+      'نقوش سبأ',
+      'حكاية حجر',
+    ];
+
+    final curators = [
+      'أحمد المقطري',
+      'فاطمة الحمادي',
+      'محمد الشامي',
+      'سارة العريقي',
+      'عبدالله الوزير',
+      'منى اليافعي',
+    ];
+
+    final locations = [
+      'معرض افتراضي',
+      'قاعة الفنون بصنعاء',
+      'المركز الثقافي',
+      'منصة رقمية',
+    ];
+
+    final images = [
+      'assets/images/image1.jpg',
+      'assets/images/image2.jpg',
+      'assets/images/image3.jpg',
+      'assets/images/image4.jpg',
+      'assets/images/image5.jpg',
+    ];
+
+    List<Exhibition> generated = [];
+    final random = DateTime.now().millisecondsSinceEpoch;
+
+    for (int i = 0; i < 8; i++) {
+      // Simple pseudo-random using modulo
+      int titleIndex = (random + i) % titles.length;
+      int curatorIndex = (random + i * 2) % curators.length;
+      int imgIndex = (random + i * 3) % images.length;
+      int typeIndex = (random + i) % 3; // 0, 1, 2 for types
+
+      ExhibitionType type;
+      if (typeIndex == 0)
+        type = ExhibitionType.virtual;
+      else if (typeIndex == 1)
+        type = ExhibitionType.reality;
+      else
+        type = ExhibitionType.open;
+
+      generated.add(
+        Exhibition(
+          id: 'gen_\$i',
+          title: titles[titleIndex],
+          curator: curators[curatorIndex],
+          type: type,
+          status: i % 3 == 0 ? 'مفتوح الآن' : (i % 3 == 1 ? 'قريباً' : 'انتهى'),
+          description:
+              'معرض فني متميز يعرض مجموعة من أجمل الأعمال الفنية للفنان ${curators[curatorIndex]}، يجسد رؤية فنية فريدة.',
+          date: '2025/0\$((i % 9) + 1)/15',
+          location: locations[i % locations.length],
+          artworksCount: 20 + i * 5,
+          visitorsCount: 100 + i * 50,
+          isFeatured: i % 2 == 0,
+          startDate: DateTime.now(),
+          endDate: DateTime.now().add(const Duration(days: 30)),
+          tags: ['فنون', 'يمن', 'تراث'],
+          rating: 4.0 + (i % 10) / 10,
+          ratingCount: 10 + i * 2,
+          isActive: true,
+          imageUrl: images[imgIndex],
+        ),
+      );
+    }
+    return generated;
   }
 
   Future<void> loadArtworks() async {
@@ -346,7 +312,7 @@ class ExhibitionProvider with ChangeNotifier {
     return _exhibitions.where((ex) => ex.isUpcoming).toList();
   }
 
-  get currentExhibitions => '';
+  List<Exhibition> get currentExhibitions => _exhibitions;
 
   Exhibition? getExhibitionById(String id) {
     try {

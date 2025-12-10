@@ -9,6 +9,9 @@ import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'vr_exhibition_page.dart';
 import 'widgets/exhibition_card.dart';
 import 'widgets/exhibition_filters.dart';
+import '../home/widgets/hero_section.dart';
+import '../home/widgets/exhibition_types_section.dart';
+import '../home/widgets/current_exhibitions_section.dart';
 
 class ExhibitionsPage extends StatefulWidget {
   const ExhibitionsPage({super.key});
@@ -50,7 +53,29 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
           // الهيدر
           _buildAppBar(),
 
-          // محتوى الصفحة
+          // Hero Section
+          SliverToBoxAdapter(
+            child: HeroSection(
+              animationController: _animationController,
+              context: context,
+            ),
+          ),
+
+          // Types Section
+          SliverToBoxAdapter(
+            child: ExhibitionTypesSection(
+              animationController: _animationController,
+            ),
+          ),
+
+          // Current Exhibitions
+          SliverToBoxAdapter(
+            child: CurrentExhibitionsSection(
+              animationController: _animationController,
+            ),
+          ),
+
+          // محتوى الصفحة (شبكة المعارض الكاملة مع الفلتر)
           _buildContent(),
         ],
       ),

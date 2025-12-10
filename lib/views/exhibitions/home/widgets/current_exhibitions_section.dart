@@ -1,24 +1,33 @@
-// views/exhibitions/home/widgets/current_exhibitions_section.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/views/exhibitions/exhibitiontype/widgets/exhibition_card.dart';
 
 class CurrentExhibitionsSection extends StatefulWidget {
-  const CurrentExhibitionsSection({super.key, required AnimationController animationController});
+  final AnimationController animationController;
+
+  const CurrentExhibitionsSection({
+    super.key,
+    required this.animationController,
+  });
 
   @override
-  State<CurrentExhibitionsSection> createState() => _CurrentExhibitionsSectionState();
+  State<CurrentExhibitionsSection> createState() =>
+      _CurrentExhibitionsSectionState();
 }
 
 class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
   @override
   void initState() {
     super.initState();
-    // ✅ تحميل البيانات بعد delay بسيط للتأكد من وجود الـ Provider
     Future.delayed(const Duration(milliseconds: 100), () {
-      final provider = Provider.of<ExhibitionProvider>(context, listen: false);
-      provider.loadExhibitions();
+      if (mounted) {
+        final provider = Provider.of<ExhibitionProvider>(
+          context,
+          listen: false,
+        );
+        provider.loadExhibitions();
+      }
     });
   }
 
@@ -29,15 +38,13 @@ class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
         if (exhibitionProvider.isLoading) {
           return const SizedBox(
             height: 200,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
+            child: Center(child: CircularProgressIndicator()),
           );
         }
 
         final currentExhibitions = exhibitionProvider.currentExhibitions;
 
-        if (!currentExhibitions.isEmpty) {
+        if (currentExhibitions.isEmpty) {
           return Container(
             padding: const EdgeInsets.all(32),
             child: Column(
@@ -54,29 +61,48 @@ class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
         }
 
         return Container(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'المعارض الحالية',
-                style: Theme.of(context).textTheme.headlineSmall,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'المعارض الحالية',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Tajawal',
+                    color: Theme.of(context).textTheme.titleLarge?.color,
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               SizedBox(
-                height: 300,
+                height: 420, // Increased height to prevent pixel overflow
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: currentExhibitions.length,
                   itemBuilder: (context, index) {
                     final exhibition = currentExhibitions[index];
                     return Container(
-                      width: 280,
+                      width: 300,
                       margin: EdgeInsets.only(
-                        left: index == 0 ? 0 : 16,
-                        right: index == currentExhibitions.length - 1 ? 0 : 16,
+                        left: index == 0 ? 16 : 8,
+                        right: index == currentExhibitions.length - 1 ? 16 : 8,
+                        bottom: 8,
                       ),
-                      child: ExhibitionCard(exhibition: exhibition),
+                      child: ExhibitionCard(
+                        exhibition: exhibition,
+                        // Can pass regular onTap here if needed
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('تم اختيار: ${exhibition.title}'),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -85,92 +111,6 @@ class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
           ),
         );
       },
-    );
-  }
-}
-
-class ExhibitionCard extends StatelessWidget {
-  final Exhibition exhibition;
-
-  const ExhibitionCard({super.key, required this.exhibition});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // صورة المعرض
-          Container(
-            height: 160,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              image: DecorationImage(
-                image: NetworkImage(exhibition.imageUrl),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          
-          // معلومات المعرض
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  exhibition.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  exhibition.description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(Icons.location_on, size: 14),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        exhibition.location,
-                        style: const TextStyle(fontSize: 12),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.calendar_today, size: 14),
-                    const SizedBox(width: 4),
-                    Text(
-                      exhibition.dateRange,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
