@@ -87,12 +87,12 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
 
   Widget _buildHeader(BuildContext context, VRProvider vrProvider) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        gradient: AppColors.virtualGradient,
+        color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).hoverColor.withValues(alpha: 0.3),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -100,57 +100,63 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
       ),
       child: Row(
         children: [
-          // زر العودة
           IconButton(
             onPressed: () => Navigator.pop(context),
             icon: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).colorScheme.surface,
+              Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).iconTheme.color,
+              size: 20,
             ),
           ),
-
-          const SizedBox(width: 16),
-
-          // العنوان
+          const SizedBox(width: 8),
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.card_membership_sharp,
-                  color: Theme.of(context).colorScheme.surface,
+                Text(
+                  'المعرض الافتراضي',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'المعرض الافتراضي - تراث صنعاء الخالد',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.surface,
-                      fontFamily: 'Tajawal',
-                    ),
+                Text(
+                  'تراث صنعاء الخالد',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontFamily: 'Tajawal',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-
-          // عداد الأعمال الفنية
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.surface.withValues(alpha: 0.2),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '${vrProvider.currentArtworkIndex + 1} / ${vrProvider.artworks.length}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.surface,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Tajawal',
+              border: Border.all(
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
               ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.image_outlined,
+                  size: 14,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '${vrProvider.currentArtworkIndex + 1} / ${vrProvider.artworks.length}',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Tajawal',
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

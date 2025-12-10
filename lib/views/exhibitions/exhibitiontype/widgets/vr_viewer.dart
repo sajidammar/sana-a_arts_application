@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/themes/exhibition/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
+import 'vr_comments_sidebar.dart';
 
-class VRViewer extends StatelessWidget {
+class VRViewer extends StatefulWidget {
   final AnimationController animationController;
   final VRProvider vrProvider;
 
@@ -15,26 +16,39 @@ class VRViewer extends StatelessWidget {
   });
 
   @override
+  State<VRViewer> createState() => _VRViewerState();
+}
+
+class _VRViewerState extends State<VRViewer> {
+  bool _isCommentsVisible = false;
+
+  void _toggleComments() {
+    setState(() {
+      _isCommentsVisible = !_isCommentsVisible;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient:
-            vrProvider.isVRMode
-                ? LinearGradient(
-                  colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColorDark,
-                    Theme.of(context).primaryColorLight,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-                : AppColors.virtualGradient,
+        gradient: widget.vrProvider.isVRMode
+            ? LinearGradient(
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColorDark,
+                  Theme.of(context).primaryColorLight,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : AppColors.virtualGradient,
       ),
       child: Stack(
         children: [
           // نمط الشبكة الخلفية
-          if (vrProvider.isVRMode || vrProvider.is360Mode) _buildVRGrid(),
+          if (widget.vrProvider.isVRMode || widget.vrProvider.is360Mode)
+            _buildVRGrid(),
 
           // الواجهة التفاعلية
           Center(
@@ -69,14 +83,14 @@ class VRViewer extends StatelessWidget {
                   ),
 
                   // عناصر التحكم المتقدمة
-                  if (vrProvider.isVRMode || vrProvider.is360Mode)
+                  if (widget.vrProvider.isVRMode || widget.vrProvider.is360Mode)
                     SlideInAnimation(
                       delay: const Duration(milliseconds: 900),
                       child: _buildAdvancedControls(context),
                     ),
 
                   // عناصر التكبير والتنقل
-                  if (vrProvider.is3DMode)
+                  if (widget.vrProvider.is3DMode)
                     SlideInAnimation(
                       delay: const Duration(milliseconds: 1100),
                       child: _buildNavigationControls(context),
@@ -87,7 +101,7 @@ class VRViewer extends StatelessWidget {
           ),
 
           // شارة الجولة التلقائية
-          if (vrProvider.isAutoTourOn)
+          if (widget.vrProvider.isAutoTourOn)
             Positioned(
               top: 16,
               left: 16,
@@ -122,6 +136,30 @@ class VRViewer extends StatelessWidget {
                 ),
               ),
             ),
+
+          // زر التعليقات العائم (لفتح الشريط)
+          Positioned(
+            top: 16,
+            right: 16,
+            child: FloatingActionButton.small(
+              onPressed: _toggleComments,
+              backgroundColor: Theme.of(context).primaryColor,
+              child: const Icon(Icons.comment_rounded, color: Colors.white),
+            ),
+          ),
+
+          // شريط التعليقات الجانبي
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            top: 0,
+            bottom: 0,
+            right: _isCommentsVisible ? 0 : -320, // Slide in/out
+            child: VRCommentsSidebar(
+              artworkId: 'current_artwork_id', // Replace with actual ID
+              onClose: _toggleComments,
+            ),
+          ),
         ],
       ),
     );
@@ -134,7 +172,14 @@ class VRViewer extends StatelessWidget {
       builder: (context, value, child) {
         return Transform.translate(
           offset: Offset(-10 * value, -10 * value),
-          child: CustomPaint(size: Size.infinite, painter: _VRGridPainter()),
+          child: CustomPaint(
+            size: Size.infinite,
+            painter: _VRGridPainter(
+              color: Theme.of(
+                context,
+              ).colorScheme.surface.withValues(alpha: 0.05),
+            ),
+          ),
         );
       },
     );
@@ -145,18 +190,21 @@ class VRViewer extends StatelessWidget {
     double size;
     Animation<double>? animation;
 
-    if (vrProvider.is3DMode) {
+    if (widget.vrProvider.is3DMode) {
       icon = CupertinoIcons.cube;
       size = 80;
       // إضافة حركة ثلاثية الأبعاد
-    } else if (vrProvider.isVRMode) {
+    } else if (widget.vrProvider.isVRMode) {
       icon = CupertinoIcons.video_camera_solid;
       size = 70;
-    } else if (vrProvider.is360Mode) {
+    } else if (widget.vrProvider.is360Mode) {
       icon = Icons.sync_alt;
       size = 70;
       animation = Tween(begin: 0.0, end: 2 * 3.14159).animate(
-        CurvedAnimation(parent: animationController, curve: Curves.linear),
+        CurvedAnimation(
+          parent: widget.animationController,
+          curve: Curves.linear,
+        ),
       );
     } else {
       icon = CupertinoIcons.cube;
@@ -179,16 +227,15 @@ class VRViewer extends StatelessWidget {
       );
     }
 
-    if (vrProvider.is3DMode) {
+    if (widget.vrProvider.is3DMode) {
       iconWidget = TweenAnimationBuilder(
         duration: const Duration(seconds: 10),
         tween: Tween(begin: 0.0, end: 2 * 3.14159),
         builder: (context, value, child) {
           return Transform(
-            transform:
-                Matrix4.identity()
-                  ..rotateY(value)
-                  ..rotateX(value * 0.5),
+            transform: Matrix4.identity()
+              ..rotateY(value)
+              ..rotateX(value * 0.5),
             alignment: Alignment.center,
             child: child,
           );
@@ -254,22 +301,24 @@ class VRViewer extends StatelessWidget {
         _buildControlButton(
           icon: Icons.sync_alt,
           label: 'عرض 360°',
-          isActive: vrProvider.is360Mode,
-          onTap: vrProvider.toggle360Mode,
+          isActive: widget.vrProvider.is360Mode,
+          onTap: widget.vrProvider.toggle360Mode,
           context: context,
         ),
         _buildControlButton(
           icon: Icons.cable,
           label: 'عرض 3D',
-          isActive: vrProvider.is3DMode,
-          onTap: vrProvider.toggle3DMode,
+          isActive: widget.vrProvider.is3DMode,
+          onTap: widget.vrProvider.toggle3DMode,
           context: context,
         ),
         _buildControlButton(
-          icon: vrProvider.isAudioGuideOn ? Icons.volume_up : Icons.volume_off,
+          icon: widget.vrProvider.isAudioGuideOn
+              ? Icons.volume_up
+              : Icons.volume_off,
           label: 'الدليل الصوتي',
-          isActive: vrProvider.isAudioGuideOn,
-          onTap: vrProvider.toggleAudioGuide,
+          isActive: widget.vrProvider.isAudioGuideOn,
+          onTap: widget.vrProvider.toggleAudioGuide,
           context: context,
         ),
       ],
@@ -287,22 +336,22 @@ class VRViewer extends StatelessWidget {
           _buildSmallControlButton(
             icon: Icons.play_arrow,
             label: 'جولة تلقائية',
-            isActive: vrProvider.isAutoTourOn,
-            onTap: vrProvider.toggleAutoTour,
+            isActive: widget.vrProvider.isAutoTourOn,
+            onTap: widget.vrProvider.toggleAutoTour,
             context: context,
           ),
           _buildSmallControlButton(
             icon: Icons.fullscreen,
             label: 'شاشة كاملة',
-            isActive: vrProvider.isFullscreenMode,
-            onTap: vrProvider.toggleFullscreenMode,
+            isActive: widget.vrProvider.isFullscreenMode,
+            onTap: widget.vrProvider.toggleFullscreenMode,
             context: context,
           ),
           _buildSmallControlButton(
             icon: Icons.refresh,
             label: 'إعادة تعيين',
             isActive: false,
-            onTap: vrProvider.resetView,
+            onTap: widget.vrProvider.resetView,
             context: context,
           ),
         ],
@@ -322,22 +371,18 @@ class VRViewer extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // عناصر التكبير
             const SizedBox(height: 16),
-
-            // عناصر التنقل
             Wrap(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildNavButton(
                   icon: Icons.chevron_right,
                   label: 'السابق',
-                  onTap: () => vrProvider.navigateToPreviousArtwork(),
+                  onTap: () => widget.vrProvider.navigateToPreviousArtwork(),
                   context: context,
                 ),
                 _buildZoomButton(
                   icon: Icons.zoom_out,
-                  onTap: vrProvider.zoomOut,
+                  onTap: widget.vrProvider.zoomOut,
                   context: context,
                 ),
                 const SizedBox(width: 2),
@@ -353,7 +398,7 @@ class VRViewer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${(vrProvider.zoomLevel * 100).toInt()}%',
+                    '${(widget.vrProvider.zoomLevel * 100).toInt()}%',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.surface,
                       fontWeight: FontWeight.bold,
@@ -364,13 +409,13 @@ class VRViewer extends StatelessWidget {
                 const SizedBox(width: 2),
                 _buildZoomButton(
                   icon: Icons.zoom_in,
-                  onTap: vrProvider.zoomIn,
+                  onTap: widget.vrProvider.zoomIn,
                   context: context,
                 ),
                 _buildNavButton(
                   icon: Icons.chevron_left,
                   label: 'التالي',
-                  onTap: () => vrProvider.navigateToNextArtwork(),
+                  onTap: () => widget.vrProvider.navigateToNextArtwork(),
                   context: context,
                 ),
               ],
@@ -396,14 +441,9 @@ class VRViewer extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color:
-                isActive
-                    ? Theme.of(
-                      context,
-                    ).colorScheme.surface.withValues(alpha: 0.3)
-                    : Theme.of(
-                      context,
-                    ).colorScheme.surface.withValues(alpha: 0.1),
+            color: isActive
+                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.3)
+                : Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
               color: Theme.of(
@@ -451,14 +491,9 @@ class VRViewer extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color:
-                isActive
-                    ? Theme.of(
-                      context,
-                    ).colorScheme.surface.withValues(alpha: 0.3)
-                    : Theme.of(
-                      context,
-                    ).colorScheme.surface.withValues(alpha: 0.1),
+            color: isActive
+                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.3)
+                : Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: Theme.of(
@@ -540,7 +575,7 @@ class VRViewer extends StatelessWidget {
               if (label == 'التالي') ...[
                 Text(
                   label,
-                  style:  TextStyle(
+                  style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontSize: 14,
                     fontFamily: 'Tajawal',
@@ -573,15 +608,16 @@ class VRViewer extends StatelessWidget {
 }
 
 class _VRGridPainter extends CustomPainter {
+  final Color color;
+
+  _VRGridPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Theme.of(
-            context!,
-          ).colorScheme.surface.withValues(alpha: 0.05)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.5;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
 
     // رسم شبكة VR
     for (double x = 0; x < size.width; x += 10) {
@@ -594,9 +630,6 @@ class _VRGridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-extension on _VRGridPainter {
-  BuildContext? get context => null;
+  bool shouldRepaint(covariant _VRGridPainter oldDelegate) =>
+      color != oldDelegate.color;
 }
