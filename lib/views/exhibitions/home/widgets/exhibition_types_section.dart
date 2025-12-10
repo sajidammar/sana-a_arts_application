@@ -7,6 +7,7 @@ import 'package:sanaa_artl/themes/exhibition/colors.dart' show AppColors;
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
+import 'create_exhibition_sheet.dart';
 
 class ExhibitionTypesSection extends StatelessWidget {
   final AnimationController animationController;
@@ -34,15 +35,14 @@ class ExhibitionTypesSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w800,
-                foreground:
-                    Paint()
-                      ..shader = LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).primaryColor,
-                          Theme.of(context).primaryColorDark,
-                        ],
-                      ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
+                foreground: Paint()
+                  ..shader = LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).primaryColor,
+                      Theme.of(context).primaryColorDark,
+                    ],
+                  ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -188,34 +188,30 @@ class ExhibitionTypesSection extends StatelessWidget {
 
                 // الميزات
                 Column(
-                  children:
-                      features
-                          .take(3)
-                          .map(
-                            (feature) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.check_circle,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      feature,
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
-                                    ),
-                                  ),
-                                ],
+                  children: features
+                      .take(3)
+                      .map(
+                        (feature) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Theme.of(context).primaryColor,
+                                size: 16,
                               ),
-                            ),
-                          )
-                          .toList(),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  feature,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
 
                 // الزر
@@ -275,11 +271,12 @@ class ExhibitionTypesSection extends StatelessWidget {
   }
 
   void _showOpenExhibitions(BuildContext context) {
-    final exhibitionProvider = Provider.of<ExhibitionProvider>(
-      context,
-      listen: false,
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const CreateExhibitionSheet(),
     );
-    exhibitionProvider.setFilter(ExhibitionType.open);
   }
 
   int _getCrossAxisCount(BuildContext context) {
