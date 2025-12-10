@@ -22,6 +22,7 @@ import 'providers/store/cart_provider.dart';
 import 'providers/store/order_provider.dart';
 import 'providers/store/product_provider.dart';
 import 'providers/store/invoice_provider.dart';
+import 'providers/wishlist_provider.dart';
 
 void main() {
   runApp(
@@ -48,6 +49,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => WorkshopProvider()),
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CommunityProvider()),
+        ChangeNotifierProvider(create: (context) => WishlistProvider()),
       ],
       child: const MyApp(),
     ),

@@ -5,6 +5,8 @@ import 'package:sanaa_artl/themes/exhibition/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'widgets/vr_viewer.dart';
 import 'widgets/vr_controls.dart';
+import 'pages/cart_page.dart';
+import 'pages/artist_profile_page.dart';
 
 class VRExhibitionPage extends StatefulWidget {
   const VRExhibitionPage({super.key});
@@ -16,6 +18,7 @@ class VRExhibitionPage extends StatefulWidget {
 class _VRExhibitionPageState extends State<VRExhibitionPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  int _currentPageIndex = 2; // VR Viewer هو الصفحة الافتراضية
 
   @override
   void initState() {
@@ -36,6 +39,45 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
     super.dispose();
   }
 
+  Widget _getCurrentPage(VRProvider vrProvider) {
+    switch (_currentPageIndex) {
+      case 0: // المفضلة - نعرض VR Viewer لأن المفضلة هي إجراء وليس صفحة
+        return _buildVRViewerPage(vrProvider);
+      case 1: // السلة
+        return const ExhibitionCartPage();
+      case 2: // VR Viewer (الافتراضي)
+        return _buildVRViewerPage(vrProvider);
+      case 3: // الفنان
+        return const ArtistProfilePage();
+      case 4: // مشاركة - نعرض VR Viewer
+        return _buildVRViewerPage(vrProvider);
+      default:
+        return _buildVRViewerPage(vrProvider);
+    }
+  }
+
+  Widget _buildVRViewerPage(VRProvider vrProvider) {
+    return Column(
+      children: [
+        // الهيدر
+        _buildHeader(context, vrProvider),
+        const SizedBox(height: 10),
+
+        // المحتوى الرئيسي
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: VRViewer(
+              animationController: _animationController,
+              vrProvider: vrProvider,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<VRProvider>(
@@ -43,41 +85,22 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: SafeArea(
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  // الهيدر
-                  _buildHeader(context, vrProvider),
-                  SizedBox(height: 10),
+            child: Column(
+              children: [
+                // المحتوى الحالي
+                Expanded(child: _getCurrentPage(vrProvider)),
 
-                  // المحتوى الرئيسي
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: VRViewer(
-                        animationController: _animationController,
-                        vrProvider: vrProvider,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // الشريط الجانبي
-                  // Expanded(
-                  //   child: ArtworkDetails(
-                  //     animationController: _animationController,
-                  //     vrProvider: vrProvider,
-                  //   ),
-                  // ),
-
-                  // عناصر التحكم
-                  VRControls(
-                    animationController: _animationController,
-                    vrProvider: vrProvider,
-                  ),
-                ],
-              ),
+                // الشريط السفلي الثابت
+                VRControls(
+                  animationController: _animationController,
+                  vrProvider: vrProvider,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentPageIndex = index;
+                    });
+                  },
+                ),
+              ],
             ),
           ),
         );

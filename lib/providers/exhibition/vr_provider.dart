@@ -19,6 +19,30 @@ class VRProvider with ChangeNotifier {
   double _rotationY = 0.0;
   List<ArtworkComment> _comments = [];
   String _newComment = '';
+  List<Map<String, dynamic>> _cartItems = [];
+  Map<String, dynamic> _currentArtist = {
+    'name': 'أحمد الصنعاني',
+    'specialty': 'فنان تشكيلي معاصر',
+    'bio':
+        'فنان تشكيلي يمني، متخصص في الفنون التشكيلية المعاصرة. يتميز بأسلوبه الفريد في دمج التراث اليمني مع الفن الحديث، وقد شارك في العديد من المعارض المحلية والدولية.',
+    'artworksCount': 45,
+    'exhibitionsCount': 12,
+    'awardsCount': 8,
+    'email': 'artist@sanaaarts.com',
+    'phone': '+967 777 777 777',
+    'location': 'صنعاء، اليمن',
+    'artworks': [
+      {'title': 'تراث صنعاء', 'year': '2024'},
+      {'title': 'ألوان اليمن', 'year': '2023'},
+      {'title': 'روح المدينة', 'year': '2023'},
+      {'title': 'جمال الطبيعة', 'year': '2022'},
+    ],
+    'exhibitions': [
+      {'name': 'معرض صنعاء الدولي', 'year': '2024'},
+      {'name': 'معرض الفن المعاصر', 'year': '2023'},
+      {'name': 'معرض الفن اليمني', 'year': '2022'},
+    ],
+  };
 
   int get currentArtworkIndex => _currentArtworkIndex;
   bool get isVRMode => _isVRMode;
@@ -36,6 +60,8 @@ class VRProvider with ChangeNotifier {
   double get rotationY => _rotationY;
   List<ArtworkComment> get comments => _comments;
   String get newComment => _newComment;
+  List<Map<String, dynamic>> get cartItems => _cartItems;
+  Map<String, dynamic> get currentArtist => _currentArtist;
 
   Artwork get currentArtwork {
     if (_artworks.isEmpty) {
@@ -161,8 +187,9 @@ class VRProvider with ChangeNotifier {
 
   void navigateToPreviousArtwork() {
     if (_artworks.isNotEmpty) {
-      _currentArtworkIndex = _currentArtworkIndex == 0 ? 
-          _artworks.length - 1 : _currentArtworkIndex - 1;
+      _currentArtworkIndex = _currentArtworkIndex == 0
+          ? _artworks.length - 1
+          : _currentArtworkIndex - 1;
       _userRating = 0;
       _loadCommentsForCurrentArtwork();
       notifyListeners();
@@ -199,7 +226,7 @@ class VRProvider with ChangeNotifier {
         likes: 0,
         replies: [],
       );
-      
+
       _comments.insert(0, newComment);
       _newComment = '';
       notifyListeners();
@@ -213,7 +240,9 @@ class VRProvider with ChangeNotifier {
   }
 
   void likeComment(String commentId) {
-    final commentIndex = _comments.indexWhere((comment) => comment.id == commentId);
+    final commentIndex = _comments.indexWhere(
+      (comment) => comment.id == commentId,
+    );
     if (commentIndex != -1) {
       final updatedComment = ArtworkComment(
         id: _comments[commentIndex].id,
@@ -224,7 +253,38 @@ class VRProvider with ChangeNotifier {
         likes: _comments[commentIndex].likes + 1,
         replies: _comments[commentIndex].replies,
       );
-      
+
+      _comments[commentIndex] = updatedComment;
+      notifyListeners();
+    }
+  }
+
+  void deleteComment(String commentId) {
+    _comments.removeWhere((comment) => comment.id == commentId);
+    notifyListeners();
+  }
+
+  void reportComment(String commentId, String reason) {
+    // في التطبيق الحقيقي، سيتم إرسال التقرير إلى الخادم
+    // يمكن أيضاً إخفاء التعليق من قائمة المستخدم
+    notifyListeners();
+  }
+
+  void editComment(String commentId, String newText) {
+    final commentIndex = _comments.indexWhere(
+      (comment) => comment.id == commentId,
+    );
+    if (commentIndex != -1 && newText.trim().isNotEmpty) {
+      final updatedComment = ArtworkComment(
+        id: _comments[commentIndex].id,
+        userId: _comments[commentIndex].userId,
+        userName: _comments[commentIndex].userName,
+        comment: newText.trim(),
+        createdAt: _comments[commentIndex].createdAt,
+        likes: _comments[commentIndex].likes,
+        replies: _comments[commentIndex].replies,
+      );
+
       _comments[commentIndex] = updatedComment;
       notifyListeners();
     }
@@ -273,12 +333,56 @@ class VRProvider with ChangeNotifier {
   }
 
   void addToFavorites() {
-    // في التطبيق الحقيقي، سيتم إضافة العمل إلى المفضلة
+    // سيتم تمرير context من الخارج لاستخدام WishlistProvider
+    // لذا سنحتفظ ببيانات المعرض كمتغير
+    final currentExhibition = {
+      'id': 'exhibition_${DateTime.now().millisecondsSinceEpoch}',
+      'title': 'معرض تراث صنعاء الخالد',
+      'description': 'معرض افتراضي يعرض التراث اليمني الأصيل',
+      'type': 'exhibition',
+      'artworkCount': artworks.length,
+      'addedAt': DateTime.now().toIso8601String(),
+    };
+
+    // سيتم استخدام هذا من الخارج
+    _lastExhibitionToAdd = currentExhibition;
+    notifyListeners();
+  }
+
+  Map<String, dynamic>? _lastExhibitionToAdd;
+  Map<String, dynamic>? get lastExhibitionToAdd => _lastExhibitionToAdd;
+
+  void clearLastExhibitionToAdd() {
+    _lastExhibitionToAdd = null;
     notifyListeners();
   }
 
   void addToCart() {
-    // في التطبيق الحقيقي، سيتم إضافة العمل إلى سلة التسوق
+    // إضافة العمل الفني الحالي إلى السلة
+    final artwork = currentArtwork;
+    final cartItem = {
+      'id': int.parse(artwork.id),
+      'title': artwork.title,
+      'artist': artwork.artist,
+      'price': artwork.price.toDouble(),
+      'imageUrl': artwork.imageUrl,
+    };
+
+    // التحقق من عدم وجود العمل في السلة مسبقاً
+    final exists = _cartItems.any((item) => item['id'] == cartItem['id']);
+    if (!exists) {
+      _cartItems.add(cartItem);
+    }
+    notifyListeners();
+  }
+
+  void removeFromCart(int itemId) {
+    _cartItems.removeWhere((item) => item['id'] == itemId);
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _cartItems.clear();
     notifyListeners();
   }
 

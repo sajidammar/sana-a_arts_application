@@ -33,16 +33,8 @@ class _VRViewerState extends State<VRViewer> {
     return Container(
       decoration: BoxDecoration(
         gradient: widget.vrProvider.isVRMode
-            ? LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorDark,
-                  Theme.of(context).primaryColorLight,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : AppColors.virtualGradient,
+            ? AppColors.getGoldGradient(context)
+            : AppColors.getVirtualGradient(context),
       ),
       child: Stack(
         children: [
@@ -111,23 +103,17 @@ class _VRViewerState extends State<VRViewer> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  color: Theme.of(context).primaryColor.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.play_arrow,
-                      color: Theme.of(context).colorScheme.surface,
-                      size: 16,
-                    ),
+                    Icon(Icons.play_arrow, color: Colors.white, size: 16),
                     const SizedBox(width: 4),
                     Text(
                       'الجولة التلقائية نشطة',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.surface,
+                        color: Colors.white,
                         fontSize: 12,
                         fontFamily: 'Tajawal',
                       ),
@@ -174,11 +160,7 @@ class _VRViewerState extends State<VRViewer> {
           offset: Offset(-10 * value, -10 * value),
           child: CustomPaint(
             size: Size.infinite,
-            painter: _VRGridPainter(
-              color: Theme.of(
-                context,
-              ).colorScheme.surface.withValues(alpha: 0.05),
-            ),
+            painter: _VRGridPainter(color: Colors.white.withOpacity(0.1)),
           ),
         );
       },
@@ -214,7 +196,7 @@ class _VRViewerState extends State<VRViewer> {
     Widget iconWidget = Icon(
       icon,
       size: size,
-      color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+      color: Colors.white.withOpacity(0.9),
     );
 
     if (animation != null) {
@@ -248,11 +230,8 @@ class _VRViewerState extends State<VRViewer> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
-          width: 2,
-        ),
+        color: Colors.white.withOpacity(0.1),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
       ),
       child: iconWidget,
     );
@@ -266,7 +245,7 @@ class _VRViewerState extends State<VRViewer> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.surface,
+            color: Colors.white,
             fontFamily: 'Tajawal',
           ),
         ),
@@ -275,7 +254,7 @@ class _VRViewerState extends State<VRViewer> {
           'اضغط وحرك الماوس للتنقل في المعرض',
           style: TextStyle(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+            color: Colors.white.withOpacity(0.8),
             fontFamily: 'Tajawal',
           ),
         ),
@@ -284,7 +263,7 @@ class _VRViewerState extends State<VRViewer> {
           'استخدم العجلة للتكبير والتصغير',
           style: TextStyle(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
+            color: Colors.white.withOpacity(0.8),
             fontFamily: 'Tajawal',
           ),
         ),
@@ -442,28 +421,20 @@ class _VRViewerState extends State<VRViewer> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: isActive
-                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.3)
-                : Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+                ? Colors.white.withOpacity(0.3)
+                : Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: Theme.of(
-                context,
-              ).colorScheme.surface.withValues(alpha: 0.3),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                color: Theme.of(context).colorScheme.surface,
-                size: 18,
-              ),
+              Icon(icon, color: Colors.white, size: 18),
               const SizedBox(width: 8),
               Text(
                 label,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   fontFamily: 'Tajawal',
@@ -492,28 +463,20 @@ class _VRViewerState extends State<VRViewer> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: isActive
-                ? Theme.of(context).colorScheme.surface.withValues(alpha: 0.3)
-                : Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+                ? Colors.white.withOpacity(0.3)
+                : Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Theme.of(
-                context,
-              ).colorScheme.surface.withValues(alpha: 0.2),
-            ),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                color: Theme.of(context).colorScheme.surface,
-                size: 16,
-              ),
+              Icon(icon, color: Colors.white, size: 16),
               const SizedBox(width: 4),
               Text(
                 label,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: Colors.white,
                   fontSize: 12,
                   fontFamily: 'Tajawal',
                 ),
@@ -539,14 +502,10 @@ class _VRViewerState extends State<VRViewer> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+            color: Colors.white.withOpacity(0.2),
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            icon,
-            color: Theme.of(context).colorScheme.surface,
-            size: 20,
-          ),
+          child: Icon(icon, color: Colors.white, size: 20),
         ),
       ),
     );
@@ -566,7 +525,7 @@ class _VRViewerState extends State<VRViewer> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+            color: Colors.white.withOpacity(0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -576,24 +535,20 @@ class _VRViewerState extends State<VRViewer> {
                 Text(
                   label,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Colors.white,
                     fontSize: 14,
                     fontFamily: 'Tajawal',
                   ),
                 ),
                 const SizedBox(width: 3),
               ],
-              Icon(
-                icon,
-                color: Theme.of(context).colorScheme.surface,
-                size: 20,
-              ),
+              Icon(icon, color: Colors.white, size: 20),
               if (label == 'السابق') ...[
                 const SizedBox(width: 3),
                 Text(
                   label,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Colors.white,
                     fontSize: 14,
                     fontFamily: 'Tajawal',
                   ),
