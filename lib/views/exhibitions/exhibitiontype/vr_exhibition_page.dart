@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/themes/exhibition/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'widgets/vr_viewer.dart';
 import 'widgets/vr_controls.dart';
