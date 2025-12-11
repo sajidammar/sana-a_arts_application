@@ -88,58 +88,103 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: surfaceColor,
-        elevation: 0,
-        iconTheme: IconThemeData(color: primaryColor),
-        title: Row(
-          children: [
-            Icon(Icons.palette, color: primaryColor),
-            const SizedBox(width: 10),
-            Text(
-              'إدارة الأعمال الفنية',
-              style: TextStyle(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Tajawal',
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: surfaceColor,
+            elevation: 0,
+            floating: true,
+            snap: true,
+            iconTheme: IconThemeData(color: primaryColor),
+            title: Row(
+              children: [
+                Icon(Icons.palette, color: primaryColor),
+                const SizedBox(width: 10),
+                Text(
+                  'إدارة الأعمال الفنية',
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Tajawal',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildPageHeader(isDark, textColor, primaryColor),
+                  const SizedBox(height: 20),
+                  _buildStatsGrid(isDark),
+                  const SizedBox(height: 20),
+                  ExhibitionRequestBanner(
+                    onTap: () => _showExhibitionRequestModal(context),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildFilterBar(
+                    isDark,
+                    surfaceColor,
+                    textColor,
+                    primaryColor,
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Page Header
-            _buildPageHeader(isDark, textColor, primaryColor),
-
-            const SizedBox(height: 20),
-
-            // Stats Grid
-            _buildStatsGrid(isDark),
-
-            const SizedBox(height: 20),
-
-            // Exhibition Request Banner
-            ExhibitionRequestBanner(
-              onTap: () => _showExhibitionRequestModal(context),
+          ),
+          _buildArtworksSliverGrid(isDark),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 40),
+              child: _getFilteredArtworks().isEmpty
+                  ? _buildEmptyState(isDark, textColor, primaryColor)
+                  : const SizedBox.shrink(),
             ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            const SizedBox(height: 20),
+  Widget _buildArtworksSliverGrid(bool isDark) {
+    final filtered = _getFilteredArtworks();
+    if (filtered.isEmpty)
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
 
-            // Filters
-            _buildFilterBar(isDark, surfaceColor, textColor, primaryColor),
-
-            const SizedBox(height: 20),
-
-            // Artworks Grid
-            _buildArtworksGrid(isDark),
-
-            if (_getFilteredArtworks().isEmpty)
-              _buildEmptyState(isDark, textColor, primaryColor),
-          ],
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverGrid(
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 350,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 0.8,
         ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final artwork = filtered[index];
+          return ManagementArtworkCard(
+            title: artwork['title'],
+            image: artwork['image'],
+            views: artwork['views'],
+            likes: artwork['likes'],
+            date: artwork['date'].toString().split(' ')[0],
+            statusLabel: artwork['status'] == ArtworkStatus.published
+                ? 'منشور'
+                : (artwork['status'] == ArtworkStatus.draft ? 'مسودة' : 'خاص'),
+            statusColor: artwork['status'] == ArtworkStatus.published
+                ? Colors.green
+                : (artwork['status'] == ArtworkStatus.draft
+                      ? Colors.amber
+                      : Colors.grey),
+            onEdit: () {},
+            onDelete: () {},
+            onView: () {},
+            onShare: () {},
+          );
+        }, childCount: filtered.length),
       ),
     );
   }
@@ -461,44 +506,6 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
 
       return true;
     }).toList();
-  }
-
-  Widget _buildArtworksGrid(bool isDark) {
-    final filtered = _getFilteredArtworks();
-
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 350,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: filtered.length,
-      itemBuilder: (context, index) {
-        final artwork = filtered[index];
-        return ManagementArtworkCard(
-          title: artwork['title'],
-          image: artwork['image'], // Handle asset vs network
-          views: artwork['views'],
-          likes: artwork['likes'],
-          date: artwork['date'].toString().split(' ')[0], // Simple date format
-          statusLabel: artwork['status'] == ArtworkStatus.published
-              ? 'منشور'
-              : (artwork['status'] == ArtworkStatus.draft ? 'مسودة' : 'خاص'),
-          statusColor: artwork['status'] == ArtworkStatus.published
-              ? Colors.green
-              : (artwork['status'] == ArtworkStatus.draft
-                    ? Colors.amber
-                    : Colors.grey),
-          onEdit: () {},
-          onDelete: () {},
-          onView: () {},
-          onShare: () {},
-        );
-      },
-    );
   }
 
   Widget _buildEmptyState(bool isDark, Color textColor, Color primaryColor) {

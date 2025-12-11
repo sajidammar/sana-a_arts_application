@@ -14,61 +14,68 @@ class PrivacyPage extends StatelessWidget {
       backgroundColor: isDark
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: const Text(
-          'الخصوصية والأمان',
-          style: TextStyle(fontFamily: 'Tajawal'),
-        ),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        foregroundColor: isDark
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildPrivacyCard(
-            isDark: isDark,
-            icon: Icons.lock,
-            title: 'سياسة الخصوصية',
-            description: 'اطلع على كيفية جمع واستخدام بياناتك الشخصية',
-            onTap: () {},
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'الخصوصية والأمان',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
+            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            foregroundColor: isDark
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            elevation: 2,
+            pinned: true,
           ),
-          const SizedBox(height: 12),
-          _buildPrivacyCard(
-            isDark: isDark,
-            icon: Icons.security,
-            title: 'الأمان',
-            description: 'إدارة إعدادات الأمان وكلمة المرور',
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildPrivacyCard(
-            isDark: isDark,
-            icon: Icons.visibility,
-            title: 'من يمكنه رؤية ملفي الشخصي',
-            description: 'تحكم في خصوصية ملفك الشخصي',
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildPrivacyCard(
-            isDark: isDark,
-            icon: Icons.block,
-            title: 'المستخدمون المحظورون',
-            description: 'إدارة قائمة المستخدمين المحظورين',
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildPrivacyCard(
-            isDark: isDark,
-            icon: Icons.delete_forever,
-            title: 'حذف الحساب',
-            description: 'حذف حسابك وجميع بياناتك بشكل دائم',
-            onTap: () {
-              _showDeleteAccountDialog(context, isDark);
-            },
-            color: Colors.red,
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildPrivacyCard(
+                  isDark: isDark,
+                  icon: Icons.lock,
+                  title: 'سياسة الخصوصية',
+                  description: 'اطلع على كيفية جمع واستخدام بياناتك الشخصية',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildPrivacyCard(
+                  isDark: isDark,
+                  icon: Icons.security,
+                  title: 'الأمان',
+                  description: 'إدارة إعدادات الأمان وكلمة المرور',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildPrivacyCard(
+                  isDark: isDark,
+                  icon: Icons.visibility,
+                  title: 'من يمكنه رؤية ملفي الشخصي',
+                  description: 'تحكم في خصوصية ملفك الشخصي',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildPrivacyCard(
+                  isDark: isDark,
+                  icon: Icons.block,
+                  title: 'المستخدمون المحظورون',
+                  description: 'إدارة قائمة المستخدمين المحظورين',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildPrivacyCard(
+                  isDark: isDark,
+                  icon: Icons.delete_forever,
+                  title: 'حذف الحساب',
+                  description: 'حذف حسابك وجميع بياناتك بشكل دائم',
+                  onTap: () {
+                    _showDeleteAccountDialog(context, isDark);
+                  },
+                  color: Colors.red,
+                ),
+              ]),
+            ),
           ),
         ],
       ),

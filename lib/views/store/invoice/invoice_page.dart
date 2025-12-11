@@ -14,73 +14,92 @@ class InvoicePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 1,
-        title: Text(
-          'الفاتورة',
-          style: TextStyle(
-            color: Theme.of(context).textTheme.titleLarge?.color,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.print, color: Theme.of(context).primaryColor),
-            onPressed: invoiceController.printInvoice,
-            tooltip: 'طباعة الفاتورة',
-          ),
-          IconButton(
-            icon: Icon(Icons.download, color: Theme.of(context).primaryColor),
-            onPressed: invoiceController.downloadInvoice,
-            tooltip: 'تحميل الفاتورة',
-          ),
-          IconButton(
-            icon: Icon(Icons.share, color: Theme.of(context).primaryColor),
-            onPressed: invoiceController.shareInvoice,
-            tooltip: 'مشاركة الفاتورة',
-          ),
-        ],
-      ),
-      body: invoiceProvider.currentInvoice == null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'جاري تحميل الفاتورة...',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            )
-          : SingleChildScrollView(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildInvoiceHeader(context),
-                  SizedBox(height: 24),
-                  _buildInvoiceInfo(invoiceProvider.currentInvoice!, context),
-                  SizedBox(height: 24),
-                  _buildOrderItems(invoiceProvider.currentInvoice!, context),
-                  SizedBox(height: 24),
-                  _buildTotals(invoiceProvider.currentInvoice!, context),
-                  SizedBox(height: 16),
-                  _buildFooter(context),
-                ],
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            elevation: 1,
+            floating: true,
+            snap: true,
+            pinned: true,
+            title: Text(
+              'الفاتورة',
+              style: TextStyle(
+                color: Theme.of(context).textTheme.titleLarge?.color,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).iconTheme.color,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.print, color: Theme.of(context).primaryColor),
+                onPressed: invoiceController.printInvoice,
+                tooltip: 'طباعة الفاتورة',
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.download,
+                  color: Theme.of(context).primaryColor,
+                ),
+                onPressed: invoiceController.downloadInvoice,
+                tooltip: 'تحميل الفاتورة',
+              ),
+              IconButton(
+                icon: Icon(Icons.share, color: Theme.of(context).primaryColor),
+                onPressed: invoiceController.shareInvoice,
+                tooltip: 'مشاركة الفاتورة',
+              ),
+            ],
+          ),
+          invoiceProvider.currentInvoice == null
+              ? SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'جاري تحميل الفاتورة...',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SliverPadding(
+                  padding: EdgeInsets.all(20),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      _buildInvoiceHeader(context),
+                      SizedBox(height: 24),
+                      _buildInvoiceInfo(
+                        invoiceProvider.currentInvoice!,
+                        context,
+                      ),
+                      SizedBox(height: 24),
+                      _buildOrderItems(
+                        invoiceProvider.currentInvoice!,
+                        context,
+                      ),
+                      SizedBox(height: 24),
+                      _buildTotals(invoiceProvider.currentInvoice!, context),
+                      SizedBox(height: 16),
+                      _buildFooter(context),
+                    ]),
+                  ),
+                ),
+        ],
+      ),
     );
   }
 

@@ -38,30 +38,34 @@ class _CommunityPageState extends State<CommunityPage>
       backgroundColor: isDark
           ? const Color(0xFF121212)
           : const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: Text(
-          'المجتمع الفني',
-          style: TextStyle(
-            color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        elevation: 1,
-        bottom: TabBar(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              toolbarHeight: 0,
+              backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              elevation: 1,
+              pinned: true,
+              floating: true,
+              snap: true,
+              forceElevated: innerBoxIsScrolled,
+              bottom: TabBar(
+                controller: _tabController,
+                labelColor: Theme.of(context).primaryColor,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Theme.of(context).primaryColor,
+                tabs: const [
+                  Tab(text: 'المنشورات'),
+                  Tab(text: 'الفنانين'),
+                ],
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
           controller: _tabController,
-          labelColor: Theme.of(context).primaryColor,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: Theme.of(context).primaryColor,
-          tabs: const [
-            Tab(text: 'المنشورات'),
-            Tab(text: 'الفنانين'),
-          ],
+          children: [_buildPostsTab(context), _buildArtistsTab(context)],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [_buildPostsTab(context), _buildArtistsTab(context)],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

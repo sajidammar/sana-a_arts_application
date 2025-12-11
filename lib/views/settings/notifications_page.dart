@@ -26,83 +26,93 @@ class _NotificationsPageState extends State<NotificationsPage> {
       backgroundColor: isDark
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: const Text('الإشعارات', style: TextStyle(fontFamily: 'Tajawal')),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        foregroundColor: isDark
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildSection(
-            isDark: isDark,
-            title: 'طرق الإشعارات',
-            children: [
-              _buildSwitchTile(
-                isDark,
-                'البريد الإلكتروني',
-                Icons.email,
-                _emailNotifications,
-                (value) {
-                  setState(() => _emailNotifications = value);
-                },
-              ),
-              _buildSwitchTile(
-                isDark,
-                'إشعارات الدفع',
-                Icons.notifications_active,
-                _pushNotifications,
-                (value) {
-                  setState(() => _pushNotifications = value);
-                },
-              ),
-              _buildSwitchTile(
-                isDark,
-                'الرسائل النصية',
-                Icons.sms,
-                _smsNotifications,
-                (value) {
-                  setState(() => _smsNotifications = value);
-                },
-              ),
-            ],
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'الإشعارات',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
+            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            foregroundColor: isDark
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            elevation: 2,
+            pinned: true,
           ),
-          const SizedBox(height: 16),
-          _buildSection(
-            isDark: isDark,
-            title: 'أنواع الإشعارات',
-            children: [
-              _buildSwitchTile(
-                isDark,
-                'تحديثات المعارض',
-                Icons.museum,
-                _exhibitionUpdates,
-                (value) {
-                  setState(() => _exhibitionUpdates = value);
-                },
-              ),
-              _buildSwitchTile(
-                isDark,
-                'تحديثات الطلبات',
-                Icons.shopping_bag,
-                _orderUpdates,
-                (value) {
-                  setState(() => _orderUpdates = value);
-                },
-              ),
-              _buildSwitchTile(
-                isDark,
-                'العروض الترويجية',
-                Icons.local_offer,
-                _promotions,
-                (value) {
-                  setState(() => _promotions = value);
-                },
-              ),
-            ],
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildSection(
+                  isDark: isDark,
+                  title: 'طرق الإشعارات',
+                  children: [
+                    _buildSwitchTile(
+                      isDark,
+                      'البريد الإلكتروني',
+                      Icons.email,
+                      _emailNotifications,
+                      (value) {
+                        setState(() => _emailNotifications = value);
+                      },
+                    ),
+                    _buildSwitchTile(
+                      isDark,
+                      'إشعارات الدفع',
+                      Icons.notifications_active,
+                      _pushNotifications,
+                      (value) {
+                        setState(() => _pushNotifications = value);
+                      },
+                    ),
+                    _buildSwitchTile(
+                      isDark,
+                      'الرسائل النصية',
+                      Icons.sms,
+                      _smsNotifications,
+                      (value) {
+                        setState(() => _smsNotifications = value);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildSection(
+                  isDark: isDark,
+                  title: 'أنواع الإشعارات',
+                  children: [
+                    _buildSwitchTile(
+                      isDark,
+                      'تحديثات المعارض',
+                      Icons.museum,
+                      _exhibitionUpdates,
+                      (value) {
+                        setState(() => _exhibitionUpdates = value);
+                      },
+                    ),
+                    _buildSwitchTile(
+                      isDark,
+                      'تحديثات الطلبات',
+                      Icons.shopping_bag,
+                      _orderUpdates,
+                      (value) {
+                        setState(() => _orderUpdates = value);
+                      },
+                    ),
+                    _buildSwitchTile(
+                      isDark,
+                      'العروض الترويجية',
+                      Icons.local_offer,
+                      _promotions,
+                      (value) {
+                        setState(() => _promotions = value);
+                      },
+                    ),
+                  ],
+                ),
+              ]),
+            ),
           ),
         ],
       ),

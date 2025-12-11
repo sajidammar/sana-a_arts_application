@@ -14,65 +14,72 @@ class HelpPage extends StatelessWidget {
       backgroundColor: isDark
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: const Text(
-          'المساعدة والدعم',
-          style: TextStyle(fontFamily: 'Tajawal'),
-        ),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        foregroundColor: isDark
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          _buildHelpCard(
-            isDark: isDark,
-            icon: Icons.question_answer,
-            title: 'الأسئلة الشائعة',
-            description: 'ابحث عن إجابات للأسئلة الأكثر شيوعاً',
-            onTap: () {},
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'المساعدة والدعم',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
+            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            foregroundColor: isDark
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            elevation: 2,
+            pinned: true,
           ),
-          const SizedBox(height: 12),
-          _buildHelpCard(
-            isDark: isDark,
-            icon: Icons.chat,
-            title: 'الدردشة المباشرة',
-            description: 'تحدث مع فريق الدعم مباشرة',
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('سيتم فتح الدردشة قريباً')),
-              );
-            },
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildHelpCard(
+                  isDark: isDark,
+                  icon: Icons.question_answer,
+                  title: 'الأسئلة الشائعة',
+                  description: 'ابحث عن إجابات للأسئلة الأكثر شيوعاً',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildHelpCard(
+                  isDark: isDark,
+                  icon: Icons.chat,
+                  title: 'الدردشة المباشرة',
+                  description: 'تحدث مع فريق الدعم مباشرة',
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('سيتم فتح الدردشة قريباً')),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+                _buildHelpCard(
+                  isDark: isDark,
+                  icon: Icons.email,
+                  title: 'إرسال رسالة',
+                  description: 'أرسل استفسارك عبر البريد الإلكتروني',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildHelpCard(
+                  isDark: isDark,
+                  icon: Icons.phone,
+                  title: 'الاتصال بنا',
+                  description: 'تواصل معنا عبر الهاتف',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 12),
+                _buildHelpCard(
+                  isDark: isDark,
+                  icon: Icons.bug_report,
+                  title: 'الإبلاغ عن مشكلة',
+                  description: 'أخبرنا عن أي مشاكل تواجهها',
+                  onTap: () {},
+                ),
+                const SizedBox(height: 24),
+                _buildContactInfo(isDark),
+              ]),
+            ),
           ),
-          const SizedBox(height: 12),
-          _buildHelpCard(
-            isDark: isDark,
-            icon: Icons.email,
-            title: 'إرسال رسالة',
-            description: 'أرسل استفسارك عبر البريد الإلكتروني',
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildHelpCard(
-            isDark: isDark,
-            icon: Icons.phone,
-            title: 'الاتصال بنا',
-            description: 'تواصل معنا عبر الهاتف',
-            onTap: () {},
-          ),
-          const SizedBox(height: 12),
-          _buildHelpCard(
-            isDark: isDark,
-            icon: Icons.bug_report,
-            title: 'الإبلاغ عن مشكلة',
-            description: 'أخبرنا عن أي مشاكل تواجهها',
-            onTap: () {},
-          ),
-          const SizedBox(height: 24),
-          _buildContactInfo(isDark),
         ],
       ),
     );

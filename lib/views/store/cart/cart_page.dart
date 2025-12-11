@@ -13,41 +13,62 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 1,
-        title: Text(
-          'سلة التسوق',
-          style: TextStyle(
-            color: AppConstants.textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppConstants.textColor),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           return Column(
             children: [
               Expanded(
-                child: cartProvider.cartItems.isEmpty
-                    ? _buildEmptyCart(context)
-                    : ListView.builder(
-                        padding: EdgeInsets.all(AppConstants.defaultPadding),
-                        itemCount: cartProvider.cartItems.length,
-                        itemBuilder: (context, index) {
-                          return _buildCartItem(
-                            cartProvider.cartItems[index],
-                            index,
-                            context,
-                          );
-                        },
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      backgroundColor: Theme.of(
+                        context,
+                      ).appBarTheme.backgroundColor,
+                      elevation: 1,
+                      floating: true,
+                      snap: true,
+                      pinned: true,
+                      title: Text(
+                        'سلة التسوق',
+                        style: TextStyle(
+                          color: AppConstants.textColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
+                      centerTitle: true,
+                      leading: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: AppConstants.textColor,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                    cartProvider.cartItems.isEmpty
+                        ? SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: _buildEmptyCart(context),
+                          )
+                        : SliverPadding(
+                            padding: EdgeInsets.all(
+                              AppConstants.defaultPadding,
+                            ),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((
+                                context,
+                                index,
+                              ) {
+                                return _buildCartItem(
+                                  cartProvider.cartItems[index],
+                                  index,
+                                  context,
+                                );
+                              }, childCount: cartProvider.cartItems.length),
+                            ),
+                          ),
+                  ],
+                ),
               ),
               if (cartProvider.cartItems.isNotEmpty)
                 _buildOrderSummary(cartProvider, context),

@@ -36,131 +36,142 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       backgroundColor: isDark
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: const Text(
-          'تغيير كلمة المرور',
-          style: TextStyle(fontFamily: 'Tajawal'),
-        ),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        foregroundColor: isDark
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              // رسالة تعليمات
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color:
-                      (isDark
-                              ? const Color(0xFFD4AF37)
-                              : const Color(0xFFB8860B))
-                          .withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: const Text(
+              'تغيير كلمة المرور',
+              style: TextStyle(fontFamily: 'Tajawal'),
+            ),
+            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            foregroundColor: isDark
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            elevation: 2,
+            pinned: true,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: isDark
-                          ? const Color(0xFFD4AF37)
-                          : const Color(0xFFB8860B),
+                    // رسالة تعليمات
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color:
+                            (isDark
+                                    ? const Color(0xFFD4AF37)
+                                    : const Color(0xFFB8860B))
+                                .withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: isDark
+                                ? const Color(0xFFD4AF37)
+                                : const Color(0xFFB8860B),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل',
+                              style: TextStyle(
+                                fontFamily: 'Tajawal',
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل',
-                        style: TextStyle(
-                          fontFamily: 'Tajawal',
-                          color: isDark ? Colors.white : Colors.black87,
+                    const SizedBox(height: 24),
+
+                    // كلمة المرور الحالية
+                    _buildPasswordField(
+                      controller: _currentPasswordController,
+                      label: 'كلمة المرور الحالية',
+                      obscureText: _obscureCurrentPassword,
+                      onToggleVisibility: () {
+                        setState(
+                          () => _obscureCurrentPassword =
+                              !_obscureCurrentPassword,
+                        );
+                      },
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // كلمة المرور الجديدة
+                    _buildPasswordField(
+                      controller: _newPasswordController,
+                      label: 'كلمة المرور الجديدة',
+                      obscureText: _obscureNewPassword,
+                      onToggleVisibility: () {
+                        setState(
+                          () => _obscureNewPassword = !_obscureNewPassword,
+                        );
+                      },
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // تأكيد كلمة المرور
+                    _buildPasswordField(
+                      controller: _confirmPasswordController,
+                      label: 'تأكيد كلمة المرور',
+                      obscureText: _obscureConfirmPassword,
+                      onToggleVisibility: () {
+                        setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        );
+                      },
+                      isDark: isDark,
+                      isConfirm: true,
+                    ),
+                    const SizedBox(height: 24),
+
+                    // زر الحفظ
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('تم تغيير كلمة المرور بنجاح'),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDark
+                              ? const Color(0xFFD4AF37)
+                              : const Color(0xFFB8860B),
+                          foregroundColor: isDark ? Colors.black : Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'تغيير كلمة المرور',
+                          style: TextStyle(fontSize: 16, fontFamily: 'Tajawal'),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // كلمة المرور الحالية
-              _buildPasswordField(
-                controller: _currentPasswordController,
-                label: 'كلمة المرور الحالية',
-                obscureText: _obscureCurrentPassword,
-                onToggleVisibility: () {
-                  setState(
-                    () => _obscureCurrentPassword = !_obscureCurrentPassword,
-                  );
-                },
-                isDark: isDark,
-              ),
-              const SizedBox(height: 16),
-
-              // كلمة المرور الجديدة
-              _buildPasswordField(
-                controller: _newPasswordController,
-                label: 'كلمة المرور الجديدة',
-                obscureText: _obscureNewPassword,
-                onToggleVisibility: () {
-                  setState(() => _obscureNewPassword = !_obscureNewPassword);
-                },
-                isDark: isDark,
-              ),
-              const SizedBox(height: 16),
-
-              // تأكيد كلمة المرور
-              _buildPasswordField(
-                controller: _confirmPasswordController,
-                label: 'تأكيد كلمة المرور',
-                obscureText: _obscureConfirmPassword,
-                onToggleVisibility: () {
-                  setState(
-                    () => _obscureConfirmPassword = !_obscureConfirmPassword,
-                  );
-                },
-                isDark: isDark,
-                isConfirm: true,
-              ),
-              const SizedBox(height: 24),
-
-              // زر الحفظ
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('تم تغيير كلمة المرور بنجاح'),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isDark
-                        ? const Color(0xFFD4AF37)
-                        : const Color(0xFFB8860B),
-                    foregroundColor: isDark ? Colors.black : Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'تغيير كلمة المرور',
-                    style: TextStyle(fontSize: 16, fontFamily: 'Tajawal'),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

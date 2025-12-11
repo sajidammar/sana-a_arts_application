@@ -6,6 +6,7 @@ import '../../providers/store/cart_provider.dart';
 import '../../providers/store/product_provider.dart';
 import '../../themes/store/app_theme.dart';
 import '../../utils/store/app_constants.dart';
+import 'cart/cart_page.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
@@ -30,28 +31,63 @@ class _StorePageState extends State<StorePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 1,
-        title: Row(
-          children: [
-            Text(
-              'المتجر',
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
+      body: CustomScrollView(
+        slivers: [
+          // Header removed as per global layout update
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _buildSearchAndFilters(productProvider, context),
+                _buildProductsGrid(productProvider, cartProvider, context),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CartPage()),
+          );
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
           children: [
-            // _buildHeroSection(context),
-            _buildSearchAndFilters(productProvider, context),
-            _buildProductsGrid(productProvider, cartProvider, context),
+            const Icon(
+              Icons.shopping_cart_outlined,
+              color: Colors.white,
+              size: 28,
+            ),
+            if (cartProvider.cartItems.isNotEmpty)
+              Positioned(
+                top: -5,
+                right: -5,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${cartProvider.cartItems.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

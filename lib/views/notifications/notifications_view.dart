@@ -106,55 +106,65 @@ class _NotificationsViewState extends State<NotificationsView>
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        title: const Text(
-          'مركز الإشعارات',
-          style: TextStyle(fontFamily: 'Tajawal'),
-        ),
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        foregroundColor: primaryColor,
-        elevation: 2,
-        bottom: TabBar(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              title: const Text(
+                'مركز الإشعارات',
+                style: TextStyle(fontFamily: 'Tajawal'),
+              ),
+              backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              foregroundColor: primaryColor,
+              elevation: 2,
+              pinned: true,
+              floating: true,
+              snap: true,
+              forceElevated: innerBoxIsScrolled,
+              bottom: TabBar(
+                controller: _tabController,
+                labelColor: primaryColor,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: primaryColor,
+                labelStyle: const TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontWeight: FontWeight.bold,
+                ),
+                tabs: const [
+                  Tab(text: 'الكل'),
+                  Tab(text: 'العروض'),
+                  Tab(text: 'الدعم'),
+                ],
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
           controller: _tabController,
-          labelColor: primaryColor,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: primaryColor,
-          labelStyle: const TextStyle(
-            fontFamily: 'Tajawal',
-            fontWeight: FontWeight.bold,
-          ),
-          tabs: const [
-            Tab(text: 'الكل'),
-            Tab(text: 'العروض'),
-            Tab(text: 'الدعم'),
+          children: [
+            _buildNotificationList(
+              _notifications,
+              isDark,
+              cardColor,
+              textColor,
+              primaryColor,
+            ),
+            _buildNotificationList(
+              _notifications.where((n) => n.type == 'offer').toList(),
+              isDark,
+              cardColor,
+              textColor,
+              primaryColor,
+            ),
+            _buildNotificationList(
+              _notifications.where((n) => n.type == 'support').toList(),
+              isDark,
+              cardColor,
+              textColor,
+              primaryColor,
+            ),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildNotificationList(
-            _notifications,
-            isDark,
-            cardColor,
-            textColor,
-            primaryColor,
-          ),
-          _buildNotificationList(
-            _notifications.where((n) => n.type == 'offer').toList(),
-            isDark,
-            cardColor,
-            textColor,
-            primaryColor,
-          ),
-          _buildNotificationList(
-            _notifications.where((n) => n.type == 'support').toList(),
-            isDark,
-            cardColor,
-            textColor,
-            primaryColor,
-          ),
-        ],
       ),
     );
   }

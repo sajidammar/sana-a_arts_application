@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'package:sanaa_artl/utils/exhibition/responsive.dart';
+
 import 'widgets/hero_section.dart';
 import 'widgets/exhibition_types_section.dart';
 import 'widgets/current_exhibitions_section.dart';
@@ -44,14 +44,7 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
       body: CustomScrollView(
         slivers: [
           // استبدال SliverPersistentHeader بـ SliverAppBar العادي
-          SliverAppBar(
-            pinned: true,
-            floating: false,
-            expandedHeight: Responsive.isMobile(context) ? 80 : 100,
-            // flexibleSpace: const Header(),
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            elevation: 2,
-          ),
+          // Header removed as per global layout update
 
           // قسم البطل (Hero)
           SliverToBoxAdapter(

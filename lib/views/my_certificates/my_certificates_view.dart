@@ -102,64 +102,78 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: BackButton(color: primaryColor),
-        title: Text(
-          'الشهادات والإنجازات',
-          style: TextStyle(
-            color: textColor,
-            fontFamily: 'Tajawal',
-            fontWeight: FontWeight.bold,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            floating: true,
+            snap: true,
+            leading: BackButton(color: primaryColor),
+            title: Text(
+              'الشهادات والإنجازات',
+              style: TextStyle(
+                color: textColor,
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: CircleAvatar(
+                  backgroundColor: const Color(0xFF667eea),
+                  child: const Icon(
+                    Icons.workspace_premium,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CircleAvatar(
-              backgroundColor: const Color(
-                0xFF667eea,
-              ), // From Gradient Certificates
-              child: const Icon(Icons.workspace_premium, color: Colors.white),
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildBreadcrumb(isDark, primaryColor, textColor),
+                const SizedBox(height: 30),
+                const CertificatesStatsGrid(),
+                const SizedBox(height: 30),
+                const AchievementsSection(),
+                const SizedBox(height: 30),
+                _buildFilterSection(isDark, primaryColor, textColor),
+                const SizedBox(height: 20),
+              ]),
+            ),
+          ),
+          _buildCertificatesSliverList(isDark),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 40, top: 20),
+              child: _getSortedAndFilteredCertificates().isEmpty
+                  ? _buildEmptyState(context, textColor, primaryColor)
+                  : const SizedBox.shrink(),
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Breadcrumb
-            _buildBreadcrumb(isDark, primaryColor, textColor),
+    );
+  }
 
-            const SizedBox(height: 30),
+  Widget _buildCertificatesSliverList(bool isDark) {
+    final filtered = _getSortedAndFilteredCertificates();
+    if (filtered.isEmpty)
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
 
-            // Stats Grid
-            const CertificatesStatsGrid(),
-
-            const SizedBox(height: 30),
-
-            // Achievements Section
-            const AchievementsSection(),
-
-            const SizedBox(height: 30),
-
-            // Filter Section
-            _buildFilterSection(isDark, primaryColor, textColor),
-
-            const SizedBox(height: 20),
-
-            // Certificates List
-            _buildCertificatesList(isDark),
-
-            const SizedBox(height: 40),
-
-            // Empty State
-            if (_getSortedAndFilteredCertificates().isEmpty)
-              _buildEmptyState(context, textColor, primaryColor),
-          ],
-        ),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: CertificateCard(data: filtered[index], isDark: isDark),
+          );
+        }, childCount: filtered.length),
       ),
     );
   }
@@ -388,21 +402,6 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
     });
 
     return filtered;
-  }
-
-  Widget _buildCertificatesList(bool isDark) {
-    final filtered = _getSortedAndFilteredCertificates();
-    if (filtered.isEmpty) return const SizedBox.shrink();
-
-    return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: filtered.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 20),
-      itemBuilder: (context, index) {
-        return CertificateCard(data: filtered[index], isDark: isDark);
-      },
-    );
   }
 
   Widget _buildEmptyState(

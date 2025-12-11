@@ -18,46 +18,54 @@ class CategoryDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(categoryName),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-      ),
-      body: Consumer<WorkshopProvider>(
-        builder: (context, provider, child) {
-          // In a real app, you might filter by categoryId here
-          // For now, we'll just show all workshops or filter if the logic exists
-          final workshops = provider.workshops;
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(categoryName),
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            elevation: 0,
+            pinned: true,
+            floating: true,
+          ),
+          Consumer<WorkshopProvider>(
+            builder: (context, provider, child) {
+              final workshops = provider.workshops;
 
-          if (workshops.isEmpty) {
-            return Center(
-              child: Text(
-                'لا توجد ورش متاحة في هذه الفئة حالياً',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[400]
-                      : Colors.grey,
-                  fontFamily: 'Tajawal',
-                ),
-              ),
-            );
-          }
+              if (workshops.isEmpty) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Text(
+                      'لا توجد ورش متاحة في هذه الفئة حالياً',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[400]
+                            : Colors.grey,
+                        fontFamily: 'Tajawal',
+                      ),
+                    ),
+                  ),
+                );
+              }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: workshops.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: WorkshopCard(
-                  workshop: workshops[index],
-                  isHorizontal: false, // Vertical layout
+              return SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: WorkshopCard(
+                        workshop: workshops[index],
+                        isHorizontal: false, // Vertical layout
+                      ),
+                    );
+                  }, childCount: workshops.length),
                 ),
               );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }

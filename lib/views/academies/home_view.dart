@@ -34,48 +34,32 @@ class _AcademyHomeViewState extends State<AcademyHomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: [
-              // Header
-              // SliverAppBar(
-              //   pinned: true,
-              //   floating: false,
-              //   snap: false,
-              //   expandedHeight: 120,
-              //   collapsedHeight: 120,
-              //   toolbarHeight: 120,
-              //   backgroundColor: Colors.white,
-              //   elevation: 3,
-              //   flexibleSpace: const AppHeader(),
-              // ),
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          // Header removed as per global layout update
 
-              // Hero Section
-              const SliverToBoxAdapter(child: HeroSection()),
+          // Hero Section
+          const SliverToBoxAdapter(child: HeroSection()),
 
-              // Quick Navigation
-              const SliverToBoxAdapter(child: QuickNavigationSection()),
+          // Quick Navigation
+          const SliverToBoxAdapter(child: QuickNavigationSection()),
 
-              // Categories Section
-              const SliverToBoxAdapter(child: CategoriesSection()),
+          // Categories Section
+          const SliverToBoxAdapter(child: CategoriesSection()),
 
-              // الورش المميزة (أفقية)
-              const SliverToBoxAdapter(child: HorizontalWorkshopsGrid()),
+          // الورش المميزة (أفقية)
+          const SliverToBoxAdapter(child: HorizontalWorkshopsGrid()),
 
-              // ✅ جميع الورش التدريبية (أفقية جديدة)
-              _buildAllWorkshopsSection(),
+          // ✅ جميع الورش التدريبية (أفقية جديدة)
+          _buildAllWorkshopsSection(),
 
-              // المدربون المتخصصون (أفقية)
-              const SliverToBoxAdapter(child: HorizontalInstructorsSection()),
+          // المدربون المتخصصون (أفقية)
+          const SliverToBoxAdapter(child: HorizontalInstructorsSection()),
 
-              // Footer
-              const SliverToBoxAdapter(child: SizedBox(height: 40)),
-            ],
-          ),
-        ),
+          // Footer
+          const SliverToBoxAdapter(child: SizedBox(height: 40)),
+        ],
       ),
     );
   }

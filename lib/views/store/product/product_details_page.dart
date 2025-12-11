@@ -6,7 +6,6 @@ import '../../../providers/store/cart_provider.dart';
 import '../../../themes/store/app_theme.dart';
 import '../../../utils/store/app_constants.dart';
 
-
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
 
@@ -27,47 +26,59 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-        title: Text(
-          'التفاصيل',
-          style: TextStyle(
-            color: Theme.of(context).textTheme.titleLarge?.color,
-          ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Theme.of(context).primaryColor,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildProductImages(context),
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/cart');
-            },
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Theme.of(
+                  context,
+                ).scaffoldBackgroundColor.withOpacity(0.7),
+                child: BackButton(color: Theme.of(context).iconTheme.color),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: Theme.of(
+                    context,
+                  ).scaffoldBackgroundColor.withOpacity(0.7),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _buildProductInfo(context),
+              _buildProductSpecs(context),
+              _buildProductDescription(context),
+              _buildRelatedProducts(context),
+            ]),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildProductImages(context),
-            _buildProductInfo(context),
-            _buildProductSpecs(context),
-            _buildProductDescription(context),
-            _buildRelatedProducts(context),
-          ],
-        ),
+      bottomNavigationBar: _buildBottomActions(
+        cartProvider,
+        productController,
+        context,
       ),
-      bottomNavigationBar: _buildBottomActions(cartProvider, productController, context),
     );
   }
 
@@ -97,7 +108,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   decoration: BoxDecoration(
                     color: _selectedImageIndex == index
                         ? Theme.of(context).primaryColor
-                        : Colors.white.withValues(alpha:0.5),
+                        : Colors.white.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                 );
@@ -129,9 +140,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade800.withValues(alpha:0.3)
+                  ? Colors.grey.shade800.withValues(alpha: 0.3)
                   : AppConstants.accentColor,
-              borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+              borderRadius: BorderRadius.circular(
+                AppConstants.defaultBorderRadius,
+              ),
             ),
             child: Row(
               children: [
@@ -165,7 +178,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    foregroundColor:
+                        Theme.of(context).brightness == Brightness.dark
                         ? Colors.black
                         : Colors.white,
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -247,10 +261,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(Icons.info, color: Theme.of(context).primaryColor),
               SizedBox(width: 8),
               Text(
                 'مواصفات العمل',
@@ -289,7 +300,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey.shade800.withValues(alpha:0.3)
+            ? Colors.grey.shade800.withValues(alpha: 0.3)
             : AppConstants.accentColor,
         borderRadius: BorderRadius.circular(8),
       ),
@@ -325,10 +336,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.description,
-                color: Theme.of(context).primaryColor,
-              ),
+              Icon(Icons.description, color: Theme.of(context).primaryColor),
               SizedBox(width: 8),
               Text(
                 'وصف العمل',
@@ -375,10 +383,30 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _buildRelatedProductCard('لوحة الطبيعة الصامتة', 'محمد علي الحديدي', 320.0, context),
-                _buildRelatedProductCard('منظر طبيعي جبلي', 'سارة أحمد القادري', 280.0, context),
-                _buildRelatedProductCard('بورتريه تراثي', 'فاطمة علي الحكيمي', 380.0, context),
-                _buildRelatedProductCard('لوحة البحر والشاطئ', 'عبدالله محمد الزبيري', 420.0, context),
+                _buildRelatedProductCard(
+                  'لوحة الطبيعة الصامتة',
+                  'محمد علي الحديدي',
+                  320.0,
+                  context,
+                ),
+                _buildRelatedProductCard(
+                  'منظر طبيعي جبلي',
+                  'سارة أحمد القادري',
+                  280.0,
+                  context,
+                ),
+                _buildRelatedProductCard(
+                  'بورتريه تراثي',
+                  'فاطمة علي الحكيمي',
+                  380.0,
+                  context,
+                ),
+                _buildRelatedProductCard(
+                  'لوحة البحر والشاطئ',
+                  'عبدالله محمد الزبيري',
+                  420.0,
+                  context,
+                ),
               ],
             ),
           ),
@@ -387,7 +415,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildRelatedProductCard(String title, String artist, double price, BuildContext context) {
+  Widget _buildRelatedProductCard(
+    String title,
+    String artist,
+    double price,
+    BuildContext context,
+  ) {
     return Container(
       width: 150,
       margin: EdgeInsets.only(right: 12),
@@ -447,7 +480,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildBottomActions(CartProvider cartProvider, ProductController productController, BuildContext context) {
+  Widget _buildBottomActions(
+    CartProvider cartProvider,
+    ProductController productController,
+    BuildContext context,
+  ) {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -455,7 +492,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           color: Theme.of(context).cardTheme.color,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               spreadRadius: 2,
               blurRadius: 8,
             ),
@@ -468,14 +505,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               height: 50,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).dividerTheme.color ?? Colors.grey.shade300,
+                  color:
+                      Theme.of(context).dividerTheme.color ??
+                      Colors.grey.shade300,
                 ),
-                borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                borderRadius: BorderRadius.circular(
+                  AppConstants.defaultBorderRadius,
+                ),
               ),
               child: IconButton(
                 icon: Icon(
                   _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: _isFavorite ? Colors.red : AppTheme.getTextColor(context),
+                  color: _isFavorite
+                      ? Colors.red
+                      : AppTheme.getTextColor(context),
                 ),
                 onPressed: () {
                   setState(() {
@@ -490,15 +533,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               height: 50,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).dividerTheme.color ?? Colors.grey.shade300,
+                  color:
+                      Theme.of(context).dividerTheme.color ??
+                      Colors.grey.shade300,
                 ),
-                borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                borderRadius: BorderRadius.circular(
+                  AppConstants.defaultBorderRadius,
+                ),
               ),
               child: IconButton(
-                icon: Icon(
-                  Icons.share,
-                  color: AppTheme.getTextColor(context),
-                ),
+                icon: Icon(Icons.share, color: AppTheme.getTextColor(context)),
                 onPressed: () {},
               ),
             ),
@@ -511,12 +555,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Theme.of(context).brightness == Brightness.dark
+                  foregroundColor:
+                      Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
                       : Colors.white,
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.defaultBorderRadius,
+                    ),
                   ),
                 ),
                 child: Row(

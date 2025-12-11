@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/views/academies/home_view.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
-import 'package:sanaa_artl/views/home/shared/custom_app_bar.dart';
+
 import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
 import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
@@ -18,6 +18,7 @@ import '../wishlist/wishlist_view.dart';
 import '../help/help_page.dart';
 import '../settings/privacy_page.dart';
 import '../store/order/order_history_page.dart';
+
 import '../notifications/notifications_view.dart';
 import '../artworks_management/artworks_management_view.dart';
 import '../my_exhibitions/my_exhibitions_view.dart';
@@ -35,7 +36,7 @@ class _Home_PageState extends State<Home_Page> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = [
-    const _HomeContent(),
+    const SizedBox.shrink(), // Home Content handled separately
     const ExhibitionHomePage(),
     const AcademyHomeView(),
     const StorePage(),
@@ -83,16 +84,83 @@ class _Home_PageState extends State<Home_Page> {
       backgroundColor: themeProvider.isDarkMode
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: CustomAppBar(
-        onMenuPressed: _openDrawer,
-        onSearchPressed: () {},
-        onWishlistPressed: _navigateToWishlist,
-        onNotificationsPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const NotificationsView()),
-          );
-        },
+      appBar: AppBar(
+        elevation: 2,
+        backgroundColor: themeProvider.isDarkMode
+            ? const Color(0xFF1E1E1E)
+            : Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.menu,
+            color: themeProvider.isDarkMode
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            size: 28,
+          ),
+          onPressed: _openDrawer,
+        ),
+        title: Container(
+          height: 45,
+          decoration: BoxDecoration(
+            color: themeProvider.isDarkMode
+                ? const Color(0xFF2D2D2D)
+                : const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: themeProvider.isDarkMode
+                  ? const Color(0xFFD4AF37)
+                  : const Color(0xFFB8860B),
+            ),
+          ),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'ابحث عن الأعمال الفنية...',
+              hintStyle: TextStyle(
+                color: themeProvider.isDarkMode
+                    ? const Color(0xFFB0B0B0)
+                    : const Color(0xFF666666),
+              ),
+              prefixIcon: Icon(
+                Icons.search,
+                color: themeProvider.isDarkMode
+                    ? const Color(0xFFD4AF37)
+                    : const Color(0xFFB8860B),
+              ),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+            ),
+            onTap: () {},
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.notifications_none,
+              color: themeProvider.isDarkMode
+                  ? const Color(0xFFD4AF37)
+                  : const Color(0xFFB8860B),
+              size: 28,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsView(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.favorite_border,
+              color: themeProvider.isDarkMode
+                  ? const Color(0xFFD4AF37)
+                  : const Color(0xFFB8860B),
+              size: 28,
+            ),
+            onPressed: _navigateToWishlist,
+          ),
+        ],
       ),
       drawer: SideDrawer(
         onProfilePressed: _navigateToProfile,
@@ -183,7 +251,7 @@ class _Home_PageState extends State<Home_Page> {
           );
         },
       ),
-      body: _pages[_currentIndex],
+      body: _currentIndex == 0 ? const _HomeContent() : _pages[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
         onTabSelected: (index) {
@@ -197,18 +265,20 @@ class _Home_PageState extends State<Home_Page> {
 }
 
 class _HomeContent extends StatelessWidget {
-  const _HomeContent({super.key});
+  const _HomeContent();
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const AdsBanner(),
-          const FeaturedExhibitions(),
-          const SizedBox(height: 20),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate([
+            const AdsBanner(),
+            const FeaturedExhibitions(),
+            const SizedBox(height: 20),
+          ]),
+        ),
+      ],
     );
   }
 }

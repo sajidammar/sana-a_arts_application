@@ -10,20 +10,16 @@ class InstructorDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(instructor.name),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Image
-            SizedBox(
-              height: 250,
-              width: double.infinity,
-              child: Image.asset(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(instructor.name),
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            elevation: 0,
+            pinned: true,
+            expandedHeight: 250,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.asset(
                 instructor.imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
@@ -38,8 +34,9 @@ class InstructorDetailsView extends StatelessWidget {
                 },
               ),
             ),
-
-            Padding(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,8 +206,8 @@ class InstructorDetailsView extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

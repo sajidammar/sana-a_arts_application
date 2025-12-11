@@ -91,64 +91,75 @@ class _MyExhibitionsViewState extends State<MyExhibitionsView> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: BackButton(color: primaryColor),
-        title: Text(
-          'معارضي الفنية',
-          style: TextStyle(
-            color: textColor,
-            fontFamily: 'Tajawal',
-            fontWeight: FontWeight.bold,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            floating: true,
+            snap: true,
+            leading: BackButton(color: primaryColor),
+            title: Text(
+              'معارضي الفنية',
+              style: TextStyle(
+                color: textColor,
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: CircleAvatar(
+                  backgroundColor: const Color(0xFFFECFEF),
+                  child: const Icon(Icons.palette, color: Colors.white),
+                ),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CircleAvatar(
-              backgroundColor: const Color(
-                0xFFFECFEF,
-              ), // From CSS --gradient-exhibitions approx
-              child: const Icon(Icons.palette, color: Colors.white),
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildBreadcrumb(isDark, primaryColor, textColor),
+                const SizedBox(height: 20),
+                _buildQuickActions(isDark),
+                const SizedBox(height: 30),
+                const StatsOverview(),
+                const SizedBox(height: 30),
+                _buildFilterSection(isDark, primaryColor, textColor),
+                const SizedBox(height: 20),
+              ]),
+            ),
+          ),
+          _buildExhibitionsSliverList(isDark),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 40, top: 20),
+              child: _getFilteredExhibitions().isEmpty
+                  ? _buildEmptyState(textColor, primaryColor)
+                  : const SizedBox.shrink(),
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Header / Breadcrumbs Mock
-            _buildBreadcrumb(isDark, primaryColor, textColor),
+    );
+  }
 
-            const SizedBox(height: 20),
+  Widget _buildExhibitionsSliverList(bool isDark) {
+    final filtered = _getFilteredExhibitions();
+    if (filtered.isEmpty)
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
 
-            // Quick Actions
-            _buildQuickActions(isDark),
-
-            const SizedBox(height: 30),
-
-            // Stats Overview
-            const StatsOverview(),
-
-            const SizedBox(height: 30),
-
-            // Filters and Search
-            _buildFilterSection(isDark, primaryColor, textColor),
-
-            const SizedBox(height: 20),
-
-            // List
-            _buildExhibitionsList(isDark),
-
-            const SizedBox(height: 40),
-
-            // Empty State (Logic handled inside list builder if empty, but here separately if full list empty)
-            if (_getFilteredExhibitions().isEmpty)
-              _buildEmptyState(textColor, primaryColor),
-          ],
-        ),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: MyExhibitionCard(data: filtered[index], isDark: isDark),
+          );
+        }, childCount: filtered.length),
       ),
     );
   }
@@ -375,19 +386,6 @@ class _MyExhibitionsViewState extends State<MyExhibitionsView> {
 
       return true;
     }).toList();
-  }
-
-  Widget _buildExhibitionsList(bool isDark) {
-    final filtered = _getFilteredExhibitions();
-    return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: filtered.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 20),
-      itemBuilder: (context, index) {
-        return MyExhibitionCard(data: filtered[index], isDark: isDark);
-      },
-    );
   }
 
   Widget _buildEmptyState(Color textColor, Color primaryColor) {

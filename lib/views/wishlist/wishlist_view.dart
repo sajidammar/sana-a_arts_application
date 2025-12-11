@@ -15,109 +15,114 @@ class WishlistPage extends StatelessWidget {
       backgroundColor: themeProvider.isDarkMode
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: Text(
-          'المفضلة',
-          style: TextStyle(
-            color: themeProvider.isDarkMode
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(
+              'المفضلة',
+              style: TextStyle(
+                color: themeProvider.isDarkMode
+                    ? const Color(0xFFD4AF37)
+                    : const Color(0xFFB8860B),
+                fontFamily: 'Tajawal',
+              ),
+            ),
+            backgroundColor: themeProvider.isDarkMode
+                ? const Color(0xFF1E1E1E)
+                : Colors.white,
+            foregroundColor: themeProvider.isDarkMode
                 ? const Color(0xFFD4AF37)
                 : const Color(0xFFB8860B),
-            fontFamily: 'Tajawal',
-          ),
-        ),
-        backgroundColor: themeProvider.isDarkMode
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
-        foregroundColor: themeProvider.isDarkMode
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-        actions: [
-          if (wishlistProvider.itemCount > 0)
-            IconButton(
-              icon: const Icon(Icons.delete_sweep),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text(
-                      'حذف الكل',
-                      style: TextStyle(fontFamily: 'Tajawal'),
-                    ),
-                    content: const Text(
-                      'هل تريد حذف جميع العناصر من المفضلة؟',
-                      style: TextStyle(fontFamily: 'Tajawal'),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'إلغاء',
+            elevation: 2,
+            pinned: true,
+            actions: [
+              if (wishlistProvider.itemCount > 0)
+                IconButton(
+                  icon: const Icon(Icons.delete_sweep),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text(
+                          'حذف الكل',
                           style: TextStyle(fontFamily: 'Tajawal'),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          wishlistProvider.clearWishlist();
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('تم حذف جميع العناصر'),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'حذف',
-                          style: TextStyle(
-                            fontFamily: 'Tajawal',
-                            color: Colors.red,
-                          ),
+                        content: const Text(
+                          'هل تريد حذف جميع العناصر من المفضلة؟',
+                          style: TextStyle(fontFamily: 'Tajawal'),
                         ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'إلغاء',
+                              style: TextStyle(fontFamily: 'Tajawal'),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              wishlistProvider.clearWishlist();
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('تم حذف جميع العناصر'),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'حذف',
+                              style: TextStyle(
+                                fontFamily: 'Tajawal',
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: themeProvider.isDarkMode
-                ? const Color(0xFF1E1E1E)
-                : Colors.grey[50],
-            child: Row(
-              children: [
-                Icon(
-                  Icons.favorite,
-                  color: themeProvider.isDarkMode
-                      ? const Color(0xFFD4AF37)
-                      : const Color(0xFFB8860B),
+                    );
+                  },
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  '${wishlistProvider.itemCount} ${wishlistProvider.itemCount == 1 ? 'عنصر' : 'عناصر'} في المفضلة',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Tajawal',
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              color: themeProvider.isDarkMode
+                  ? const Color(0xFF1E1E1E)
+                  : Colors.grey[50],
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.favorite,
                     color: themeProvider.isDarkMode
-                        ? Colors.white
-                        : const Color(0xFF2C1810),
+                        ? const Color(0xFFD4AF37)
+                        : const Color(0xFFB8860B),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    '${wishlistProvider.itemCount} ${wishlistProvider.itemCount == 1 ? 'عنصر' : 'عناصر'} في المفضلة',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Tajawal',
+                      color: themeProvider.isDarkMode
+                          ? Colors.white
+                          : const Color(0xFF2C1810),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Expanded(
-            child: wishlistProvider.itemCount == 0
-                ? _buildEmptyWishlist(context, themeProvider.isDarkMode)
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: wishlistProvider.itemCount,
-                    itemBuilder: (context, index) {
+          wishlistProvider.itemCount == 0
+              ? SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _buildEmptyWishlist(context, themeProvider.isDarkMode),
+                )
+              : SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
                       final item = wishlistProvider.wishlistItems[index];
                       return _buildWishlistItem(
                         context,
@@ -125,9 +130,9 @@ class WishlistPage extends StatelessWidget {
                         themeProvider.isDarkMode,
                         wishlistProvider,
                       );
-                    },
+                    }, childCount: wishlistProvider.itemCount),
                   ),
-          ),
+                ),
         ],
       ),
     );

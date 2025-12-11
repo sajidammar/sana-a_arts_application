@@ -17,89 +17,106 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: themeProvider.isDarkMode
           ? const Color(0xFF121212)
           : const Color(0xFFFDF6E3),
-      appBar: AppBar(
-        title: Text(
-          'الملف الشخصي',
-          style: TextStyle(
-            color: themeProvider.isDarkMode
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(
+              'الملف الشخصي',
+              style: TextStyle(
+                color: themeProvider.isDarkMode
+                    ? const Color(0xFFD4AF37)
+                    : const Color(0xFFB8860B),
+              ),
+            ),
+            backgroundColor: themeProvider.isDarkMode
+                ? const Color(0xFF1E1E1E)
+                : Colors.white,
+            foregroundColor: themeProvider.isDarkMode
                 ? const Color(0xFFD4AF37)
                 : const Color(0xFFB8860B),
+            elevation: 2,
+            pinned: true,
+            floating: true,
+            snap: true,
           ),
-        ),
-        backgroundColor: themeProvider.isDarkMode
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
-        foregroundColor: themeProvider.isDarkMode
-            ? const Color(0xFFD4AF37)
-            : const Color(0xFFB8860B),
-        elevation: 2,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: themeProvider.isDarkMode
-                      ? const Color(0xFFD4AF37)
-                      : const Color(0xFFB8860B),
-                  width: 3,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/image1.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'أحمد محمد',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: themeProvider.isDarkMode
-                    ? Colors.white
-                    : const Color(0xFF2C1810),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'فنان تشكيلي',
-              style: TextStyle(
-                fontSize: 16,
-                color: themeProvider.isDarkMode
-                    ? Colors.grey[400]
-                    : Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 24),
-            Container(
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: themeProvider.isDarkMode
-                    ? const Color(0xFF1E1E1E)
-                    : Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Column(
                 children: [
-                  _buildStatItem('24', 'عمل فني', themeProvider.isDarkMode),
-                  _buildStatItem('5', 'معارض', themeProvider.isDarkMode),
-                  _buildStatItem('156', 'متابع', themeProvider.isDarkMode),
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: themeProvider.isDarkMode
+                            ? const Color(0xFFD4AF37)
+                            : const Color(0xFFB8860B),
+                        width: 3,
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/image1.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'أحمد محمد',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: themeProvider.isDarkMode
+                          ? Colors.white
+                          : const Color(0xFF2C1810),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'فنان تشكيلي',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: themeProvider.isDarkMode
+                          ? Colors.grey[400]
+                          : Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: themeProvider.isDarkMode
+                          ? const Color(0xFF1E1E1E)
+                          : Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildStatItem(
+                          '24',
+                          'عمل فني',
+                          themeProvider.isDarkMode,
+                        ),
+                        _buildStatItem('5', 'معارض', themeProvider.isDarkMode),
+                        _buildStatItem(
+                          '156',
+                          'متابع',
+                          themeProvider.isDarkMode,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildInfoCard(themeProvider.isDarkMode),
+                  const SizedBox(height: 16),
+                  _buildSettingsCard(themeProvider.isDarkMode, context),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            _buildInfoCard(themeProvider.isDarkMode),
-            const SizedBox(height: 16),
-            _buildSettingsCard(themeProvider.isDarkMode, context),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
