@@ -20,6 +20,7 @@ import '../settings/privacy_page.dart';
 import '../store/order/order_history_page.dart';
 import '../notifications/notifications_view.dart';
 import '../artworks_management/artworks_management_view.dart';
+import '../my_exhibitions/my_exhibitions_view.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -166,6 +167,12 @@ class _Home_PageState extends State<Home_Page> {
             MaterialPageRoute(
               builder: (context) => const ArtworksManagementView(),
             ),
+          );
+        },
+        onMyExhibitionsPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyExhibitionsView()),
           );
         },
       ),

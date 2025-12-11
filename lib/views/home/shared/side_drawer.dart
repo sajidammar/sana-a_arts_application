@@ -17,6 +17,7 @@ class SideDrawer extends StatelessWidget {
 
   final VoidCallback onWishlistPressed;
   final VoidCallback onArtworksManagementPressed;
+  final VoidCallback onMyExhibitionsPressed;
 
   const SideDrawer({
     super.key,
@@ -33,6 +34,7 @@ class SideDrawer extends StatelessWidget {
 
     required this.onWishlistPressed,
     required this.onArtworksManagementPressed,
+    required this.onMyExhibitionsPressed,
   });
 
   @override
@@ -63,6 +65,11 @@ class SideDrawer extends StatelessWidget {
             icon: Icons.palette,
             title: 'إدارة الأعمال الفنية',
             onTap: onArtworksManagementPressed,
+          ),
+          _buildDrawerItem(
+            icon: Icons.filter_frames,
+            title: 'معارضي',
+            onTap: onMyExhibitionsPressed,
           ),
           _buildDrawerItem(
             icon: Icons.favorite,
