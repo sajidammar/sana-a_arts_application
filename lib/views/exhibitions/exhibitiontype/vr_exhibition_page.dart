@@ -56,14 +56,82 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
   }
 
   Widget _buildVRViewerPage(VRProvider vrProvider) {
-    return Column(
-      children: [
-        // الهيدر
-        _buildHeader(context, vrProvider),
-        const SizedBox(height: 10),
-
-        // المحتوى الرئيسي
-        Expanded(
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          floating: true,
+          snap: true,
+          pinned: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 1,
+          toolbarHeight: 70,
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Theme.of(context).iconTheme.color,
+              size: 20,
+            ),
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'المعرض الافتراضي',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Text(
+                'تراث صنعاء الخالد',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontFamily: 'Tajawal',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.image_outlined,
+                      size: 14,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${vrProvider.currentArtworkIndex + 1} / ${vrProvider.artworks.length}',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Tajawal',
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        SliverFillRemaining(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: VRViewer(
@@ -72,7 +140,6 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
             ),
           ),
         ),
-        const SizedBox(height: 10),
       ],
     );
   }
@@ -104,85 +171,6 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
           ),
         );
       },
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, VRProvider vrProvider) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Theme.of(context).iconTheme.color,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'المعرض الافتراضي',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                Text(
-                  'تراث صنعاء الخالد',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontFamily: 'Tajawal',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.image_outlined,
-                  size: 14,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '${vrProvider.currentArtworkIndex + 1} / ${vrProvider.artworks.length}',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Tajawal',
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

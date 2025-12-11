@@ -13,62 +13,66 @@ class ExhibitionCartPage extends StatelessWidget {
 
         return Column(
           children: [
-            // Header بسيط
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).shadowColor.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    'سلة الأعمال الفنية',
-                    style: TextStyle(
-                      fontFamily: 'Tajawal',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Theme.of(context).textTheme.titleLarge?.color,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (cartItems.isNotEmpty)
-                    IconButton(
-                      onPressed: () {
-                        vrProvider.clearCart();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('تم إفراغ السلة'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.delete_outline, color: Colors.red[400]),
-                    ),
-                ],
-              ),
-            ),
-
-            // المحتوى
             Expanded(
-              child: cartItems.isEmpty
-                  ? _buildEmptyCart(context)
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: _buildCartList(context, cartItems, vrProvider),
-                        ),
-                        if (cartItems.isNotEmpty)
-                          _buildCheckoutBar(context, cartItems),
-                      ],
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                    snap: true,
+                    pinned: true,
+                    elevation: 1,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    title: Text(
+                      'سلة الأعمال الفنية',
+                      style: TextStyle(
+                        fontFamily: 'Tajawal',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).textTheme.titleLarge?.color,
+                      ),
                     ),
+                    centerTitle: true,
+                    actions: [
+                      if (cartItems.isNotEmpty)
+                        IconButton(
+                          onPressed: () {
+                            vrProvider.clearCart();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('تم إفراغ السلة'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.delete_outline,
+                            color: Colors.red[400],
+                          ),
+                        ),
+                    ],
+                  ),
+                  if (cartItems.isEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: _buildEmptyCart(context),
+                    )
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.all(16),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          return _buildCartItem(
+                            context,
+                            cartItems[index],
+                            vrProvider,
+                          );
+                        }, childCount: cartItems.length),
+                      ),
+                    ),
+                ],
+              ),
             ),
+            if (cartItems.isNotEmpty) _buildCheckoutBar(context, cartItems),
           ],
         );
       },
@@ -106,21 +110,6 @@ class ExhibitionCartPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCartList(
-    BuildContext context,
-    List<Map<String, dynamic>> cartItems,
-    VRProvider vrProvider,
-  ) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: cartItems.length,
-      itemBuilder: (context, index) {
-        final item = cartItems[index];
-        return _buildCartItem(context, item, vrProvider);
-      },
     );
   }
 
