@@ -14,7 +14,9 @@ class SideDrawer extends StatelessWidget {
   final VoidCallback onHelpPressed;
   final VoidCallback onLogoutPressed;
   final VoidCallback onOrdersPressed;
+
   final VoidCallback onWishlistPressed;
+  final VoidCallback onArtworksManagementPressed;
 
   const SideDrawer({
     super.key,
@@ -28,7 +30,9 @@ class SideDrawer extends StatelessWidget {
     required this.onHelpPressed,
     required this.onLogoutPressed,
     required this.onOrdersPressed,
+
     required this.onWishlistPressed,
+    required this.onArtworksManagementPressed,
   });
 
   @override
@@ -54,6 +58,11 @@ class SideDrawer extends StatelessWidget {
             icon: Icons.shopping_bag,
             title: 'طلباتي',
             onTap: onOrdersPressed,
+          ),
+          _buildDrawerItem(
+            icon: Icons.palette,
+            title: 'إدارة الأعمال الفنية',
+            onTap: onArtworksManagementPressed,
           ),
           _buildDrawerItem(
             icon: Icons.favorite,

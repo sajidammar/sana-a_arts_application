@@ -19,6 +19,7 @@ import '../help/help_page.dart';
 import '../settings/privacy_page.dart';
 import '../store/order/order_history_page.dart';
 import '../notifications/notifications_view.dart';
+import '../artworks_management/artworks_management_view.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -159,6 +160,14 @@ class _Home_PageState extends State<Home_Page> {
           );
         },
         onWishlistPressed: _navigateToWishlist,
+        onArtworksManagementPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ArtworksManagementView(),
+            ),
+          );
+        },
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
