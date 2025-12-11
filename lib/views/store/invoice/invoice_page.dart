@@ -258,12 +258,15 @@ class InvoicePage extends StatelessWidget {
             children: [
               Icon(icon, color: Theme.of(context).primaryColor, size: 20),
               SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.titleLarge?.color,
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.titleLarge?.color,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -391,8 +394,7 @@ class InvoicePage extends StatelessWidget {
         children: [
           // صورة المنتج
           Container(
-            width: 60,
-            height: 60,
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -433,11 +435,12 @@ class InvoicePage extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  runSpacing: 8,
                   children: [
                     _buildQuantityBadge(item.quantity, context),
-                    // Spacer removed
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -569,16 +572,20 @@ class InvoicePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: isTotal ? 18 : 16,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-              color: isTotal
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).textTheme.bodyLarge?.color,
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: isTotal ? 18 : 16,
+                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+                color: isTotal
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
+          SizedBox(width: 8),
           Text(
             '${isDiscount ? '-' : ''}\$${amount.toStringAsFixed(2)}',
             style: TextStyle(

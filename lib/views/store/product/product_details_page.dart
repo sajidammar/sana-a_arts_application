@@ -422,21 +422,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     BuildContext context,
   ) {
     return Container(
-      width: 150,
+      constraints: const BoxConstraints(maxWidth: 160),
       margin: EdgeInsets.only(right: 12),
       decoration: AppTheme.getCardDecoration(context),
       child: Column(
         children: [
-          Container(
-            height: 100,
-            decoration: AppTheme.getGradientDecoration(context).copyWith(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+          AspectRatio(
+            aspectRatio: 1.5,
+            child: Container(
+              decoration: AppTheme.getGradientDecoration(context).copyWith(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
               ),
-            ),
-            child: Center(
-              child: Icon(Icons.image, color: Colors.white, size: 40),
+              child: Center(
+                child: Icon(Icons.image, color: Colors.white, size: 40),
+              ),
             ),
           ),
           Padding(
@@ -501,8 +503,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
               decoration: BoxDecoration(
                 border: Border.all(
                   color:
@@ -525,12 +525,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     _isFavorite = !_isFavorite;
                   });
                 },
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                padding: EdgeInsets.zero,
               ),
             ),
             SizedBox(width: 12),
             Container(
-              width: 50,
-              height: 50,
               decoration: BoxDecoration(
                 border: Border.all(
                   color:
@@ -544,6 +544,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: IconButton(
                 icon: Icon(Icons.share, color: AppTheme.getTextColor(context)),
                 onPressed: () {},
+                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                padding: EdgeInsets.zero,
               ),
             ),
             SizedBox(width: 12),

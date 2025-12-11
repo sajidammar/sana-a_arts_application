@@ -41,7 +41,7 @@ class _ManagementStatsCardState extends State<ManagementStatsCard> {
         transform: _isHovered
             ? Matrix4.translationValues(0, -5, 0)
             : Matrix4.identity(),
-        width: 150, // Fixed width for wrap
+        constraints: const BoxConstraints(minWidth: 150),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: surfaceColor,

@@ -59,8 +59,7 @@ class _QuickActionCardState extends State<QuickActionCard> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 60,
-                height: 60,
+                padding: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(

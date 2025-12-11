@@ -7,17 +7,47 @@ class WorkshopProvider with ChangeNotifier {
   List<Workshop> _workshops = [];
   List<Instructor> _instructors = [];
   String _currentFilter = 'all';
+  String _searchQuery = '';
   bool _isLoading = false;
 
   List<Workshop> get workshops => _workshops;
   List<Instructor> get instructors => _instructors;
   String get currentFilter => _currentFilter;
+  String get searchQuery => _searchQuery;
   bool get isLoading => _isLoading;
 
-  get filteredWorkshops => null;
+  List<Workshop> get filteredWorkshops {
+    var filtered = _workshops;
+    if (_currentFilter != 'all') {
+      // Basic filtering logic
+      if (_currentFilter == 'beginner') {
+        filtered = filtered.where((w) => w.level == 'مبتدئ').toList();
+      } else if (_currentFilter == 'intermediate') {
+        filtered = filtered.where((w) => w.level == 'متوسط').toList();
+      } else if (_currentFilter == 'advanced') {
+        filtered = filtered.where((w) => w.level == 'متقدم').toList();
+      }
+    }
+
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered
+          .where(
+            (w) =>
+                w.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                w.instructor.toLowerCase().contains(_searchQuery.toLowerCase()),
+          )
+          .toList();
+    }
+    return filtered;
+  }
 
   void setFilter(String filter) {
     _currentFilter = filter;
+    notifyListeners();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
     notifyListeners();
   }
 

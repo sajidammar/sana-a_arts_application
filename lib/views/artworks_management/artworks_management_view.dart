@@ -239,45 +239,46 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
             ],
           ),
           const SizedBox(height: 20),
-          Row(
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            alignment: WrapAlignment.start,
             children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _showAddArtworkModal(context),
-                  icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text(
-                    'إضافة عمل فني جديد',
-                    style: TextStyle(fontFamily: 'Tajawal'),
+              ElevatedButton.icon(
+                onPressed: () => _showAddArtworkModal(context),
+                icon: const Icon(Icons.add, color: Colors.white),
+                label: const Text(
+                  'إضافة عمل فني جديد',
+                  style: TextStyle(fontFamily: 'Tajawal'),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    elevation: 5,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
                   ),
+                  elevation: 5,
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => _showExhibitionRequestModal(context),
-                  icon: Icon(Icons.image, color: primaryColor),
-                  label: Text(
-                    'طلب معرض افتراضي',
-                    style: TextStyle(
-                      fontFamily: 'Tajawal',
-                      color: primaryColor,
-                    ),
+              OutlinedButton.icon(
+                onPressed: () => _showExhibitionRequestModal(context),
+                icon: Icon(Icons.image, color: primaryColor),
+                label: Text(
+                  'طلب معرض افتراضي',
+                  style: TextStyle(fontFamily: 'Tajawal', color: primaryColor),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: primaryColor, width: 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: primaryColor, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
                   ),
                 ),
               ),

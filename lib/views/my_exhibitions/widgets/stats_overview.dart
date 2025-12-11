@@ -71,7 +71,7 @@ class StatsOverview extends StatelessWidget {
     final labelColor = isDark ? Colors.grey[400] : const Color(0xFF5D4E37);
 
     return Container(
-      width: 140, // Fixed minimal width
+      constraints: const BoxConstraints(minWidth: 120),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: containerColor,

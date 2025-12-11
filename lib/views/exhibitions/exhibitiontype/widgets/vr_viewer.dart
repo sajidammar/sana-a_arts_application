@@ -44,50 +44,50 @@ class _VRViewerState extends State<VRViewer> {
 
           // الواجهة التفاعلية
           Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // الأيقونة الرئيسية
-                  ScaleAnimation(
-                    delay: const Duration(milliseconds: 300),
-                    child: _buildVRIcon(context),
-                  ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // الأيقونة الرئيسية
+                    ScaleAnimation(
+                      delay: const Duration(milliseconds: 300),
+                      child: _buildVRIcon(context),
+                    ),
 
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // النص الإرشادي
-                  Expanded(
-                    flex: 2,
-                    child: SlideInAnimation(
+                    // النص الإرشادي
+                    SlideInAnimation(
                       delay: const Duration(milliseconds: 500),
                       child: _buildGuideText(context),
                     ),
-                  ),
 
-                  const SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
-                  // عناصر التحكم الأساسية
-                  SlideInAnimation(
-                    delay: const Duration(milliseconds: 700),
-                    child: _buildBasicControls(context),
-                  ),
-
-                  // عناصر التحكم المتقدمة
-                  if (widget.vrProvider.isVRMode || widget.vrProvider.is360Mode)
+                    // عناصر التحكم الأساسية
                     SlideInAnimation(
-                      delay: const Duration(milliseconds: 900),
-                      child: _buildAdvancedControls(context),
+                      delay: const Duration(milliseconds: 700),
+                      child: _buildBasicControls(context),
                     ),
 
-                  // عناصر التكبير والتنقل
-                  if (widget.vrProvider.is3DMode)
-                    SlideInAnimation(
-                      delay: const Duration(milliseconds: 1100),
-                      child: _buildNavigationControls(context),
-                    ),
-                ],
+                    // عناصر التحكم المتقدمة
+                    if (widget.vrProvider.isVRMode ||
+                        widget.vrProvider.is360Mode)
+                      SlideInAnimation(
+                        delay: const Duration(milliseconds: 900),
+                        child: _buildAdvancedControls(context),
+                      ),
+
+                    // عناصر التكبير والتنقل
+                    if (widget.vrProvider.is3DMode)
+                      SlideInAnimation(
+                        delay: const Duration(milliseconds: 1100),
+                        child: _buildNavigationControls(context),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -499,8 +499,7 @@ class _VRViewerState extends State<VRViewer> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          width: 40,
-          height: 40,
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),
             shape: BoxShape.circle,

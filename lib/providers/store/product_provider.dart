@@ -4,11 +4,13 @@ import '../../models/store/product_model.dart';
 class ProductProvider with ChangeNotifier {
   List<Product> _products = [];
   List<Product> _filteredProducts = [];
+  String _searchQuery = '';
   int _selectedFilter = 0;
 
   List<Product> get products => _products;
   List<Product> get filteredProducts => _filteredProducts;
   int get selectedFilter => _selectedFilter;
+  String get searchQuery => _searchQuery;
 
   final List<String> _filters = [
     'جميع الأعمال',
@@ -79,17 +81,26 @@ class ProductProvider with ChangeNotifier {
         image: 'assets/images/image3.jpg',
       ),
     ];
-    _filteredProducts = _products;
-    notifyListeners();
+    _applyFilters();
+  }
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    _applyFilters();
   }
 
   void filterProducts(int index) {
     _selectedFilter = index;
-    if (index == 0) {
-      _filteredProducts = _products;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    List<Product> temp = [];
+    if (_selectedFilter == 0) {
+      temp = _products;
     } else {
-      _filteredProducts = _products.where((product) {
-        switch (index) {
+      temp = _products.where((product) {
+        switch (_selectedFilter) {
           case 1:
             return product.category.contains('لوحة');
           case 2:
@@ -105,6 +116,18 @@ class ProductProvider with ChangeNotifier {
         }
       }).toList();
     }
+
+    if (_searchQuery.isNotEmpty) {
+      temp = temp
+          .where(
+            (p) =>
+                p.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                p.artist.toLowerCase().contains(_searchQuery.toLowerCase()),
+          )
+          .toList();
+    }
+
+    _filteredProducts = temp;
     notifyListeners();
   }
 }

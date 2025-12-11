@@ -66,15 +66,11 @@ class _StorePageState extends State<StorePage> {
                 top: -5,
                 right: -5,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 1.5),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
                   ),
                   child: Center(
                     child: Text(
@@ -320,9 +316,8 @@ class _StorePageState extends State<StorePage> {
             mainAxisSize: MainAxisSize.min, // Important for fitting
             children: [
               // Image Section
-              SizedBox(
-                height: 200, // Reduced height slightly
-                width: double.infinity,
+              AspectRatio(
+                aspectRatio: 16 / 9,
                 child: Stack(
                   children: [
                     product.image.isNotEmpty
@@ -363,7 +358,7 @@ class _StorePageState extends State<StorePage> {
                                 : 'جديد',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 11, // Reduced font size
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -456,36 +451,33 @@ class _StorePageState extends State<StorePage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          cartProvider.addToCart(product);
-                          productController.showAddToCartSnackBar(product);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: EdgeInsets.zero,
+                    ElevatedButton(
+                      onPressed: () {
+                        cartProvider.addToCart(product);
+                        productController.showAddToCartSnackBar(product);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.shopping_cart_outlined, size: 18),
-                            SizedBox(width: 6),
-                            Text(
-                              'أضف للسلة',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.shopping_cart_outlined, size: 18),
+                          SizedBox(width: 6),
+                          Text(
+                            'أضف للسلة',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

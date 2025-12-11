@@ -37,14 +37,16 @@ class MyExhibitionCard extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  height: 200,
-                  color: Colors.grey[300], // Image placeholder bg
-                  child: Image.asset(
-                    data['image'],
-                    fit: BoxFit.cover,
-                    errorBuilder: (ctx, err, stack) =>
-                        Icon(Icons.image, size: 50, color: Colors.grey[600]),
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Container(
+                    color: Colors.grey[300],
+                    child: Image.asset(
+                      data['image'],
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stack) =>
+                          Icon(Icons.image, size: 50, color: Colors.grey[600]),
+                    ),
                   ),
                 ),
                 Padding(
@@ -64,8 +66,8 @@ class MyExhibitionCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    width: 300,
+                  Expanded(
+                    flex: 1,
                     child: Image.asset(
                       data['image'],
                       fit: BoxFit.cover,
@@ -80,6 +82,7 @@ class MyExhibitionCard extends StatelessWidget {
                     ),
                   ),
                   Expanded(
+                    flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: _buildContent(

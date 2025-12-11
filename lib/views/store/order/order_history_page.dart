@@ -392,8 +392,7 @@ class OrderHistoryPage extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -544,8 +543,7 @@ class OrderHistoryPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 20,
-            height: 20,
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               color: step['status'] == 'completed'
                   ? Colors.green
@@ -554,7 +552,7 @@ class OrderHistoryPage extends StatelessWidget {
             ),
             child: step['status'] == 'completed'
                 ? Icon(Icons.check, size: 14, color: Colors.white)
-                : null,
+                : const SizedBox(width: 14, height: 14),
           ),
           SizedBox(width: 12),
           Expanded(

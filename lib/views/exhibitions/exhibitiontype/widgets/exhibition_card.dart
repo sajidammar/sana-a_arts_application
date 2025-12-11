@@ -53,7 +53,11 @@ class ExhibitionCard extends StatelessWidget {
                 _buildImageSection(context),
 
                 // محتوى البطاقة
-                Expanded(child: _buildContentSection(context)),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildContentSection(context),
+                  ),
+                ),
               ],
             ),
           ),
@@ -66,45 +70,47 @@ class ExhibitionCard extends StatelessWidget {
     return Stack(
       children: [
         // صورة الخلفية
-        Container(
-          height: 140,
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(AppConstants.borderRadius),
-              topRight: Radius.circular(AppConstants.borderRadius),
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(AppConstants.borderRadius),
+                topRight: Radius.circular(AppConstants.borderRadius),
+              ),
+              image: exhibition.imageUrl.isNotEmpty
+                  ? DecorationImage(
+                      image: AssetImage(exhibition.imageUrl),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            image: exhibition.imageUrl.isNotEmpty
-                ? DecorationImage(
-                    image: AssetImage(exhibition.imageUrl),
-                    fit: BoxFit.cover,
+            child: exhibition.imageUrl.isEmpty
+                ? Center(
+                    child: Icon(
+                      exhibition.type.icon,
+                      size: 60,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
                   )
-                : null,
+                : Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(AppConstants.borderRadius),
+                        topRight: Radius.circular(AppConstants.borderRadius),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.3),
+                        ],
+                      ),
+                    ),
+                  ),
           ),
-          child: exhibition.imageUrl.isEmpty
-              ? Center(
-                  child: Icon(
-                    exhibition.type.icon,
-                    size: 60,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                )
-              : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(AppConstants.borderRadius),
-                      topRight: Radius.circular(AppConstants.borderRadius),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.3),
-                      ],
-                    ),
-                  ),
-                ),
         ),
 
         // الشارات

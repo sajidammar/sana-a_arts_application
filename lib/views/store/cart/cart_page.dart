@@ -133,8 +133,7 @@ class CartPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              padding: const EdgeInsets.all(25),
               decoration: AppTheme.getGradientDecoration(
                 context,
               ).copyWith(borderRadius: BorderRadius.circular(8)),
@@ -164,21 +163,22 @@ class CartPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Row(
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
                     children: [
                       Text(
                         'الكمية:',
                         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
-                      const SizedBox(width: 4),
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey[300]!),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
-                          mainAxisSize:
-                              MainAxisSize.min, // Ensure it takes minimum space
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.remove, size: 16),
@@ -186,15 +186,16 @@ class CartPage extends StatelessWidget {
                                 index,
                                 item.quantity - 1,
                               ),
-                              padding: const EdgeInsets.all(2),
-                              constraints: const BoxConstraints(
-                                minWidth: 28,
-                                minHeight: 28, // Fix height too
+                              padding: const EdgeInsets.all(4),
+                              constraints: const BoxConstraints(),
+                              style: IconButton.styleFrom(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                             ),
-                            Container(
-                              width: 30,
-                              alignment: Alignment.center,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: Text(
                                 item.quantity.toString(),
                                 style: const TextStyle(
@@ -209,10 +210,10 @@ class CartPage extends StatelessWidget {
                                 index,
                                 item.quantity + 1,
                               ),
-                              padding: const EdgeInsets.all(2),
-                              constraints: const BoxConstraints(
-                                minWidth: 28,
-                                minHeight: 28,
+                              padding: const EdgeInsets.all(4),
+                              constraints: const BoxConstraints(),
+                              style: IconButton.styleFrom(
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
                             ),
                           ],

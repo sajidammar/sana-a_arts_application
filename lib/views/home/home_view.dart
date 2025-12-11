@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/views/academies/home_view.dart';
+import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
+import 'package:sanaa_artl/providers/store/product_provider.dart';
+import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
 
@@ -34,6 +38,38 @@ class Home_Page extends StatefulWidget {
 class _Home_PageState extends State<Home_Page> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _handleSearch(String query) {
+    setState(() {}); // Update UI for clear button
+
+    if (_currentIndex == 1) {
+      context.read<ExhibitionProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 2) {
+      context.read<WorkshopProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 3) {
+      context.read<ProductProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 4) {
+      context.read<CommunityProvider>().setSearchQuery(query);
+    }
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {});
+
+    // Clear all providers to be safe
+    context.read<ExhibitionProvider>().setSearchQuery('');
+    context.read<WorkshopProvider>().setSearchQuery('');
+    context.read<ProductProvider>().setSearchQuery('');
+    context.read<CommunityProvider>().setSearchQuery('');
+  }
 
   final List<Widget> _pages = [
     const SizedBox.shrink(), // Home Content handled separately
@@ -113,8 +149,10 @@ class _Home_PageState extends State<Home_Page> {
             ),
           ),
           child: TextField(
+            controller: _searchController,
+            onChanged: _handleSearch,
             decoration: InputDecoration(
-              hintText: 'ابحث عن الأعمال الفنية...',
+              hintText: 'ابحث...',
               hintStyle: TextStyle(
                 color: themeProvider.isDarkMode
                     ? const Color(0xFFB0B0B0)
@@ -126,10 +164,15 @@ class _Home_PageState extends State<Home_Page> {
                     ? const Color(0xFFD4AF37)
                     : const Color(0xFFB8860B),
               ),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, size: 20),
+                      onPressed: _clearSearch,
+                    )
+                  : null,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             ),
-            onTap: () {},
           ),
         ),
         actions: [
@@ -257,6 +300,7 @@ class _Home_PageState extends State<Home_Page> {
         onTabSelected: (index) {
           setState(() {
             _currentIndex = index;
+            _clearSearch();
           });
         },
       ),

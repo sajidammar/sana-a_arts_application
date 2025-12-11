@@ -6,10 +6,33 @@ class CommunityProvider with ChangeNotifier {
   List<Post> _posts = [];
   List<User> _artists = [];
   bool _isLoading = false;
+  String _searchQuery = '';
 
-  List<Post> get posts => _posts;
-  List<User> get artists => _artists;
+  List<Post> get posts {
+    if (_searchQuery.isEmpty) return _posts;
+    return _posts
+        .where(
+          (p) =>
+              p.content.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              p.author.name.toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
+        .toList();
+  }
+
+  List<User> get artists {
+    if (_searchQuery.isEmpty) return _artists;
+    return _artists
+        .where((u) => u.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+  }
+
   bool get isLoading => _isLoading;
+  String get searchQuery => _searchQuery;
+
+  void setSearchQuery(String query) {
+    _searchQuery = query;
+    notifyListeners();
+  }
 
   // Demo Data Setup
   final User _currentUser = User(
