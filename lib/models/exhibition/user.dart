@@ -45,19 +45,58 @@ class User {
       phone: json['phone'] ?? '',
       profileImage: json['profileImage'] ?? '',
       role: _parseUserRole(json['role'] ?? 'user'),
-      joinDate: DateTime.parse(json['joinDate'] ?? DateTime.now().toIso8601String()),
-      lastLogin: json['lastLogin'] != null ? DateTime.parse(json['lastLogin']) : null,
+      joinDate: DateTime.parse(
+        json['joinDate'] ?? DateTime.now().toIso8601String(),
+      ),
+      lastLogin: json['lastLogin'] != null
+          ? DateTime.parse(json['lastLogin'])
+          : null,
       favoriteArtworks: List<String>.from(json['favoriteArtworks'] ?? []),
       favoriteArtists: List<String>.from(json['favoriteArtists'] ?? []),
       favoriteExhibitions: List<String>.from(json['favoriteExhibitions'] ?? []),
-      purchaseHistory: List<Map<String, dynamic>>.from(json['purchaseHistory'] ?? [])
-          .map((purchase) => PurchaseHistory.fromJson(purchase))
-          .toList(),
+      purchaseHistory: List<Map<String, dynamic>>.from(
+        json['purchaseHistory'] ?? [],
+      ).map((purchase) => PurchaseHistory.fromJson(purchase)).toList(),
       preferences: UserPreferences.fromJson(json['preferences'] ?? {}),
       isEmailVerified: json['isEmailVerified'] ?? false,
       isPhoneVerified: json['isPhoneVerified'] ?? false,
       points: json['points'] ?? 0,
       membershipLevel: json['membershipLevel'] ?? 'عادي',
+    );
+  }
+
+  /// Factory constructor for database Map conversion
+  factory User.fromMap(Map<String, dynamic> map) {
+    return User(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      email: map['email'] ?? '',
+      phone: map['phone'] ?? '',
+      profileImage: map['profile_image'] ?? '',
+      role: _parseUserRole(map['role'] ?? 'user'),
+      joinDate: DateTime.parse(
+        map['join_date'] ?? DateTime.now().toIso8601String(),
+      ),
+      lastLogin: map['last_login'] != null
+          ? DateTime.parse(map['last_login'])
+          : null,
+      favoriteArtworks: const [],
+      favoriteArtists: const [],
+      favoriteExhibitions: const [],
+      purchaseHistory: const [],
+      preferences: UserPreferences(
+        darkMode: (map['dark_mode'] ?? 0) == 1,
+        notifications: (map['notifications'] ?? 1) == 1,
+        emailNotifications: (map['email_notifications'] ?? 1) == 1,
+        smsNotifications: (map['sms_notifications'] ?? 0) == 1,
+        language: map['language'] ?? 'ar',
+        currency: map['currency'] ?? '\$',
+        themeColor: map['theme_color'] ?? 'gold',
+      ),
+      isEmailVerified: (map['is_email_verified'] ?? 0) == 1,
+      isPhoneVerified: (map['is_phone_verified'] ?? 0) == 1,
+      points: map['points'] ?? 0,
+      membershipLevel: map['membership_level'] ?? 'عادي',
     );
   }
 
@@ -74,7 +113,9 @@ class User {
       'favoriteArtworks': favoriteArtworks,
       'favoriteArtists': favoriteArtists,
       'favoriteExhibitions': favoriteExhibitions,
-      'purchaseHistory': purchaseHistory.map((purchase) => purchase.toJson()).toList(),
+      'purchaseHistory': purchaseHistory
+          .map((purchase) => purchase.toJson())
+          .toList(),
       'preferences': preferences.toJson(),
       'isEmailVerified': isEmailVerified,
       'isPhoneVerified': isPhoneVerified,
@@ -98,12 +139,7 @@ class User {
   }
 }
 
-enum UserRole {
-  user,
-  artist,
-  moderator,
-  admin,
-}
+enum UserRole { user, artist, moderator, admin }
 
 class UserPreferences {
   final bool darkMode;
@@ -177,7 +213,9 @@ class PurchaseHistory {
       artworkTitle: json['artworkTitle'] ?? '',
       price: (json['price'] ?? 0.0).toDouble(),
       currency: json['currency'] ?? '\$',
-      purchaseDate: DateTime.parse(json['purchaseDate'] ?? DateTime.now().toIso8601String()),
+      purchaseDate: DateTime.parse(
+        json['purchaseDate'] ?? DateTime.now().toIso8601String(),
+      ),
       status: json['status'] ?? 'completed',
       transactionId: json['transactionId'] ?? '',
     );
