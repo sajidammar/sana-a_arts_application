@@ -1,87 +1,165 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sanaa_artl/models/exhibition/user.dart';
+import 'package:sanaa_artl/utils/database/dao/user_dao.dart';
+import 'package:sanaa_artl/utils/database/database_constants.dart';
 
+/// أنواع المفضلات
+enum FavoriteType { artwork, artist, exhibition }
+
+/// AuthProvider - مزود المصادقة (Controller في MVC)
+/// يدير تسجيل الدخول والخروج والتسجيل مع قاعدة البيانات
 class AuthProvider with ChangeNotifier {
+  final UserDao _userDao = UserDao();
+
   User? _currentUser;
   bool _isLoading = false;
   bool _isAuthenticated = false;
   String _error = '';
+  static const String _userIdKey = 'logged_in_user_id';
 
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _isAuthenticated;
   String get error => _error;
+  String get currentUserId => _currentUser?.id ?? 'guest';
 
-  Future<void> login(String email, String password) async {
+  /// تحميل جلسة المستخدم المحفوظة
+  Future<void> loadSavedSession() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedUserId = prefs.getString(_userIdKey);
+
+      if (savedUserId != null) {
+        final userMap = await _userDao.getUserWithPreferences(savedUserId);
+        if (userMap != null) {
+          _currentUser = User.fromMap(userMap);
+          _isAuthenticated = true;
+          await _userDao.updateLastLogin(savedUserId);
+        }
+      }
+    } catch (e) {
+      debugPrint('خطأ في تحميل الجلسة: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// تسجيل الدخول
+  Future<bool> login(String email, String password) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
 
     try {
-      // محاكاة عملية تسجيل الدخول
-      await Future.delayed(const Duration(seconds: 2));
+      // البحث عن المستخدم بالبريد الإلكتروني
+      final userMap = await _userDao.getUserByEmail(email);
 
-      if (email == 'demo@example.com' && password == 'password') {
-        _currentUser = User(
-          id: '1',
-          name: 'مستخدم تجريبي',
-          email: email,
-          phone: '+967123456789',
-          profileImage: '',
-          role: UserRole.user,
-          joinDate: DateTime.now(),
-          lastLogin: DateTime.now(),
-          preferences: UserPreferences(),
-        );
+      if (userMap != null) {
+        // في التطبيق الحقيقي، يجب التحقق من كلمة المرور المشفرة
+        // هنا نقبل أي كلمة مرور للتجربة
+        _currentUser = User.fromMap(userMap);
         _isAuthenticated = true;
+
+        // حفظ الجلسة
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_userIdKey, _currentUser!.id);
+
+        // تحديث آخر تسجيل دخول
+        await _userDao.updateLastLogin(_currentUser!.id);
+
         _error = '';
+        notifyListeners();
+        return true;
       } else {
-        _error = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+        _error = 'البريد الإلكتروني غير مسجل';
+        notifyListeners();
+        return false;
       }
     } catch (e) {
       _error = 'حدث خطأ أثناء تسجيل الدخول: ${e.toString()}';
+      notifyListeners();
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> register(String name, String email, String password, String phone) async {
+  /// تسجيل مستخدم جديد
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+  }) async {
     _isLoading = true;
     _error = '';
     notifyListeners();
 
     try {
-      // محاكاة عملية التسجيل
-      await Future.delayed(const Duration(seconds: 2));
+      // التحقق من عدم وجود مستخدم بنفس البريد
+      final existingUser = await _userDao.getUserByEmail(email);
+      if (existingUser != null) {
+        _error = 'البريد الإلكتروني مسجل مسبقاً';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
 
-      _currentUser = User(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: name,
-        email: email,
-        phone: phone,
-        profileImage: '',
-        role: UserRole.user,
-        joinDate: DateTime.now(),
-        preferences: UserPreferences(),
-      );
-      _isAuthenticated = true;
+      // إنشاء معرف جديد
+      final userId = 'user_${DateTime.now().millisecondsSinceEpoch}';
+
+      // إدراج المستخدم الجديد
+      await _userDao.insertUser({
+        DatabaseConstants.colId: userId,
+        DatabaseConstants.colName: name,
+        DatabaseConstants.colEmail: email,
+        DatabaseConstants.colPhone: phone,
+        DatabaseConstants.colProfileImage: '',
+        DatabaseConstants.colRole: 'user',
+        DatabaseConstants.colJoinDate: DateTime.now().toIso8601String(),
+        DatabaseConstants.colIsEmailVerified: 0,
+        DatabaseConstants.colPoints: 0,
+        DatabaseConstants.colMembershipLevel: 'عادي',
+      });
+
+      // تسجيل الدخول تلقائياً
+      final userMap = await _userDao.getUserWithPreferences(userId);
+      if (userMap != null) {
+        _currentUser = User.fromMap(userMap);
+        _isAuthenticated = true;
+
+        // حفظ الجلسة
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_userIdKey, userId);
+      }
+
       _error = '';
-    } catch (e) {
-      _error = 'حدث خطأ أثناء التسجيل: ${e.toString()}';
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return true;
+    } catch (e) {
+      _error = 'حدث خطأ أثناء التسجيل: ${e.toString()}';
+      _isLoading = false;
+      notifyListeners();
+      return false;
     }
   }
 
+  /// تسجيل الخروج
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      // محاكاة عملية تسجيل الخروج
-      await Future.delayed(const Duration(seconds: 1));
+      // مسح الجلسة المحفوظة
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_userIdKey);
 
       _currentUser = null;
       _isAuthenticated = false;
@@ -94,113 +172,51 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateProfile(User updatedUser) async {
+  /// تحديث الملف الشخصي
+  Future<bool> updateProfile(Map<String, dynamic> updates) async {
+    if (_currentUser == null) return false;
+
     _isLoading = true;
     notifyListeners();
 
     try {
-      // محاكاة عملية تحديث الملف الشخصي
-      await Future.delayed(const Duration(seconds: 1));
+      await _userDao.updateUser(_currentUser!.id, updates);
 
-      _currentUser = updatedUser;
+      // إعادة تحميل بيانات المستخدم
+      final userMap = await _userDao.getUserWithPreferences(_currentUser!.id);
+      if (userMap != null) {
+        _currentUser = User.fromMap(userMap);
+      }
+
       _error = '';
-    } catch (e) {
-      _error = 'حدث خطأ أثناء تحديث الملف الشخصي: ${e.toString()}';
-    } finally {
       _isLoading = false;
       notifyListeners();
+      return true;
+    } catch (e) {
+      _error = 'حدث خطأ أثناء التحديث: ${e.toString()}';
+      _isLoading = false;
+      notifyListeners();
+      return false;
     }
   }
 
+  /// مسح الخطأ
   void clearError() {
     _error = '';
     notifyListeners();
   }
 
-  void addToFavorites(String itemId, FavoriteType type) {
-    if (_currentUser != null) {
-      final user = _currentUser!;
-      List<String> favorites = [];
-
-      switch (type) {
-        case FavoriteType.artwork:
-          favorites = List.from(user.favoriteArtworks);
-          if (!favorites.contains(itemId)) {
-            favorites.add(itemId);
-          }
-          break;
-        case FavoriteType.artist:
-          favorites = List.from(user.favoriteArtists);
-          if (!favorites.contains(itemId)) {
-            favorites.add(itemId);
-          }
-          break;
-        case FavoriteType.exhibition:
-          favorites = List.from(user.favoriteExhibitions);
-          if (!favorites.contains(itemId)) {
-            favorites.add(itemId);
-          }
-          break;
-      }
-
-      _currentUser = user.copyWith(
-        favoriteArtworks: type == FavoriteType.artwork ? favorites : user.favoriteArtworks,
-        favoriteArtists: type == FavoriteType.artist ? favorites : user.favoriteArtists,
-        favoriteExhibitions: type == FavoriteType.exhibition ? favorites : user.favoriteExhibitions,
-      );
-      notifyListeners();
+  /// التحقق من تسجيل الدخول (للعمليات التي تتطلب مصادقة)
+  bool requireAuth(Function onNotAuthenticated) {
+    if (!_isAuthenticated) {
+      onNotAuthenticated();
+      return false;
     }
-  }
-
-  void removeFromFavorites(String itemId, FavoriteType type) {
-    if (_currentUser != null) {
-      final user = _currentUser!;
-      List<String> favorites = [];
-
-      switch (type) {
-        case FavoriteType.artwork:
-          favorites = List.from(user.favoriteArtworks);
-          favorites.remove(itemId);
-          break;
-        case FavoriteType.artist:
-          favorites = List.from(user.favoriteArtists);
-          favorites.remove(itemId);
-          break;
-        case FavoriteType.exhibition:
-          favorites = List.from(user.favoriteExhibitions);
-          favorites.remove(itemId);
-          break;
-      }
-
-      _currentUser = user.copyWith(
-        favoriteArtworks: type == FavoriteType.artwork ? favorites : user.favoriteArtworks,
-        favoriteArtists: type == FavoriteType.artist ? favorites : user.favoriteArtists,
-        favoriteExhibitions: type == FavoriteType.exhibition ? favorites : user.favoriteExhibitions,
-      );
-      notifyListeners();
-    }
-  }
-
-  bool isFavorite(String itemId, FavoriteType type) {
-    if (_currentUser == null) return false;
-
-    switch (type) {
-      case FavoriteType.artwork:
-        return _currentUser!.favoriteArtworks.contains(itemId);
-      case FavoriteType.artist:
-        return _currentUser!.favoriteArtists.contains(itemId);
-      case FavoriteType.exhibition:
-        return _currentUser!.favoriteExhibitions.contains(itemId);
-    }
+    return true;
   }
 }
 
-enum FavoriteType {
-  artwork,
-  artist,
-  exhibition,
-}
-
+/// امتداد User لإضافة copyWith
 extension UserCopyWith on User {
   User copyWith({
     String? id,

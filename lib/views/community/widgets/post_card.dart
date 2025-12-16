@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/community/post.dart';
@@ -148,9 +149,7 @@ class PostCard extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: post.imageUrl!.startsWith('http')
-                      ? NetworkImage(post.imageUrl!) as ImageProvider
-                      : AssetImage(post.imageUrl!),
+                  image: _getImageProvider(post.imageUrl!),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -242,5 +241,25 @@ class PostCard extends StatelessWidget {
     if (diff.inDays > 0) return 'منذ ${diff.inDays} يوم';
     if (diff.inHours > 0) return 'منذ ${diff.inHours} ساعة';
     return 'الآن';
+  }
+
+  /// Helper to get the correct ImageProvider based on image path
+  ImageProvider _getImageProvider(String imageUrl) {
+    // Network image
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return NetworkImage(imageUrl);
+    }
+    // Local file path (from gallery or camera)
+    if (imageUrl.startsWith('/') ||
+        imageUrl.startsWith('C:') ||
+        imageUrl.startsWith('file://')) {
+      final cleanPath = imageUrl.replaceFirst('file://', '');
+      final file = File(cleanPath);
+      if (file.existsSync()) {
+        return FileImage(file);
+      }
+    }
+    // Asset image (fallback)
+    return AssetImage(imageUrl);
   }
 }

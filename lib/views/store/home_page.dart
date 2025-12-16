@@ -266,10 +266,11 @@ class _StorePageState extends State<StorePage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
               crossAxisCount: 1,
               crossAxisSpacing: 16,
-              mainAxisSpacing: 22,
-              childAspectRatio: 0.85,
+              mainAxisSpacing: 20,
+              childAspectRatio: 0.90,
             ),
             itemCount: productProvider.filteredProducts.length,
             itemBuilder: (context, index) {
@@ -299,15 +300,9 @@ class _StorePageState extends State<StorePage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color, // Using card theme color
+          color: Theme.of(context).cardColor, // Using card theme color
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
-            ),
-          ],
+
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
@@ -370,6 +365,7 @@ class _StorePageState extends State<StorePage> {
               Padding(
                 padding: const EdgeInsets.all(12), // Reduced padding
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -391,7 +387,7 @@ class _StorePageState extends State<StorePage> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 3),
                     // Removed Description to save space as per user request implicit context of overflow
                     // Or keep it but very short
                     Text(
@@ -404,7 +400,7 @@ class _StorePageState extends State<StorePage> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -450,7 +446,7 @@ class _StorePageState extends State<StorePage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     ElevatedButton(
                       onPressed: () {
                         cartProvider.addToCart(product);

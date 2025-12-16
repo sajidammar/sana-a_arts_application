@@ -9,6 +9,7 @@ import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
+import 'package:sanaa_artl/providers/user_provider.dart';
 import 'package:sanaa_artl/themes/app_theme.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/home_view.dart';
@@ -25,10 +26,15 @@ import 'providers/store/product_provider.dart';
 import 'providers/store/invoice_provider.dart';
 import 'providers/wishlist_provider.dart';
 
-void main() {
+void main() async {
+  // ضمان تهيئة Flutter
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     MultiProvider(
       providers: [
+        // مزود المستخدم - يجب أن يكون أولاً لتهيئة قاعدة البيانات
+        ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(
           create: (context) => CartProvider()..loadCartItems(),
@@ -57,8 +63,47 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeApp();
+  }
+
+  /// تهيئة التطبيق وقاعدة البيانات
+  Future<void> _initializeApp() async {
+    // الحصول على الـ providers بدون الاستماع للتغييرات
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final communityProvider = Provider.of<CommunityProvider>(
+      context,
+      listen: false,
+    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // تهيئة قاعدة البيانات والمستخدم
+    await userProvider.initialize();
+
+    // تحميل جلسة المستخدم المحفوظة
+    await authProvider.loadSavedSession();
+
+    // تهيئة بيانات المجتمع
+    await communityProvider.initialize();
+
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +129,7 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [Locale('ar', 'AE')],
           locale: const Locale('ar', 'AE'),
           theme: themeProvider.isDarkMode ? AppTheme.dark : AppTheme.light,
-          home: const Home_Page(),
+          home: _isInitialized ? const Home_Page() : const _LoadingScreen(),
           routes: {
             '/exhibition': (context) => ExhibitionHomePage(),
             '/home': (context) => StorePage(),
@@ -94,6 +139,81 @@ class MyApp extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+/// شاشة التحميل أثناء تهيئة قاعدة البيانات
+class _LoadingScreen extends StatelessWidget {
+  const _LoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF1A1A2E),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // شعار التطبيق
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFD4AF37), Color(0xFFF4E4BC)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.palette,
+                size: 60,
+                color: Color(0xFF1A1A2E),
+              ),
+            ),
+            const SizedBox(height: 32),
+            // عنوان التطبيق
+            const Text(
+              'فنون صنعاء التشكيلية',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+              ),
+            ),
+            const SizedBox(height: 16),
+            // نص التحميل
+            const Text(
+              'جاري التحميل...',
+              style: TextStyle(
+                color: Color(0xFFD4AF37),
+                fontSize: 16,
+                fontFamily: 'Tajawal',
+              ),
+            ),
+            const SizedBox(height: 24),
+            // مؤشر التحميل
+            const SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD4AF37)),
+                strokeWidth: 3,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

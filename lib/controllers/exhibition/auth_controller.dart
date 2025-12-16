@@ -1,47 +1,55 @@
 import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
 
-
+/// AuthController - وحدة تحكم المصادقة (Controller في MVC)
+/// تعمل كواجهة للـ AuthProvider
 class AuthController {
   final AuthProvider _authProvider;
 
   AuthController(this._authProvider);
 
-  Future<void> login(String email, String password) async {
-    await _authProvider.login(email, password);
+  /// تسجيل الدخول
+  Future<bool> login(String email, String password) async {
+    return await _authProvider.login(email, password);
   }
 
-  Future<void> register(String name, String email, String password, String phone) async {
-    await _authProvider.register(name, email, password, phone);
+  /// التسجيل
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+  }) async {
+    return await _authProvider.register(
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+    );
   }
 
+  /// تسجيل الخروج
   Future<void> logout() async {
     await _authProvider.logout();
   }
 
-  Future<void> updateProfile(Map<String, dynamic> userData) async {
-    // This would be implemented to update the user profile
-    // For now, we'll just simulate a delay
-    await Future.delayed(const Duration(seconds: 1));
+  /// تحديث الملف الشخصي
+  Future<bool> updateProfile(Map<String, dynamic> userData) async {
+    return await _authProvider.updateProfile(userData);
   }
 
+  /// مسح الخطأ
   void clearError() {
     _authProvider.clearError();
   }
 
-  void addToFavorites(String itemId, FavoriteType type) {
-    _authProvider.addToFavorites(itemId, type);
-  }
-
-  void removeFromFavorites(String itemId, FavoriteType type) {
-    _authProvider.removeFromFavorites(itemId, type);
-  }
-
-  bool isFavorite(String itemId, FavoriteType type) {
-    return _authProvider.isFavorite(itemId, type);
+  /// تحميل الجلسة المحفوظة
+  Future<void> loadSavedSession() async {
+    await _authProvider.loadSavedSession();
   }
 
   // Getters
   bool get isAuthenticated => _authProvider.isAuthenticated;
   bool get isLoading => _authProvider.isLoading;
   String get error => _authProvider.error;
+  String get currentUserId => _authProvider.currentUserId;
 }

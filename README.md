@@ -1,4 +1,4 @@
-# sanaa_artl
+# sanaa_art
 
 A new Flutter project.
 
