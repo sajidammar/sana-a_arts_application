@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/themes/exhibition/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class NotificationUtils {
   static void showSuccessNotification(BuildContext context, String message) {

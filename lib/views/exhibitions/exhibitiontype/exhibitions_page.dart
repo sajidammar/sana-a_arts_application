@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/themes/exhibition/app_themes.dart';
-import 'package:sanaa_artl/themes/exhibition/colors.dart';
+
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'vr_exhibition_page.dart';
 import 'widgets/exhibition_card.dart';
@@ -46,8 +47,9 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: CustomScrollView(
         slivers: [
           // الهيدر
@@ -83,22 +85,23 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
   }
 
   Widget _buildAppBar() {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return SliverAppBar(
-      backgroundColor: Theme.of(
-        context,
-      ).colorScheme.surface.withValues(alpha: 0.95),
+      backgroundColor: AppColors.getBackgroundColor(
+        isDark,
+      ).withValues(alpha: 0.95),
       elevation: 2,
       pinned: true,
       expandedHeight: 120,
       flexibleSpace: FlexibleSpaceBar(
         title: Row(
           children: [
-            Icon(Icons.art_track, color: Theme.of(context).primaryColor),
+            Icon(Icons.art_track, color: AppColors.getPrimaryColor(isDark)),
             const SizedBox(width: 8),
             Text(
               'المعارض الفنية',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.getTextColor(isDark),
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 fontFamily: 'Tajawal',
@@ -167,8 +170,6 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
   void _handleExhibitionTap(BuildContext context, Exhibition exhibition) {
     if (exhibition.type == ExhibitionType.virtual) {
       _openVirtualExhibition(context);
-    } else if (exhibition.type == ExhibitionType.reality) {
-      _bookRealityExhibition(context, exhibition);
     } else {
       _viewOpenExhibition(context, exhibition);
     }
@@ -185,52 +186,6 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const VRExhibitionPage()),
-    );
-  }
-
-  void _bookRealityExhibition(BuildContext context, Exhibition exhibition) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'حجز تذكرة',
-          style: TextStyle(
-            fontFamily: 'Tajawal',
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        content: Text(
-          'جاري حجز تذكرة لمعرض: ${exhibition.title}',
-          style: TextStyle(
-            fontFamily: 'Tajawal',
-            color: Theme.of(context).primaryColorDark,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء', style: TextStyle(fontFamily: 'Tajawal')),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'تم حجز التذكرة بنجاح!',
-                    style: TextStyle(fontFamily: 'Tajawal'),
-                  ),
-                  backgroundColor: AppThemes.getSuccessColor(context),
-                ),
-              );
-            },
-            child: const Text(
-              'تأكيد الحجز',
-              style: TextStyle(fontFamily: 'Tajawal'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

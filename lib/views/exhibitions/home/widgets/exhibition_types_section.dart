@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/themes/exhibition/colors.dart' show AppColors;
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
@@ -16,11 +17,12 @@ class ExhibitionTypesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.only(
+        color: AppColors.getBackgroundColor(isDark),
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
         ),
@@ -38,9 +40,9 @@ class ExhibitionTypesSection extends StatelessWidget {
                 foreground: Paint()
                   ..shader = LinearGradient(
                     colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColorDark,
+                      AppColors.getPrimaryColor(isDark),
+                      AppColors.getPrimaryColor(isDark).withValues(alpha: 0.8),
+                      AppColors.getPrimaryColor(isDark).withValues(alpha: 0.6),
                     ],
                   ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
                 fontFamily: 'Tajawal',
@@ -135,6 +137,7 @@ class ExhibitionTypesSection extends StatelessWidget {
     required IconData buttonIcon,
     required VoidCallback onTap,
   }) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return ScaleAnimation(
       delay: const Duration(milliseconds: 400),
       child: Card(
@@ -148,15 +151,13 @@ class ExhibitionTypesSection extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Theme.of(
-                  context,
-                ).scaffoldBackgroundColor.withValues(alpha: 0.8),
-                Theme.of(context).colorScheme.surface,
+                AppColors.getBackgroundColor(isDark).withValues(alpha: 0.8),
+                AppColors.getCardColor(isDark),
               ],
             ),
             borderRadius: BorderRadius.circular(AppConstants.borderRadius),
             border: Border.all(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+              color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.3),
               width: 2,
             ),
           ),
@@ -166,7 +167,7 @@ class ExhibitionTypesSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // الأيقونة
-                Icon(icon, size: 60, color: Theme.of(context).primaryColor),
+                Icon(icon, size: 60, color: AppColors.getPrimaryColor(isDark)),
 
                 // العنوان
                 Text(
@@ -197,7 +198,7 @@ class ExhibitionTypesSection extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.check_circle,
-                                color: Theme.of(context).primaryColor,
+                                color: AppColors.getPrimaryColor(isDark),
                                 size: 16,
                               ),
                               const SizedBox(width: 8),
@@ -220,8 +221,8 @@ class ExhibitionTypesSection extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onTap,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.surface,
+                      backgroundColor: AppColors.getPrimaryColor(isDark),
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,

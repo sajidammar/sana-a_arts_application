@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
-import '../../../themes/app_colos.dart';
+import '../../../themes/app_colors.dart';
 
 /// حاوية بتدرج لوني تراثي
 class HeritageGradientContainer extends StatelessWidget {
@@ -22,7 +22,7 @@ class HeritageGradientContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Container(
       padding: padding ?? const EdgeInsets.all(16),
@@ -31,7 +31,7 @@ class HeritageGradientContainer extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: _getGradientColors(themeProvider.isDarkMode, useCardGradient),
+          colors: _getGradientColors(isDark, useCardGradient),
         ),
         borderRadius: borderRadius ?? BorderRadius.circular(16),
         boxShadow: [
@@ -46,15 +46,15 @@ class HeritageGradientContainer extends StatelessWidget {
     );
   }
 
-  List<Color> _getGradientColors(bool isDarkMode, bool useCardGradient) {
+  List<Color> _getGradientColors(bool isDark, bool useCardGradient) {
     if (useCardGradient) {
-      return isDarkMode
-          ? [const Color(0xFF1E1E1E), const Color(0xFF2D2D2D)]
-          : [const Color(0xFFFFFFFF), const Color(0xFFF5E6D3)];
+      return isDark
+          ? [AppColors.darkBackground, AppColors.darkCard]
+          : [AppColors.white, AppColors.backgroundSecondary];
     } else {
-      return isDarkMode
-          ? [const Color(0xFF8B4513), const Color(0xFFD4AF37)]
-          : [const Color(0xFF8B4513), const Color(0xFFB8860B)];
+      return isDark
+          ? [AppColors.secondaryColor, AppColors.darkPrimary]
+          : [AppColors.secondaryColor, AppColors.primaryColor];
     }
   }
 }
@@ -78,21 +78,22 @@ class HeritageText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     Color textColor;
     if (useGoldColor) {
-      textColor = const Color(0xFFD4AF37); // ذهبي ثابت
+      textColor = AppColors.starGold;
     } else if (isTitle) {
-      textColor = AppColors.getPrimaryColor(themeProvider.isDarkMode);
+      textColor = AppColors.getPrimaryColor(isDark);
     } else {
-      textColor = AppColors.getTextPrimaryColor(themeProvider.isDarkMode);
+      textColor = AppColors.getTextColor(isDark);
     }
 
     return Text(
       text,
       style: (style ?? const TextStyle()).copyWith(
         color: textColor,
+        fontFamily: 'Tajawal',
       ),
       textAlign: textAlign,
     );
@@ -116,34 +117,33 @@ class HeritageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: isPrimary
-            ? AppColors.getPrimaryColor(themeProvider.isDarkMode)
+            ? AppColors.getPrimaryColor(isDark)
             : Colors.transparent,
         foregroundColor: isPrimary
-            ? (themeProvider.isDarkMode ? Colors.black : Colors.white)
-            : AppColors.getPrimaryColor(themeProvider.isDarkMode),
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ? (isDark ? Colors.black : Colors.white)
+            : AppColors.getPrimaryColor(isDark),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           side: isPrimary
               ? BorderSide.none
-              : BorderSide(color: AppColors.getPrimaryColor(themeProvider.isDarkMode), width: 2),
+              : BorderSide(color: AppColors.getPrimaryColor(isDark), width: 2),
         ),
-        elevation: 4,
+        elevation: isPrimary ? 4 : 0,
       ),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: isPrimary
-              ? (themeProvider.isDarkMode ? Colors.black : Colors.white)
-              : AppColors.getPrimaryColor(themeProvider.isDarkMode),
+          fontFamily: 'Tajawal',
         ),
       ),
     );

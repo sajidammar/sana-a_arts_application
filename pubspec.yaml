@@ -101,10 +101,10 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
-    - assets/icons/
-    - assets/patterns/
-    - assets/animations/
-    - assets/backgrounds/
+    # - assets/icons/
+    # - assets/patterns/
+    # - assets/animations/
+    # - assets/backgrounds/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

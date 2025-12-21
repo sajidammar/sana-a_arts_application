@@ -176,6 +176,23 @@ class ExhibitionDao {
     return results.map((e) => _parseExhibition(e)).toList();
   }
 
+  /// تحديث حالة الإعجاب
+  Future<int> updateLikeStatus(String id, bool isLiked) async {
+    final db = await _dbHelper.database;
+    return await db.update(
+      DatabaseConstants.tableExhibitions,
+      {DatabaseConstants.colIsLiked: isLiked ? 1 : 0},
+      where: '${DatabaseConstants.colId} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// حذف جميع المعارض
+  Future<int> deleteAllExhibitions() async {
+    final db = await _dbHelper.database;
+    return await db.delete(DatabaseConstants.tableExhibitions);
+  }
+
   /// زيادة عدد الزوار
   Future<int> incrementVisitors(String id) async {
     final db = await _dbHelper.database;

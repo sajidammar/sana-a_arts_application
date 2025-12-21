@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 
@@ -44,12 +46,13 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
     String userId,
     String commentText,
   ) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: AppColors.getBackgroundColor(isDark),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: SafeArea(
@@ -263,6 +266,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Consumer<VRProvider>(
       builder: (context, vrProvider, child) {
         final comments = vrProvider.comments;
@@ -271,9 +275,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
           width: 320,
           height: double.infinity,
           decoration: BoxDecoration(
-            color: Theme.of(
-              context,
-            ).scaffoldBackgroundColor.withValues(alpha: 0.95),
+            color: AppColors.getBackgroundColor(isDark).withValues(alpha: 0.95),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.2),
@@ -283,7 +285,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
             ],
             border: Border(
               right: BorderSide(
-                color: Theme.of(context).dividerColor.withValues(alpha: 0.2),
+                color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -298,12 +300,13 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                     Row(
                       children: [
                         Text(
-                          'التعليقات',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Tajawal',
-                              ),
+                          'الالتعليقات',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Tajawal',
+                            color: AppColors.getTextColor(isDark),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Container(
@@ -314,7 +317,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                           decoration: BoxDecoration(
                             color: Theme.of(
                               context,
-                            ).primaryColor.withOpacity(0.1),
+                            ).primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -323,7 +326,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Tajawal',
-                              color: Theme.of(context).primaryColor,
+                              color: AppColors.getPrimaryColor(isDark),
                             ),
                           ),
                         ),
@@ -409,28 +412,29 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                                               children: [
                                                 Text(
                                                   comment.userName,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 13,
-                                                        fontFamily: 'Tajawal',
-                                                      ),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 13,
+                                                    fontFamily: 'Tajawal',
+                                                    color:
+                                                        AppColors.getTextColor(
+                                                          isDark,
+                                                        ),
+                                                  ),
                                                 ),
                                                 const SizedBox(width: 8),
                                                 Text(
                                                   _getTimeAgo(
                                                     comment.createdAt,
                                                   ),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                        fontSize: 11,
-                                                        fontFamily: 'Tajawal',
-                                                      ),
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontFamily: 'Tajawal',
+                                                    color:
+                                                        AppColors.getSubtextColor(
+                                                          isDark,
+                                                        ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -529,13 +533,13 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                                       else
                                         Text(
                                           comment.comment,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                fontSize: 13,
-                                                fontFamily: 'Tajawal',
-                                              ),
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontFamily: 'Tajawal',
+                                            color: AppColors.getTextColor(
+                                              isDark,
+                                            ),
+                                          ),
                                         ),
                                       const SizedBox(height: 8),
                                       // زر الإعجاب
@@ -563,9 +567,10 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                   fontFamily: 'Tajawal',
-                                                  color: Theme.of(
-                                                    context,
-                                                  ).textTheme.bodySmall?.color,
+                                                  color:
+                                                      AppColors.getSubtextColor(
+                                                        isDark,
+                                                      ),
                                                 ),
                                               ),
                                             ],
@@ -586,9 +591,13 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: AppColors.getBackgroundColor(isDark),
                   border: Border(
-                    top: BorderSide(color: Theme.of(context).dividerColor),
+                    top: BorderSide(
+                      color: AppColors.getPrimaryColor(
+                        isDark,
+                      ).withValues(alpha: 0.1),
+                    ),
                   ),
                 ),
                 child: Row(
@@ -596,7 +605,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).hoverColor,
+                          color: AppColors.getCardColor(isDark),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: TextField(
@@ -621,7 +630,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                     const SizedBox(width: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        color: AppColors.getPrimaryColor(isDark),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -659,3 +668,4 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
     }
   }
 }
+

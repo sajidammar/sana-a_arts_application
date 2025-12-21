@@ -6,6 +6,7 @@ import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/auth/login_page.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 /// صفحة إضافة منشور جديد
 class AddPostPage extends StatefulWidget {
@@ -73,68 +74,6 @@ class _AddPostPageState extends State<AddPostPage> {
         ).showSnackBar(SnackBar(content: Text('خطأ في التقاط الصورة: $e')));
       }
     }
-  }
-
-  /// إظهار خيارات الصورة
-  void _showImageOptions() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text('إضافة صورة', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.photo_library, color: Colors.blue),
-                ),
-                title: const Text('اختيار من المعرض'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage();
-                },
-              ),
-              ListTile(
-                leading: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.camera_alt, color: Colors.green),
-                ),
-                title: const Text('التقاط صورة'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _takePhoto();
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   /// نشر المنشور
@@ -223,12 +162,12 @@ class _AddPostPageState extends State<AddPostPage> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             title: const Text('إضافة منشور'),
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            backgroundColor: AppColors.getCardColor(isDark),
             foregroundColor: isDark ? Colors.white : Colors.black,
             elevation: 0,
             pinned: true,
@@ -289,7 +228,7 @@ class _AddPostPageState extends State<AddPostPage> {
                               authProvider.currentUser?.name ?? 'مستخدم',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.black,
+                                color: AppColors.getTextColor(isDark),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -302,9 +241,7 @@ class _AddPostPageState extends State<AddPostPage> {
                               decoration: InputDecoration(
                                 hintText: 'بماذا تفكر؟',
                                 hintStyle: TextStyle(
-                                  color: isDark
-                                      ? Colors.grey[400]
-                                      : Colors.grey[600],
+                                  color: AppColors.getSubtextColor(isDark),
                                 ),
                                 border: InputBorder.none,
                               ),

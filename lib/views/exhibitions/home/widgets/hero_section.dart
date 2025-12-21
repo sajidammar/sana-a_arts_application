@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 
 class HeroSection extends StatefulWidget {
@@ -59,11 +62,11 @@ class _HeroSectionState extends State<HeroSection> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final theme = Theme.of(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Container(
       height: screenHeight * 0.6, // Adjusted height
-      decoration: BoxDecoration(color: theme.primaryColor),
+      decoration: BoxDecoration(color: AppColors.getPrimaryColor(isDark)),
       child: Stack(
         children: [
           // Slideshow
@@ -87,8 +90,8 @@ class _HeroSectionState extends State<HeroSection> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              theme.primaryColorDark,
-                              theme.primaryColor,
+                              AppColors.primaryDark,
+                              AppColors.getPrimaryColor(isDark),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -105,9 +108,9 @@ class _HeroSectionState extends State<HeroSection> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withOpacity(0.3),
+                          Colors.black.withValues(alpha: 0.3),
                           Colors.transparent,
-                          Colors.black.withOpacity(0.7),
+                          Colors.black.withValues(alpha: 0.7),
                         ],
                       ),
                     ),
@@ -156,7 +159,9 @@ class _HeroSectionState extends State<HeroSection> {
                       style: TextStyle(
                         fontSize: _getResponsiveFontSize(context, 24, 18),
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(0.95),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.95)
+                            : Colors.white,
                         fontFamily: 'Tajawal',
                         shadows: const [
                           Shadow(
@@ -196,8 +201,8 @@ class _HeroSectionState extends State<HeroSection> {
                   margin: const EdgeInsets.symmetric(horizontal: 4.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(
-                      _currentPage == entry.key ? 0.9 : 0.4,
+                    color: Colors.white.withValues(
+                      alpha: _currentPage == entry.key ? 0.9 : 0.4,
                     ),
                   ),
                 );
@@ -217,6 +222,10 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   Widget _buildExploreButton(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ).isDarkMode;
     return ElevatedButton(
       onPressed: () {
         // Scroll down or open dropdown
@@ -226,7 +235,7 @@ class _HeroSectionState extends State<HeroSection> {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        foregroundColor: Theme.of(context).primaryColor,
+        foregroundColor: AppColors.getPrimaryColor(isDark),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
         elevation: 6,
@@ -263,7 +272,7 @@ class _ExhibitionPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withValues(alpha: 0.1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -279,3 +288,4 @@ class _ExhibitionPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

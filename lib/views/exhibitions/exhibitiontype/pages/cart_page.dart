@@ -87,7 +87,7 @@ class ExhibitionCartPage extends StatelessWidget {
           Icon(
             Icons.shopping_bag_outlined,
             size: 100,
-            color: Theme.of(context).primaryColor.withOpacity(0.3),
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 20),
           Text(
@@ -126,7 +126,7 @@ class ExhibitionCartPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -143,7 +143,7 @@ class ExhibitionCartPage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.6),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.6),
                 ],
               ),
             ),
@@ -221,7 +221,7 @@ class ExhibitionCartPage extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -293,3 +293,4 @@ class ExhibitionCartPage extends StatelessWidget {
     );
   }
 }
+

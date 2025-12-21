@@ -216,6 +216,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colRating} REAL DEFAULT 0,
         ${DatabaseConstants.colRatingCount} INTEGER DEFAULT 0,
         ${DatabaseConstants.colTags} TEXT,
+        ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
         ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
       )
@@ -279,8 +280,11 @@ class DatabaseHelper {
 
   /// ترقية قاعدة البيانات (للإصدارات المستقبلية)
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // معالجة التهجيرات المستقبلية هنا
-    // if (oldVersion < 2) { ... }
+    if (oldVersion < 2) {
+      await db.execute(
+        'ALTER TABLE ${DatabaseConstants.tableExhibitions} ADD COLUMN ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0',
+      );
+    }
   }
 
   /// إغلاق قاعدة البيانات

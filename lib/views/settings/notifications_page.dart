@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../themes/app_colors.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -22,37 +23,46 @@ class _NotificationsPageState extends State<NotificationsPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
 
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final cardColor = AppColors.getCardColor(isDark);
+
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             title: const Text(
               'الإشعارات',
-              style: TextStyle(fontFamily: 'Tajawal'),
+              style: TextStyle(
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            foregroundColor: isDark
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
-            elevation: 2,
+            backgroundColor: isDark ? AppColors.darkCard : Colors.white,
+            foregroundColor: primaryColor,
+            elevation: 0,
             pinned: true,
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 _buildSection(
                   isDark: isDark,
                   title: 'طرق الإشعارات',
+                  primaryColor: primaryColor,
+                  cardColor: cardColor,
+                  textColor: textColor,
                   children: [
                     _buildSwitchTile(
                       isDark,
                       'البريد الإلكتروني',
-                      Icons.email,
+                      Icons.email_outlined,
                       _emailNotifications,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _emailNotifications = value);
                       },
@@ -60,8 +70,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     _buildSwitchTile(
                       isDark,
                       'إشعارات الدفع',
-                      Icons.notifications_active,
+                      Icons.notifications_active_outlined,
                       _pushNotifications,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _pushNotifications = value);
                       },
@@ -69,24 +81,31 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     _buildSwitchTile(
                       isDark,
                       'الرسائل النصية',
-                      Icons.sms,
+                      Icons.sms_outlined,
                       _smsNotifications,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _smsNotifications = value);
                       },
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 _buildSection(
                   isDark: isDark,
                   title: 'أنواع الإشعارات',
+                  primaryColor: primaryColor,
+                  cardColor: cardColor,
+                  textColor: textColor,
                   children: [
                     _buildSwitchTile(
                       isDark,
                       'تحديثات المعارض',
-                      Icons.museum,
+                      Icons.museum_outlined,
                       _exhibitionUpdates,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _exhibitionUpdates = value);
                       },
@@ -94,8 +113,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     _buildSwitchTile(
                       isDark,
                       'تحديثات الطلبات',
-                      Icons.shopping_bag,
+                      Icons.shopping_bag_outlined,
                       _orderUpdates,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _orderUpdates = value);
                       },
@@ -103,8 +124,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     _buildSwitchTile(
                       isDark,
                       'العروض الترويجية',
-                      Icons.local_offer,
+                      Icons.local_offer_outlined,
                       _promotions,
+                      primaryColor,
+                      textColor,
                       (value) {
                         setState(() => _promotions = value);
                       },
@@ -122,17 +145,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget _buildSection({
     required bool isDark,
     required String title,
+    required Color primaryColor,
+    required Color cardColor,
+    required Color textColor,
     required List<Widget> children,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black26 : Colors.grey.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -140,21 +168,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Text(
               title,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Tajawal',
-                color: isDark
-                    ? const Color(0xFFD4AF37)
-                    : const Color(0xFFB8860B),
+                color: primaryColor,
               ),
             ),
           ),
           const Divider(height: 1),
           ...children,
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -165,24 +192,33 @@ class _NotificationsPageState extends State<NotificationsPage> {
     String title,
     IconData icon,
     bool value,
+    Color primaryColor,
+    Color textColor,
     Function(bool) onChanged,
   ) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+      leading: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: primaryColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(icon, color: primaryColor, size: 22),
       ),
       title: Text(
         title,
         style: TextStyle(
           fontFamily: 'Tajawal',
-          color: isDark ? Colors.white : Colors.black87,
+          color: textColor,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
         ),
       ),
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+        activeThumbColor: primaryColor,
+        activeTrackColor: primaryColor.withValues(alpha: 0.2),
       ),
     );
   }

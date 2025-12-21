@@ -5,6 +5,7 @@ import 'package:sanaa_artl/models/community/post.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/community/widgets/comments_sheet.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -19,11 +20,11 @@ class PostCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -54,14 +55,14 @@ class PostCard extends StatelessWidget {
                       post.author.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black,
+                        color: AppColors.getTextColor(isDark),
                       ),
                     ),
                     Text(
                       _formatDate(post.timestamp),
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: AppColors.getSubtextColor(isDark),
                       ),
                     ),
                   ],
@@ -69,16 +70,14 @@ class PostCard extends StatelessWidget {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.more_horiz),
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: AppColors.getSubtextColor(isDark),
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
                       builder: (context) => Container(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF1E1E1E)
-                              : Colors.white,
+                          color: AppColors.getCardColor(isDark),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),
@@ -136,7 +135,7 @@ class PostCard extends StatelessWidget {
               child: Text(
                 post.content,
                 style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black87,
+                  color: AppColors.getTextColor(isDark),
                   height: 1.5,
                 ),
               ),
@@ -216,8 +215,7 @@ class PostCard extends StatelessWidget {
   }) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
-    final contentColor =
-        color ?? (isDark ? Colors.grey[400] : Colors.grey[600]);
+    final contentColor = color ?? AppColors.getSubtextColor(isDark);
 
     return InkWell(
       onTap: onTap,
@@ -263,3 +261,4 @@ class PostCard extends StatelessWidget {
     return AssetImage(imageUrl);
   }
 }
+

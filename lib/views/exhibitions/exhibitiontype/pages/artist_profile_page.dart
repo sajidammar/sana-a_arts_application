@@ -25,7 +25,7 @@ class ArtistProfilePage extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor.withOpacity(0.7),
+                        Theme.of(context).primaryColor.withValues(alpha: 0.7),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -44,7 +44,7 @@ class ArtistProfilePage extends StatelessWidget {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withValues(alpha: 0.2),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             ),
@@ -72,7 +72,7 @@ class ArtistProfilePage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: 'Tajawal',
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
                       ),
                     ],
@@ -159,7 +159,7 @@ class ArtistProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.05),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -213,7 +213,7 @@ class ArtistProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.05),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -257,14 +257,14 @@ class ArtistProfilePage extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor.withOpacity(0.7),
+                  Theme.of(context).primaryColor.withValues(alpha: 0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).shadowColor.withOpacity(0.1),
+                  color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -292,7 +292,7 @@ class ArtistProfilePage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontFamily: 'Tajawal',
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -303,3 +303,4 @@ class ArtistProfilePage extends StatelessWidget {
     );
   }
 }
+

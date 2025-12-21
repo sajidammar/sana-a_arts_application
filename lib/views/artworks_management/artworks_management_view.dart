@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/database/dao/artwork_dao.dart';
 import 'package:sanaa_artl/utils/database/dao/artist_dao.dart';
 import 'package:sanaa_artl/views/auth/login_page.dart';
@@ -108,9 +109,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
     final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFF8F4EF),
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: RefreshIndicator(
         onRefresh: _loadArtworks,
         color: primaryColor,
@@ -179,7 +178,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
   /// شريط التطبيق
   Widget _buildAppBar(bool isDark, Color primaryColor) {
     return SliverAppBar(
-      backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      backgroundColor: AppColors.getCardColor(isDark),
       elevation: 0,
       floating: true,
       snap: true,
@@ -378,7 +377,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -428,7 +427,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
             ),
             prefixIcon: Icon(Icons.search, color: primaryColor),
             filled: true,
-            fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            fillColor: AppColors.getCardColor(isDark),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
@@ -472,7 +471,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
       onSelected: (selected) {
         setState(() => _selectedFilter = selected ? value : 'all');
       },
-      backgroundColor: isDark ? const Color(0xFF2A2A2A) : Colors.grey[100],
+      backgroundColor: AppColors.getCardColor(isDark),
       selectedColor: primaryColor.withValues(alpha: 0.2),
       checkmarkColor: primaryColor,
       labelStyle: TextStyle(
@@ -507,7 +506,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

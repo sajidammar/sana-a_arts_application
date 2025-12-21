@@ -3,58 +3,61 @@ import 'package:provider/provider.dart';
 import '../../../controllers/store/product_controller.dart';
 import '../../../models/store/product_model.dart';
 import '../../../providers/store/cart_provider.dart';
-import '../../../themes/store/app_theme.dart';
-import '../../../utils/store/app_constants.dart';
+import '../../../providers/theme_provider.dart';
+import '../../../themes/app_colors.dart';
+
+import '../../../providers/wishlist_provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
 
   const ProductDetailsPage({super.key, required this.product});
 
-  @override
-  _ProductDetailsPageState createState() => _ProductDetailsPageState();
+  @override State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   final int _selectedImageIndex = 0;
-  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
     final productController = ProductController(context);
 
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final cardColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            expandedHeight: 300,
+            backgroundColor: cardColor,
+            expandedHeight: 350,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildProductImages(context),
+              background: _buildProductImages(context, isDark, primaryColor),
             ),
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                backgroundColor: Theme.of(
-                  context,
-                ).scaffoldBackgroundColor.withOpacity(0.7),
-                child: BackButton(color: Theme.of(context).iconTheme.color),
+                backgroundColor: cardColor.withValues(alpha: 0.7),
+                child: BackButton(color: primaryColor),
               ),
             ),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
-                  backgroundColor: Theme.of(
-                    context,
-                  ).scaffoldBackgroundColor.withOpacity(0.7),
+                  backgroundColor: cardColor.withValues(alpha: 0.7),
                   child: IconButton(
                     icon: Icon(
-                      Icons.shopping_cart,
-                      color: Theme.of(context).primaryColor,
+                      Icons.shopping_cart_outlined,
+                      color: primaryColor,
                     ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/cart');
@@ -66,10 +69,35 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-              _buildProductInfo(context),
-              _buildProductSpecs(context),
-              _buildProductDescription(context),
-              _buildRelatedProducts(context),
+              _buildProductInfo(
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+                cardColor,
+              ),
+              _buildProductSpecs(
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+                cardColor,
+              ),
+              _buildProductDescription(
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+                cardColor,
+              ),
+              _buildRelatedProducts(
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+                cardColor,
+              ),
+              const SizedBox(height: 100), // Reserve space for bottom bar
             ]),
           ),
         ],
@@ -78,81 +106,127 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         cartProvider,
         productController,
         context,
+        isDark,
+        primaryColor,
+        textColor,
+        cardColor,
       ),
+      extendBody: true,
     );
   }
 
-  Widget _buildProductImages(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: AppTheme.getGradientDecoration(context),
-            child: Center(
-              child: Icon(Icons.image, color: Colors.white, size: 80),
-            ),
+  Widget _buildProductImages(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+  ) {
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(gradient: AppColors.storeGradient),
+          child: const Center(
+            child: Icon(Icons.palette_outlined, color: Colors.white, size: 80),
           ),
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                return Container(
-                  width: 8,
-                  height: 8,
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    color: _selectedImageIndex == index
-                        ? Theme.of(context).primaryColor
-                        : Colors.white.withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                );
-              }),
-            ),
+        ),
+        Positioned(
+          bottom: 24,
+          left: 0,
+          right: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (index) {
+              return Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: _selectedImageIndex == index
+                      ? Colors.white
+                      : Colors.white.withValues(alpha: 0.4),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    if (_selectedImageIndex == index)
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 4,
+                      ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductInfo(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
+    final subtextColor = AppColors.getSubtextColor(isDark);
+    final fieldColor = isDark
+        ? Colors.white.withValues(alpha: 0.05)
+        : Colors.grey.withValues(alpha: 0.05);
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildProductInfo(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppConstants.defaultPadding),
-      color: Theme.of(context).cardTheme.color,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             widget.product.title,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
-              color: AppTheme.getTextColor(context),
+              fontFamily: 'Tajawal',
+              color: textColor,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey.shade800.withValues(alpha: 0.3)
-                  : AppConstants.accentColor,
-              borderRadius: BorderRadius.circular(
-                AppConstants.defaultBorderRadius,
+              color: fieldColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white10
+                    : Colors.black.withValues(alpha: 0.03),
               ),
             ),
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(Icons.person, color: Colors.white),
+                  backgroundColor: primaryColor.withValues(alpha: 0.15),
+                  radius: 25,
+                  child: Icon(
+                    Icons.person_outline,
+                    color: primaryColor,
+                    size: 28,
+                  ),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,89 +235,101 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         widget.product.artist,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.getTextColor(context),
+                          fontSize: 16,
+                          color: textColor,
+                          fontFamily: 'Tajawal',
                         ),
                       ),
                       Text(
-                        'فنان تشكيلي متخصص في الفن التراثي',
+                        'فنان تشكيلي محترف',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.getSecondaryTextColor(context),
+                          fontSize: 13,
+                          color: subtextColor,
+                          fontFamily: 'Tajawal',
                         ),
                       ),
                     ],
                   ),
                 ),
-                ElevatedButton(
+                TextButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor:
-                        Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    elevation: 1,
+                  style: TextButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                   ),
-                  child: Text('زيارة الصفحة'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Text(
+                        'زيارة',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Tajawal',
+                        ),
+                      ),
+                      Icon(Icons.chevron_right, size: 18),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 16),
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: AppTheme.getCardDecoration(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '\$${widget.product.price}',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    if (widget.product.discount > 0)
-                      Text(
-                        '\$${widget.product.originalPrice}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: AppTheme.getSecondaryTextColor(context),
-                          decoration: TextDecoration.lineThrough,
-                        ),
-                      ),
-                  ],
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Text(
+                '\$${widget.product.price.toStringAsFixed(0)}',
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                  fontFamily: 'Tajawal',
                 ),
-                if (widget.product.discount > 0)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      'خصم ${widget.product.discount}%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              const SizedBox(width: 12),
+              if (widget.product.discount > 0) ...[
+                Text(
+                  '\$${widget.product.originalPrice.toStringAsFixed(0)}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: subtextColor,
+                    decoration: TextDecoration.lineThrough,
+                    fontFamily: 'Tajawal',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.redAccent.withValues(alpha: 0.3),
                     ),
                   ),
-                SizedBox(height: 8),
-                Text(
-                  'السعر شامل الضريبة، الشحن إضافي',
-                  style: TextStyle(
-                    color: AppTheme.getSecondaryTextColor(context),
-                    fontSize: 14,
+                  child: Text(
+                    '${widget.product.discount}% خصم',
+                    style: const TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Tajawal',
+                    ),
                   ),
                 ),
               ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'السعر شامل الضريبة، الشحن حسب المنطقة',
+            style: TextStyle(
+              color: subtextColor,
+              fontSize: 12,
+              fontFamily: 'Tajawal',
             ),
           ),
         ],
@@ -251,43 +337,88 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildProductSpecs(BuildContext context) {
+  Widget _buildProductSpecs(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
     return Container(
-      margin: EdgeInsets.all(AppConstants.defaultPadding),
-      padding: EdgeInsets.all(AppConstants.defaultPadding),
-      decoration: AppTheme.getCardDecoration(context),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.info, color: Theme.of(context).primaryColor),
-              SizedBox(width: 8),
+              Icon(Icons.info_outline_rounded, color: primaryColor, size: 22),
+              const SizedBox(width: 10),
               Text(
                 'مواصفات العمل',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.getTextColor(context),
+                  fontFamily: 'Tajawal',
+                  color: textColor,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 20),
           GridView.count(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 3,
+            childAspectRatio: 2.8,
             children: [
-              _buildSpecItem('النوع:', widget.product.category, context),
-              _buildSpecItem('الأبعاد:', widget.product.size, context),
-              _buildSpecItem('المادة:', widget.product.medium, context),
-              _buildSpecItem('سنة الإنتاج:', widget.product.year, context),
-              _buildSpecItem('الحالة:', 'جديد - أصلي', context),
-              _buildSpecItem('الإطار:', 'متضمن', context),
+              _buildSpecItem(
+                'النوع',
+                widget.product.category,
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+              ),
+              _buildSpecItem(
+                'الأبعاد',
+                widget.product.size,
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+              ),
+              _buildSpecItem(
+                'المادة',
+                widget.product.medium,
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+              ),
+              _buildSpecItem(
+                'السنة',
+                widget.product.year,
+                context,
+                isDark,
+                primaryColor,
+                textColor,
+              ),
             ],
           ),
         ],
@@ -295,66 +426,96 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildSpecItem(String label, String value, BuildContext context) {
+  Widget _buildSpecItem(
+    String label,
+    String value,
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+  ) {
+    final fieldColor = isDark
+        ? Colors.white.withValues(alpha: 0.05)
+        : Colors.grey.withValues(alpha: 0.03);
+    final subtextColor = AppColors.getSubtextColor(isDark);
+
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey.shade800.withValues(alpha: 0.3)
-            : AppConstants.accentColor,
-        borderRadius: BorderRadius.circular(8),
+        color: fieldColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.03),
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             label,
             style: TextStyle(
-              color: AppTheme.getSecondaryTextColor(context),
+              color: subtextColor,
+              fontSize: 11,
+              fontFamily: 'Tajawal',
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             value,
             style: TextStyle(
-              color: AppTheme.getTextColor(context),
-              fontWeight: FontWeight.w500,
+              color: textColor,
+              fontSize: 13,
+              fontFamily: 'Tajawal',
+              fontWeight: FontWeight.w600,
             ),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProductDescription(BuildContext context) {
+  Widget _buildProductDescription(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
     return Container(
-      margin: EdgeInsets.all(AppConstants.defaultPadding),
-      padding: EdgeInsets.all(AppConstants.defaultPadding),
-      decoration: AppTheme.getCardDecoration(context),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(25),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.description, color: Theme.of(context).primaryColor),
-              SizedBox(width: 8),
+              Icon(Icons.notes_rounded, color: primaryColor, size: 22),
+              const SizedBox(width: 10),
               Text(
                 'وصف العمل',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.getTextColor(context),
+                  fontFamily: 'Tajawal',
+                  color: textColor,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
             widget.product.description,
             style: TextStyle(
-              color: AppTheme.getSecondaryTextColor(context),
-              fontSize: 16,
-              height: 1.6,
+              color: AppColors.getSubtextColor(isDark),
+              fontSize: 15,
+              height: 1.7,
+              fontFamily: 'Tajawal',
             ),
             textAlign: TextAlign.justify,
           ),
@@ -363,49 +524,66 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget _buildRelatedProducts(BuildContext context) {
+  Widget _buildRelatedProducts(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
     return Container(
-      margin: EdgeInsets.all(AppConstants.defaultPadding),
+      margin: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'أعمال مشابهة',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.getTextColor(context),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'أعمال مشابهة',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+                color: textColor,
+              ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           SizedBox(
-            height: 200,
+            height: 220,
             child: ListView(
               scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               children: [
                 _buildRelatedProductCard(
                   'لوحة الطبيعة الصامتة',
                   'محمد علي الحديدي',
-                  320.0,
+                  320,
                   context,
+                  isDark,
+                  primaryColor,
+                  textColor,
+                  cardColor,
                 ),
                 _buildRelatedProductCard(
                   'منظر طبيعي جبلي',
                   'سارة أحمد القادري',
-                  280.0,
+                  280,
                   context,
+                  isDark,
+                  primaryColor,
+                  textColor,
+                  cardColor,
                 ),
                 _buildRelatedProductCard(
                   'بورتريه تراثي',
                   'فاطمة علي الحكيمي',
-                  380.0,
+                  380,
                   context,
-                ),
-                _buildRelatedProductCard(
-                  'لوحة البحر والشاطئ',
-                  'عبدالله محمد الزبيري',
-                  420.0,
-                  context,
+                  isDark,
+                  primaryColor,
+                  textColor,
+                  cardColor,
                 ),
               ],
             ),
@@ -420,29 +598,49 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     String artist,
     double price,
     BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
   ) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 160),
-      margin: EdgeInsets.only(right: 12),
-      decoration: AppTheme.getCardDecoration(context),
+      width: 160,
+      margin: const EdgeInsets.only(left: 16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black12
+                : Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 1.5,
+          Expanded(
             child: Container(
-              decoration: AppTheme.getGradientDecoration(context).copyWith(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+              decoration: BoxDecoration(
+                gradient: AppColors.storeGradient,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(15),
                 ),
               ),
-              child: Center(
-                child: Icon(Icons.image, color: Colors.white, size: 40),
+              child: const Center(
+                child: Icon(
+                  Icons.palette_outlined,
+                  color: Colors.white,
+                  size: 30,
+                ),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -450,28 +648,31 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppTheme.getTextColor(context),
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 4),
-                Text(
-                  artist,
-                  style: TextStyle(
-                    color: AppTheme.getSecondaryTextColor(context),
-                    fontSize: 12,
+                    fontSize: 13,
+                    fontFamily: 'Tajawal',
+                    color: textColor,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 8),
+                Text(
+                  artist,
+                  style: TextStyle(
+                    color: AppColors.getSubtextColor(isDark),
+                    fontSize: 11,
+                    fontFamily: 'Tajawal',
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
                 Text(
                   '\$$price',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    color: primaryColor,
+                    fontFamily: 'Tajawal',
+                    fontSize: 14,
                   ),
                 ),
               ],
@@ -486,101 +687,128 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     CartProvider cartProvider,
     ProductController productController,
     BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
   ) {
-    return SafeArea(
-      child: Container(
-        padding: EdgeInsets.all(AppConstants.defaultPadding),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              spreadRadius: 2,
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color:
-                      Theme.of(context).dividerTheme.color ??
-                      Colors.grey.shade300,
-                ),
-                borderRadius: BorderRadius.circular(
-                  AppConstants.defaultBorderRadius,
-                ),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: _isFavorite
-                      ? Colors.red
-                      : AppTheme.getTextColor(context),
-                ),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.08),
+            blurRadius: 15,
+            offset: const Offset(0, -5),
+          ),
+        ],
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      child: Row(
+        children: [
+          _buildActionButton(
+            icon: Icons.share_rounded,
+            onPressed: () {},
+            isDark: isDark,
+            primaryColor: primaryColor,
+            textColor: textColor,
+          ),
+          const SizedBox(width: 12),
+          Consumer<WishlistProvider>(
+            builder: (context, wishlistProvider, child) {
+              final isFavorite = wishlistProvider.isInWishlist(
+                widget.product.id.toString(),
+              );
+              return _buildActionButton(
+                icon: isFavorite
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                color: isFavorite ? Colors.redAccent : null,
                 onPressed: () {
-                  setState(() {
-                    _isFavorite = !_isFavorite;
-                  });
+                  if (isFavorite) {
+                    wishlistProvider.removeFromWishlist(
+                      widget.product.id.toString(),
+                    );
+                  } else {
+                    wishlistProvider.addToWishlist({
+                      'id': widget.product.id.toString(),
+                      'title': widget.product.title,
+                      'subtitle': widget.product.artist,
+                      'price': widget.product.price,
+                      'image': widget.product.image,
+                      'type': 'product',
+                    });
+                  }
                 },
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                padding: EdgeInsets.zero,
-              ),
-            ),
-            SizedBox(width: 12),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color:
-                      Theme.of(context).dividerTheme.color ??
-                      Colors.grey.shade300,
+                isDark: isDark,
+                primaryColor: primaryColor,
+                textColor: textColor,
+              );
+            },
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                cartProvider.addToCart(widget.product);
+                productController.showAddToCartSnackBar(widget.product);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                borderRadius: BorderRadius.circular(
-                  AppConstants.defaultBorderRadius,
-                ),
               ),
-              child: IconButton(
-                icon: Icon(Icons.share, color: AppTheme.getTextColor(context)),
-                onPressed: () {},
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                padding: EdgeInsets.zero,
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  cartProvider.addToCart(widget.product);
-                  productController.showAddToCartSnackBar(widget.product);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor:
-                      Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.white,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      AppConstants.defaultBorderRadius,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.shopping_cart_outlined, size: 20),
+                  SizedBox(width: 10),
+                  Text(
+                    'إضافة للسلة',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Tajawal',
                     ),
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.shopping_cart),
-                    SizedBox(width: 8),
-                    Text('إضافة إلى السلة', style: TextStyle(fontSize: 16)),
-                  ],
-                ),
+                ],
               ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    required bool isDark,
+    required Color primaryColor,
+    required Color textColor,
+    Color? color,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.white.withValues(alpha: 0.05)
+            : Colors.grey.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: IconButton(
+        icon: Icon(
+          icon,
+          color: color ?? textColor.withValues(alpha: 0.8),
+          size: 22,
         ),
+        onPressed: onPressed,
       ),
     );
   }
 }
+

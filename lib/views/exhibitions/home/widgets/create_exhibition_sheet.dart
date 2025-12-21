@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class CreateExhibitionSheet extends StatefulWidget {
-  const CreateExhibitionSheet({super.key});
+  final ExhibitionType type;
+  const CreateExhibitionSheet({super.key, this.type = ExhibitionType.open});
 
   @override
   State<CreateExhibitionSheet> createState() => _CreateExhibitionSheetState();
@@ -41,7 +44,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
         id: 'new_${DateTime.now().millisecondsSinceEpoch}',
         title: _titleController.text,
         curator: _curatorController.text,
-        type: ExhibitionType.open, // As requested
+        type: widget.type,
         status: 'جديد',
         description: _descriptionController.text,
         date: 'مستمر',
@@ -73,6 +76,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Container(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -81,7 +85,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
         right: 24,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: AppColors.getBackgroundColor(isDark),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
       ),
       child: SingleChildScrollView(
@@ -92,7 +96,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'ارفع عملك',
+                'إنشاء ${widget.type.displayName}',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Tajawal',
@@ -172,7 +176,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
                         decoration: BoxDecoration(
                           border: isSelected
                               ? Border.all(
-                                  color: Theme.of(context).primaryColor,
+                                  color: AppColors.getPrimaryColor(isDark),
                                   width: 3,
                                 )
                               : null,
@@ -198,7 +202,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
               ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: AppColors.getPrimaryColor(isDark),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

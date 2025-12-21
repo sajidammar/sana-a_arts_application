@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/wishlist_provider.dart';
+import '../../themes/app_colors.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({super.key});
@@ -9,76 +10,43 @@ class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
     final wishlistProvider = Provider.of<WishlistProvider>(context);
 
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final cardColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final subtextColor = AppColors.getSubtextColor(isDark);
+
     return Scaffold(
-      backgroundColor: themeProvider.isDarkMode
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             title: Text(
               'المفضلة',
               style: TextStyle(
-                color: themeProvider.isDarkMode
-                    ? const Color(0xFFD4AF37)
-                    : const Color(0xFFB8860B),
+                color: primaryColor,
                 fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
               ),
             ),
-            backgroundColor: themeProvider.isDarkMode
-                ? const Color(0xFF1E1E1E)
-                : Colors.white,
-            foregroundColor: themeProvider.isDarkMode
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
-            elevation: 2,
+            backgroundColor: cardColor,
+            foregroundColor: primaryColor,
+            elevation: 0,
             pinned: true,
             actions: [
               if (wishlistProvider.itemCount > 0)
                 IconButton(
-                  icon: const Icon(Icons.delete_sweep),
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  tooltip: 'مسح الكل',
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text(
-                          'حذف الكل',
-                          style: TextStyle(fontFamily: 'Tajawal'),
-                        ),
-                        content: const Text(
-                          'هل تريد حذف جميع العناصر من المفضلة؟',
-                          style: TextStyle(fontFamily: 'Tajawal'),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              'إلغاء',
-                              style: TextStyle(fontFamily: 'Tajawal'),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              wishlistProvider.clearWishlist();
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('تم حذف جميع العناصر'),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'حذف',
-                              style: TextStyle(
-                                fontFamily: 'Tajawal',
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    _showClearDialog(
+                      context,
+                      isDark,
+                      primaryColor,
+                      wishlistProvider,
                     );
                   },
                 ),
@@ -86,28 +54,45 @@ class WishlistPage extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.all(16),
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFF1E1E1E)
-                  : Colors.grey[50],
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                color: cardColor,
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: isDark
+                        ? Colors.black26
+                        : Colors.black.withValues(alpha: 0.03),
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.favorite,
-                    color: themeProvider.isDarkMode
-                        ? const Color(0xFFD4AF37)
-                        : const Color(0xFFB8860B),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: primaryColor.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.favorite_rounded,
+                      color: primaryColor,
+                      size: 20,
+                    ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   Text(
-                    '${wishlistProvider.itemCount} ${wishlistProvider.itemCount == 1 ? 'عنصر' : 'عناصر'} في المفضلة',
+                    '${wishlistProvider.itemCount} ${wishlistProvider.itemCount == 1 ? 'عنصر' : 'عناصر'} تم حفظها',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Tajawal',
-                      color: themeProvider.isDarkMode
-                          ? Colors.white
-                          : const Color(0xFF2C1810),
+                      color: textColor,
                     ),
                   ),
                 ],
@@ -117,17 +102,27 @@ class WishlistPage extends StatelessWidget {
           wishlistProvider.itemCount == 0
               ? SliverFillRemaining(
                   hasScrollBody: false,
-                  child: _buildEmptyWishlist(context, themeProvider.isDarkMode),
+                  child: _buildEmptyWishlist(
+                    context,
+                    isDark,
+                    primaryColor,
+                    textColor,
+                    subtextColor,
+                  ),
                 )
               : SliverPadding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final item = wishlistProvider.wishlistItems[index];
                       return _buildWishlistItem(
                         context,
                         item,
-                        themeProvider.isDarkMode,
+                        isDark,
+                        primaryColor,
+                        textColor,
+                        subtextColor,
+                        cardColor,
                         wishlistProvider,
                       );
                     }, childCount: wishlistProvider.itemCount),
@@ -138,39 +133,156 @@ class WishlistPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyWishlist(BuildContext context, bool isDarkMode) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.favorite_border,
-            size: 100,
-            color: isDarkMode
-                ? const Color(0xFFD4AF37).withOpacity(0.3)
-                : const Color(0xFFB8860B).withOpacity(0.3),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'المفضلة فارغة',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Tajawal',
-              color: isDarkMode ? Colors.white : const Color(0xFF2C1810),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'لم تقم بإضافة أي معرض أو عمل فني بعد',
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: 'Tajawal',
-              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
+  void _showClearDialog(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    WishlistProvider wishlistProvider,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.getCardColor(isDark),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'حذف الكل',
+          style: TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        content: const Text(
+          'هل تريد حذف جميع العناصر من المفضلة؟ لا يمكن التراجع عن هذا الإجراء.',
+          style: TextStyle(fontFamily: 'Tajawal'),
+          textAlign: TextAlign.center,
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'إلغاء',
+                    style: TextStyle(
+                      fontFamily: 'Tajawal',
+                      color: AppColors.getSubtextColor(isDark),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    wishlistProvider.clearWishlist();
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          'تم حذف جميع العناصر',
+                          style: TextStyle(fontFamily: 'Tajawal'),
+                        ),
+                        backgroundColor: primaryColor,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'حذف الكل',
+                    style: TextStyle(
+                      fontFamily: 'Tajawal',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyWishlist(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color subtextColor,
+  ) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(30),
+              decoration: BoxDecoration(
+                color: primaryColor.withValues(alpha: 0.05),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.favorite_border_rounded,
+                size: 80,
+                color: primaryColor.withValues(alpha: 0.2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'المفضلة فارغة',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+                color: textColor,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'ابدأ بإضافة المعارض والأعمال الفنية التي تنال إعجابك للوصول إليها لاحقاً بسهولة',
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: 'Tajawal',
+                color: subtextColor,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 0,
+              ),
+              child: const Text(
+                'اكتشف الآن',
+                style: TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -178,90 +290,146 @@ class WishlistPage extends StatelessWidget {
   Widget _buildWishlistItem(
     BuildContext context,
     Map<String, dynamic> item,
-    bool isDarkMode,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color subtextColor,
+    Color cardColor,
     WishlistProvider wishlistProvider,
   ) {
-    return Card(
+    final type = item['type'] ?? 'product';
+    final isExhibition = type == 'exhibition';
+
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [Color(0xFFFFD700), Color(0xFFB8860B)],
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            // Navigate based on type if needed
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    gradient: AppColors.storeGradient,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(
+                    isExhibition
+                        ? Icons.museum_outlined
+                        : Icons.palette_outlined,
+                    size: 35,
+                    color: Colors.white.withValues(alpha: 0.8),
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                item['type'] == 'exhibition' ? Icons.museum : Icons.art_track,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['title'] ?? 'عنوان غير متوفر',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Tajawal',
-                      color: isDarkMode
-                          ? Colors.white
-                          : const Color(0xFF2C1810),
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item['artist'] ?? item['description'] ?? '',
-                    style: TextStyle(
-                      fontFamily: 'Tajawal',
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (item['price'] != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      '${item['price']} ريال',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF6B35),
-                        fontFamily: 'Tajawal',
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: primaryColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          isExhibition ? 'معرض' : 'عمل فني',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor,
+                            fontFamily: 'Tajawal',
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.red),
-              onPressed: () {
-                wishlistProvider.removeFromWishlist(item['id']);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('تم إزالة العنصر من المفضلة'),
-                    duration: Duration(seconds: 1),
+                      const SizedBox(height: 6),
+                      Text(
+                        item['title'] ?? 'بدون عنوان',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Tajawal',
+                          color: textColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item['subtitle'] ??
+                            item['artist'] ??
+                            item['description'] ??
+                            '',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'Tajawal',
+                          color: subtextColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (item['price'] != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          '\$${item['price']}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor,
+                            fontFamily: 'Tajawal',
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                );
-              },
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.favorite_rounded,
+                    color: Colors.redAccent,
+                    size: 22,
+                  ),
+                  onPressed: () {
+                    wishlistProvider.removeFromWishlist(item['id']);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          'تمت الإزالة من المفضلة',
+                          style: TextStyle(fontFamily: 'Tajawal'),
+                        ),
+                        duration: const Duration(seconds: 1),
+                        behavior: SnackBarBehavior.floating,
+                        width: 200,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

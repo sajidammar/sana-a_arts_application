@@ -7,38 +7,58 @@ import 'package:sanaa_artl/providers/store/product_provider.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
-
 import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
 import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../providers/user_provider.dart';
 import '../about/about_view.dart';
-
 import '../community/community_view.dart';
-
 import '../profile/profile_view.dart';
 import '../store/home_page.dart';
 import '../wishlist/wishlist_view.dart';
 import '../help/help_page.dart';
 import '../settings/privacy_page.dart';
 import '../store/order/order_history_page.dart';
-
 import '../notifications/notifications_view.dart';
 import '../artworks_management/artworks_management_view.dart';
 import '../my_exhibitions/my_exhibitions_view.dart';
 import '../my_certificates/my_certificates_view.dart';
 
-class Home_Page extends StatefulWidget {
-  const Home_Page({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  @override
-  _Home_PageState createState() => _Home_PageState();
+  @override State<HomePage> createState() => _HomePageState();
 }
 
-class _Home_PageState extends State<Home_Page> {
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final productProvider = Provider.of<ProductProvider>(
+        context,
+        listen: false,
+      );
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final wishlistProvider = Provider.of<WishlistProvider>(
+        context,
+        listen: false,
+      );
+
+      productProvider.loadProducts();
+      if (userProvider.currentUser != null) {
+        wishlistProvider.setUserId(userProvider.currentUser!.id);
+      }
+      wishlistProvider.loadWishlist(productProvider.products);
+    });
+  }
 
   @override
   void dispose() {
@@ -49,14 +69,14 @@ class _Home_PageState extends State<Home_Page> {
   void _handleSearch(String query) {
     setState(() {}); // Update UI for clear button
 
-    if (_currentIndex == 1) {
-      context.read<ExhibitionProvider>().setSearchQuery(query);
-    } else if (_currentIndex == 2) {
+    if (_currentIndex == 0) {
+      context.read<CommunityProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 1) {
       context.read<WorkshopProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 2) {
+      context.read<ExhibitionProvider>().setSearchQuery(query);
     } else if (_currentIndex == 3) {
       context.read<ProductProvider>().setSearchQuery(query);
-    } else if (_currentIndex == 4) {
-      context.read<CommunityProvider>().setSearchQuery(query);
     }
   }
 
@@ -72,11 +92,11 @@ class _Home_PageState extends State<Home_Page> {
   }
 
   final List<Widget> _pages = [
-    const SizedBox.shrink(), // Home Content handled separately
-    const ExhibitionHomePage(),
-    const AcademyHomeView(),
-    const StorePage(),
     const CommunityPage(),
+    const AcademyHomeView(),
+    const ExhibitionHomePage(),
+    const StorePage(),
+    const _HomeContent(),
   ];
 
   void _openDrawer() {
@@ -113,65 +133,61 @@ class _Home_PageState extends State<Home_Page> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: themeProvider.isDarkMode
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       appBar: AppBar(
-        elevation: 2,
-        backgroundColor: themeProvider.isDarkMode
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
+        elevation: 1,
+        backgroundColor: AppColors.getCardColor(isDark),
         leading: IconButton(
           icon: Icon(
             Icons.menu,
-            color: themeProvider.isDarkMode
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
+            color: AppColors.getPrimaryColor(isDark),
             size: 28,
           ),
           onPressed: _openDrawer,
         ),
         title: Container(
-          height: 45,
+          height: 42,
           decoration: BoxDecoration(
-            color: themeProvider.isDarkMode
-                ? const Color(0xFF2D2D2D)
-                : const Color(0xFFF5F5F5),
+            color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF5F5F5),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
+              color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.3),
             ),
           ),
           child: TextField(
             controller: _searchController,
             onChanged: _handleSearch,
+            style: TextStyle(color: AppColors.getTextColor(isDark)),
             decoration: InputDecoration(
               hintText: 'ابحث...',
               hintStyle: TextStyle(
-                color: themeProvider.isDarkMode
-                    ? const Color(0xFFB0B0B0)
-                    : const Color(0xFF666666),
+                color: AppColors.getSubtextColor(isDark),
+                fontFamily: 'Tajawal',
               ),
               prefixIcon: Icon(
                 Icons.search,
-                color: themeProvider.isDarkMode
-                    ? const Color(0xFFD4AF37)
-                    : const Color(0xFFB8860B),
+                color: AppColors.getPrimaryColor(isDark),
+                size: 20,
               ),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear, size: 20),
+                      icon: Icon(
+                        Icons.clear,
+                        size: 20,
+                        color: AppColors.getSubtextColor(isDark),
+                      ),
                       onPressed: _clearSearch,
                     )
                   : null,
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 8,
+              ),
             ),
           ),
         ),
@@ -179,9 +195,7 @@ class _Home_PageState extends State<Home_Page> {
           IconButton(
             icon: Icon(
               Icons.notifications_none,
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
+              color: AppColors.getPrimaryColor(isDark),
               size: 28,
             ),
             onPressed: () {
@@ -193,16 +207,6 @@ class _Home_PageState extends State<Home_Page> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(
-              Icons.favorite_border,
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
-              size: 28,
-            ),
-            onPressed: _navigateToWishlist,
-          ),
         ],
       ),
       drawer: SideDrawer(
@@ -211,11 +215,16 @@ class _Home_PageState extends State<Home_Page> {
         onContactPressed: _navigateToContact,
         onLanguageChanged: () {},
         onThemeChanged: () {
-          themeProvider.toggleTheme();
+          Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
         },
         onShareApp: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('سيتم مشاركة التطبيق قريباً')),
+            const SnackBar(
+              content: Text(
+                'سيتم مشاركة التطبيق قريباً',
+                style: TextStyle(fontFamily: 'Tajawal'),
+              ),
+            ),
           );
         },
         onSettingsPressed: () {
@@ -234,27 +243,42 @@ class _Home_PageState extends State<Home_Page> {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text(
+              backgroundColor: AppColors.getCardColor(isDark),
+              title: Text(
                 'تسجيل الخروج',
-                style: TextStyle(fontFamily: 'Tajawal'),
+                style: TextStyle(
+                  fontFamily: 'Tajawal',
+                  color: AppColors.getTextColor(isDark),
+                ),
               ),
-              content: const Text(
+              content: Text(
                 'هل أنت متأكد من رغبتك في تسجيل الخروج؟',
-                style: TextStyle(fontFamily: 'Tajawal'),
+                style: TextStyle(
+                  fontFamily: 'Tajawal',
+                  color: AppColors.getTextColor(isDark),
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text(
+                  child: Text(
                     'إلغاء',
-                    style: TextStyle(fontFamily: 'Tajawal'),
+                    style: TextStyle(
+                      fontFamily: 'Tajawal',
+                      color: AppColors.getPrimaryColor(isDark),
+                    ),
                   ),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم تسجيل الخروج')),
+                      const SnackBar(
+                        content: Text(
+                          'تم تسجيل الخروج',
+                          style: TextStyle(fontFamily: 'Tajawal'),
+                        ),
+                      ),
                     );
                   },
                   child: const Text(
@@ -294,7 +318,7 @@ class _Home_PageState extends State<Home_Page> {
           );
         },
       ),
-      body: _currentIndex == 0 ? const _HomeContent() : _pages[_currentIndex],
+      body: _pages[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
         onTabSelected: (index) {
@@ -326,3 +350,4 @@ class _HomeContent extends StatelessWidget {
     );
   }
 }
+

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../themes/app_colors.dart';
 import 'exhibition_card.dart';
 
 class FeaturedExhibitions extends StatelessWidget {
@@ -9,7 +10,7 @@ class FeaturedExhibitions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,9 +22,8 @@ class FeaturedExhibitions extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: themeProvider.isDarkMode
-                  ? Colors.white
-                  : const Color(0xFF2C1810),
+              fontFamily: 'Tajawal',
+              color: AppColors.getPrimaryColor(isDark),
             ),
           ),
         ),
@@ -54,7 +54,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: "assets/images/image1.jpg",
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -78,7 +78,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: '',
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -102,7 +102,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: '',
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -126,7 +126,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: "assets/images/image5.jpg",
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
             ],
@@ -140,9 +140,8 @@ class FeaturedExhibitions extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: themeProvider.isDarkMode
-                  ? Colors.white
-                  : const Color(0xFF2C1810),
+              fontFamily: 'Tajawal',
+              color: AppColors.getPrimaryColor(isDark),
             ),
           ),
         ),
@@ -173,7 +172,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: '',
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -197,7 +196,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: '',
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -221,7 +220,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: '',
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
               const SizedBox(width: 16),
@@ -245,7 +244,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   imageUrl: "assets/images/image5.jpg",
                   isActive: true,
                 ),
-                animationDelay: Duration(),
+                animationDelay: const Duration(),
                 onTap: () {},
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class AddArtworkDialog extends StatefulWidget {
@@ -23,9 +24,9 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     final isDark = themeProvider.isDarkMode;
 
     // Colors
-    final backgroundColor = isDark ? const Color(0xFF2C2C2C) : Colors.white;
-    final primaryColor = const Color(0xFFB8860B);
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
+    final backgroundColor = AppColors.getCardColor(isDark);
+    final primaryColor = AppColors.primaryColor;
+    final textColor = AppColors.getTextColor(isDark);
 
     return Dialog(
       backgroundColor: backgroundColor,
@@ -41,17 +42,9 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
               // Header
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF8B4513),
-                      Color(0xFFD2691E),
-                      Color(0xFFDEB887),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  gradient: AppColors.sunsetGradient,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
@@ -83,7 +76,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                     Text(
                       'شارك إبداعك مع العالم',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
                         fontFamily: 'Tajawal',
                       ),
@@ -106,7 +99,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                         height: 150,
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFB8860B).withOpacity(0.05),
+                          color: const Color(0xFFB8860B).withValues(alpha: 0.05),
                           border: Border.all(
                             color: primaryColor,
                             style:
@@ -135,7 +128,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                               Text(
                                 'يدعم: JPG, PNG, GIF (الحد الأقصى: 10 ميجابايت)',
                                 style: TextStyle(
-                                  color: textColor.withOpacity(0.6),
+                                  color: textColor.withValues(alpha: 0.6),
                                   fontSize: 12,
                                 ),
                               ),
@@ -338,7 +331,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
           fontSize: 14,
         ),
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
@@ -374,7 +367,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isDark ? Colors.grey[800]! : const Color(0xFFF5E6D3),
@@ -411,3 +404,4 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     );
   }
 }
+

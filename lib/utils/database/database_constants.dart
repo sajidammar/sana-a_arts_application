@@ -3,7 +3,7 @@
 class DatabaseConstants {
   // Database Info
   static const String databaseName = 'sanaa_arts.db';
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 2;
 
   // Table Names
   static const String tableUsers = 'users';
@@ -92,6 +92,7 @@ class DatabaseConstants {
   static const String colArtworksCount = 'artworks_count';
   static const String colVisitorsCount = 'visitors_count';
   static const String colIsActive = 'is_active';
+  static const String colIsLiked = 'is_liked';
 
   // Followers Columns
   static const String colFollowerId = 'follower_id';

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../certificate_enums.dart'; // For CertificateStatus enum
+import 'package:provider/provider.dart';
+import '../../../providers/theme_provider.dart';
+import '../../../themes/app_colors.dart';
+import '../certificate_enums.dart';
 
 class CertificateCard extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -9,21 +12,22 @@ class CertificateCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
-    final secondaryTextColor = isDark
-        ? Colors.grey[400]!
-        : const Color(0xFF5D4E37);
-    final primaryColor = const Color(0xFFB8860B);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final surfaceColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final secondaryTextColor = AppColors.getSubtextColor(isDark);
+    final primaryColor = AppColors.getPrimaryColor(isDark);
     final status = data['status'] as CertificateStatus;
 
     return Container(
       decoration: BoxDecoration(
         color: surfaceColor,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -34,14 +38,8 @@ class CertificateCard extends StatelessWidget {
         children: [
           // Header (Gradient)
           Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(gradient: AppColors.learningGradient),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -50,16 +48,19 @@ class CertificateCard extends StatelessWidget {
                   children: [
                     if (data['isVerified'] == true)
                       Container(
-                        width: 30,
-                        height: 30,
+                        width: 32,
+                        height: 32,
                         decoration: const BoxDecoration(
                           color: Color(0xFF28a745),
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(color: Colors.black26, blurRadius: 4),
+                          ],
                         ),
                         child: const Icon(
-                          Icons.check,
+                          Icons.verified,
                           color: Colors.white,
-                          size: 16,
+                          size: 18,
                         ),
                       )
                     else
@@ -67,12 +68,12 @@ class CertificateCard extends StatelessWidget {
 
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: 10,
+                        vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         data['type'] ?? 'شهادة',
@@ -80,29 +81,42 @@ class CertificateCard extends StatelessWidget {
                           color: Colors.white,
                           fontFamily: 'Tajawal',
                           fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 Text(
                   data['title'],
                   style: const TextStyle(
                     color: Colors.white,
                     fontFamily: 'Tajawal',
-                    fontSize: 20,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  data['institution'],
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontFamily: 'Tajawal',
-                    fontSize: 14,
-                  ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.school,
+                      color: Colors.white.withValues(alpha: 0.8),
+                      size: 16,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        data['institution'],
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontFamily: 'Tajawal',
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -137,16 +151,17 @@ class CertificateCard extends StatelessWidget {
                   secondaryTextColor,
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'الحالة:',
                       style: TextStyle(
                         fontFamily: 'Tajawal',
-                        color: Color(0xFF5D4E37),
+                        color: secondaryTextColor,
+                        fontSize: 14,
                       ),
                     ),
                     _buildStatusBadge(status),
@@ -157,12 +172,17 @@ class CertificateCard extends StatelessWidget {
                   const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFB8860B), Color(0xFFDAA520)],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
+                      gradient: AppColors.goldGradient,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryColor.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: Text(
                       'الدرجة: ${data['grade']}',
@@ -183,29 +203,35 @@ class CertificateCard extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: data['progress'],
                       backgroundColor: isDark
-                          ? Colors.grey[800]
-                          : Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(
-                        Color(0xFFB8860B),
-                      ),
+                          ? Colors.white.withValues(alpha: 0.1)
+                          : Colors.black.withValues(alpha: 0.05),
+                      valueColor: AlwaysStoppedAnimation(primaryColor),
                       minHeight: 10,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 8),
                   Text(
                     'التقدم الحالي: ${(data['progress'] * 100).toInt()}%',
                     style: TextStyle(
                       color: primaryColor,
                       fontFamily: 'Tajawal',
                       fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
                   ),
                 ],
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
                 // Actions
-                Row(children: _buildActions(context, status, isDark)),
+                Row(
+                  children: _buildActions(
+                    context,
+                    status,
+                    isDark,
+                    primaryColor,
+                  ),
+                ),
               ],
             ),
           ),
@@ -221,7 +247,7 @@ class CertificateCard extends StatelessWidget {
     Color secondaryTextColor,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -230,7 +256,7 @@ class CertificateCard extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Tajawal',
               color: secondaryTextColor,
-              fontSize: 13,
+              fontSize: 14,
             ),
           ),
           Text(
@@ -239,6 +265,7 @@ class CertificateCard extends StatelessWidget {
               fontFamily: 'Tajawal',
               color: textColor,
               fontWeight: FontWeight.w600,
+              fontSize: 14,
             ),
           ),
         ],
@@ -266,17 +293,19 @@ class CertificateCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(15),
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: color,
           fontFamily: 'Tajawal',
           fontSize: 12,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -286,6 +315,7 @@ class CertificateCard extends StatelessWidget {
     BuildContext context,
     CertificateStatus status,
     bool isDark,
+    Color primaryColor,
   ) {
     List<Widget> actions = [];
 
@@ -296,33 +326,54 @@ class CertificateCard extends StatelessWidget {
       required VoidCallback onTap,
       bool isPrimary = false,
     }) {
-      Color bg;
-      Color fg;
-      if (isPrimary) {
-        bg = const Color(0xFF667eea);
-        fg = Colors.white;
-      } else {
-        bg = isDark ? Colors.grey[800]! : const Color(0xFFF5E6D3);
-        fg = isDark ? Colors.white : const Color(0xFF2C1810);
-      }
-
       return Expanded(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: ElevatedButton.icon(
+          child: ElevatedButton(
             onPressed: onTap,
-            icon: Icon(icon, size: 14),
-            label: Text(
-              label,
-              style: const TextStyle(fontFamily: 'Tajawal', fontSize: 11),
-            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: bg,
-              foregroundColor: fg,
+              backgroundColor: isPrimary
+                  ? Colors.transparent
+                  : (isDark
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : const Color(0xFFF5E6D3).withValues(alpha: 0.5)),
+              foregroundColor: isPrimary
+                  ? Colors.white
+                  : (isDark ? Colors.white : AppColors.textPrimary),
               elevation: isPrimary ? 2 : 0,
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              shadowColor: isPrimary
+                  ? primaryColor.withValues(alpha: 0.4)
+                  : Colors.transparent,
+            ),
+            child: Ink(
+              decoration: isPrimary
+                  ? BoxDecoration(
+                      gradient: AppColors.learningGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    )
+                  : null,
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 45),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        fontFamily: 'Tajawal',
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -341,16 +392,9 @@ class CertificateCard extends StatelessWidget {
       );
       actions.add(
         buildBtn(
-          icon: Icons.verified,
+          icon: Icons.verified_user,
           label: 'التحقق',
           onTap: () => _showVerificationDialog(context, isDark),
-        ),
-      );
-      actions.add(
-        buildBtn(
-          icon: Icons.share,
-          label: 'مشاركة',
-          onTap: () => _showShareDialog(context, isDark),
         ),
       );
     } else if (status == CertificateStatus.inProgress) {
@@ -394,11 +438,11 @@ class CertificateCard extends StatelessWidget {
       );
       actions.add(
         buildBtn(
-          icon: Icons.email,
-          label: 'المدرب',
+          icon: Icons.contact_support,
+          label: 'الدعم',
           onTap: () {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('فتح نافذة المحادثة مع المدرب...')),
+              const SnackBar(content: Text('فتح تذكرة دعم فني...')),
             );
           },
         ),
@@ -445,10 +489,10 @@ class CertificateCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => Dialog(
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        backgroundColor: AppColors.getCardColor(isDark),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -459,16 +503,20 @@ class CertificateCard extends StatelessWidget {
                   color: Color(0xFF28a745),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.shield, color: Colors.white, size: 40),
+                child: const Icon(
+                  Icons.verified,
+                  color: Colors.white,
+                  size: 40,
+                ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
               Text(
                 'شهادة موثقة',
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  fontSize: 20,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF2C1810),
+                  color: AppColors.getTextColor(isDark),
                 ),
               ),
               const SizedBox(height: 10),
@@ -477,17 +525,22 @@ class CertificateCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  color: isDark ? Colors.grey[400] : const Color(0xFF5D4E37),
+                  color: AppColors.getSubtextColor(isDark),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Container(
-                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? const Color(0xFF2C2C2C)
-                      : const Color(0xFFF5E6D3),
-                  borderRadius: BorderRadius.circular(10),
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : AppColors.backgroundSecondary.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: AppColors.getPrimaryColor(
+                      isDark,
+                    ).withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -496,160 +549,47 @@ class CertificateCard extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'Tajawal',
                         fontSize: 12,
-                        color: isDark
-                            ? Colors.grey[400]
-                            : const Color(0xFF5D4E37),
+                        color: AppColors.getSubtextColor(isDark),
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
                     const Text(
                       'CERT-2024-FSA-001234',
                       style: TextStyle(
-                        fontFamily: 'Courier',
+                        fontFamily: 'Tajawal',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFB8860B),
+                        letterSpacing: 1.2,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop(ctx),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFB8860B),
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.getPrimaryColor(isDark),
+                    foregroundColor: isDark ? Colors.black : Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   child: const Text(
                     'إغلاق',
-                    style: TextStyle(fontFamily: 'Tajawal'),
+                    style: TextStyle(
+                      fontFamily: 'Tajawal',
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showShareDialog(BuildContext context, bool isDark) {
-    showDialog(
-      context: context,
-      builder: (ctx) => Dialog(
-        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'مشاركة الشهادة',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Tajawal',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF2C1810),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _ShareIconBtn(
-                    Icons.facebook,
-                    Colors.blue,
-                    'Facebook',
-                    () => _shareMock(context, 'Facebook'),
-                  ),
-                  _ShareIconBtn(
-                    Icons.alternate_email,
-                    Colors.lightBlue,
-                    'Twitter',
-                    () => _shareMock(context, 'Twitter'),
-                  ),
-                  _ShareIconBtn(
-                    Icons.business_center,
-                    Colors.blue[800]!,
-                    'LinkedIn',
-                    () => _shareMock(context, 'LinkedIn'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('تم نسخ الرابط!')),
-                  );
-                },
-                icon: const Icon(Icons.link),
-                label: const Text(
-                  'نسخ الرابط',
-                  style: TextStyle(fontFamily: 'Tajawal'),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: isDark
-                      ? Colors.white
-                      : const Color(0xFFB8860B),
-                  side: BorderSide(
-                    color: isDark ? Colors.grey : const Color(0xFFB8860B),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _shareMock(BuildContext context, String platform) {
-    Navigator.pop(context); // Close dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('تمت المشاركة عبر $platform بنجاح!')),
-    );
-  }
-}
-
-class _ShareIconBtn extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String label;
-  final VoidCallback onTap;
-
-  const _ShareIconBtn(this.icon, this.color, this.label, this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              backgroundColor: color.withOpacity(0.1),
-              radius: 25,
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 12, fontFamily: 'Tajawal'),
-            ),
-          ],
         ),
       ),
     );

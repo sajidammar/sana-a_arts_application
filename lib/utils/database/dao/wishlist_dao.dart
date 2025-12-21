@@ -3,7 +3,7 @@ import '../database_helper.dart';
 import '../database_constants.dart';
 
 /// نوع العنصر في المفضلة
-enum WishlistItemType { artwork, exhibition, artist }
+enum WishlistItemType { artwork, exhibition, artist, product }
 
 /// WishlistDao - Data Access Object للمفضلة
 class WishlistDao {

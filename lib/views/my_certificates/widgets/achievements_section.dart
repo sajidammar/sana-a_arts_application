@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../themes/app_colors.dart';
 
 class AchievementsSection extends StatelessWidget {
   const AchievementsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDarkMode;
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final textColor = AppColors.getTextColor(isDark);
+    final surfaceColor = AppColors.getCardColor(isDark);
     final bgSecondary = isDark
-        ? const Color(0xFF2C2C2C)
-        : const Color(0xFFF5E6D3);
+        ? Colors.white.withValues(alpha: 0.05)
+        : AppColors.backgroundSecondary.withValues(alpha: 0.5);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -32,41 +35,55 @@ class AchievementsSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.emoji_events, color: Color(0xFFB8860B)),
-              const SizedBox(width: 10),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.getPrimaryColor(
+                    isDark,
+                  ).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.emoji_events,
+                  color: AppColors.getPrimaryColor(isDark),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
               Text(
                 'أحدث الإنجازات',
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: textColor,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           LayoutBuilder(
             builder: (context, constraints) {
               // Adaptive Grid
               int crossAxisCount = constraints.maxWidth > 600 ? 4 : 2;
               double width =
-                  (constraints.maxWidth - ((crossAxisCount - 1) * 10)) /
+                  (constraints.maxWidth - ((crossAxisCount - 1) * 12)) /
                   crossAxisCount;
 
               return Wrap(
-                spacing: 10,
-                runSpacing: 10,
+                spacing: 12,
+                runSpacing: 12,
                 children: [
                   SizedBox(
                     width: width,
                     child: _buildAchievementItem(
                       'الفنان المتميز',
                       'ديسمبر 2024',
-                      Icons.pages,
+                      Icons.star,
                       bgSecondary,
                       textColor,
+                      isDark,
                     ),
                   ),
                   SizedBox(
@@ -77,6 +94,7 @@ class AchievementsSection extends StatelessWidget {
                       Icons.brush,
                       bgSecondary,
                       textColor,
+                      isDark,
                     ),
                   ),
                   SizedBox(
@@ -87,6 +105,7 @@ class AchievementsSection extends StatelessWidget {
                       Icons.school,
                       bgSecondary,
                       textColor,
+                      isDark,
                     ),
                   ),
                   SizedBox(
@@ -97,6 +116,7 @@ class AchievementsSection extends StatelessWidget {
                       Icons.palette,
                       bgSecondary,
                       textColor,
+                      isDark,
                     ),
                   ),
                 ],
@@ -114,47 +134,55 @@ class AchievementsSection extends StatelessWidget {
     IconData icon,
     Color bg,
     Color textColor,
+    bool isDark,
   ) {
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.05),
+        ),
       ),
       child: Column(
         children: [
           Container(
-            width: 50,
-            height: 50,
-            decoration: const BoxDecoration(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFFFF6B35),
-                  Color(0xFFF7931E),
-                  Color(0xFFFFD700),
-                ], // Sunset gradient
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
-              ),
+              gradient: AppColors.sunsetGradient,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFF6B35).withValues(alpha: 0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: Icon(icon, color: Colors.white, size: 24),
+            child: Icon(icon, color: Colors.white, size: 28),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
           Text(
             name,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Tajawal',
               fontWeight: FontWeight.bold,
+              fontSize: 14,
               color: textColor,
             ),
           ),
+          const SizedBox(height: 4),
           Text(
             date,
             style: TextStyle(
               fontFamily: 'Tajawal',
               fontSize: 12,
-              color: textColor.withOpacity(0.7),
+              color: AppColors.getSubtextColor(isDark),
             ),
           ),
         ],

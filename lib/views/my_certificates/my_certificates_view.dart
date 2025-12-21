@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../themes/app_colors.dart';
 import 'widgets/certificates_stats_grid.dart';
 import 'widgets/achievements_section.dart';
 import 'widgets/certificate_card.dart';
@@ -91,14 +92,11 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDarkMode;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
-    final backgroundColor = isDark
-        ? const Color(0xFF121212)
-        : const Color(0xFFFDF6E3);
-    final primaryColor = const Color(0xFFB8860B);
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -121,11 +119,14 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
             actions: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: CircleAvatar(
-                  backgroundColor: const Color(0xFF667eea),
-                  child: const Icon(
-                    Icons.workspace_premium,
-                    color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: AppColors.learningGradient,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(Icons.workspace_premium, color: Colors.white),
                   ),
                 ),
               ),
@@ -162,8 +163,9 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
 
   Widget _buildCertificatesSliverList(bool isDark) {
     final filtered = _getSortedAndFilteredCertificates();
-    if (filtered.isEmpty)
+    if (filtered.isEmpty) {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -184,7 +186,11 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
       children: [
         Text(
           'الرئيسية',
-          style: TextStyle(color: primaryColor, fontFamily: 'Tajawal'),
+          style: TextStyle(
+            color: primaryColor,
+            fontFamily: 'Tajawal',
+            fontSize: 12,
+          ),
         ),
         Icon(
           Icons.chevron_left,
@@ -193,7 +199,11 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
         ),
         Text(
           'الملف الشخصي',
-          style: TextStyle(color: primaryColor, fontFamily: 'Tajawal'),
+          style: TextStyle(
+            color: primaryColor,
+            fontFamily: 'Tajawal',
+            fontSize: 12,
+          ),
         ),
         Icon(
           Icons.chevron_left,
@@ -203,8 +213,9 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
         Text(
           'الشهادات',
           style: TextStyle(
-            color: isDark ? Colors.grey[400] : const Color(0xFF5D4E37),
+            color: AppColors.getSubtextColor(isDark),
             fontFamily: 'Tajawal',
+            fontSize: 12,
           ),
         ),
       ],
@@ -212,15 +223,17 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
   }
 
   Widget _buildFilterSection(bool isDark, Color primaryColor, Color textColor) {
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final surfaceColor = AppColors.getCardColor(isDark);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: surfaceColor,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -235,10 +248,10 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
                 _buildFilterTab('جميع الشهادات', CertificateFilter.all, isDark),
                 _buildFilterTab('مكتملة', CertificateFilter.completed, isDark),
                 _buildFilterTab(
-                  'قادمة',
+                  'قيد التقدم',
                   CertificateFilter.inProgress,
                   isDark,
-                ), // Using "inProgress" logic but label "قادمة" or "قيد التقدم" -> "قيد التقدم" per HTML
+                ),
                 _buildFilterTab(
                   'في الانتظار',
                   CertificateFilter.pending,
@@ -257,17 +270,14 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
                   decoration: InputDecoration(
                     hintText: 'البحث في الشهادات...',
                     hintStyle: TextStyle(
-                      color: textColor.withOpacity(0.5),
+                      color: AppColors.getSubtextColor(isDark),
                       fontFamily: 'Tajawal',
                     ),
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Color(0xFFB8860B),
-                    ),
+                    prefixIcon: Icon(Icons.search, color: primaryColor),
                     filled: true,
                     fillColor: isDark
-                        ? Colors.white.withOpacity(0.05)
-                        : const Color(0xFFF5E6D3),
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : AppColors.backgroundSecondary.withValues(alpha: 0.5),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
                       borderSide: BorderSide.none,
@@ -280,39 +290,38 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
                 ),
               ),
               const SizedBox(width: 10),
-              // Sort Mock
               DropdownButtonHideUnderline(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.05)
+                        ? Colors.white.withValues(alpha: 0.05)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: const Color(0xFFF5E6D3),
-                      width: 2,
+                      color: AppColors.getPrimaryColor(
+                        isDark,
+                      ).withValues(alpha: 0.2),
+                      width: 1,
                     ),
                   ),
                   child: DropdownButton<String>(
                     value: _sortBy,
-                    dropdownColor: isDark
-                        ? const Color(0xFF1E1E1E)
-                        : Colors.white,
-                    icon: const Icon(Icons.sort, color: Color(0xFFB8860B)),
+                    dropdownColor: surfaceColor,
+                    icon: Icon(Icons.sort, color: primaryColor),
                     items: const [
                       DropdownMenuItem(
                         value: 'newest',
                         child: Text(
                           'الأحدث',
-                          style: TextStyle(fontFamily: 'Tajawal'),
+                          style: TextStyle(fontFamily: 'Tajawal', fontSize: 13),
                         ),
                       ),
                       DropdownMenuItem(
                         value: 'oldest',
                         child: Text(
                           'الأقدم',
-                          style: TextStyle(fontFamily: 'Tajawal'),
+                          style: TextStyle(fontFamily: 'Tajawal', fontSize: 13),
                         ),
                       ),
                     ],
@@ -330,41 +339,26 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
   Widget _buildFilterTab(String label, CertificateFilter type, bool isDark) {
     final isSelected = _selectedFilter == type;
 
-    // Gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
-    final activeDecoration = BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(15),
-    );
-
-    final inactiveDecoration = BoxDecoration(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(15),
-    );
-
     return GestureDetector(
       onTap: () => setState(() => _selectedFilter = type),
       child: Container(
         margin: const EdgeInsets.only(left: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: isSelected ? activeDecoration : inactiveDecoration,
-        child: Row(
-          children: [
-            // Icon could be added here
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'Tajawal',
-                fontWeight: FontWeight.bold,
-                color: isSelected
-                    ? Colors.white
-                    : (isDark ? Colors.grey[400] : const Color(0xFF5D4E37)),
-              ),
-            ),
-          ],
+        decoration: BoxDecoration(
+          gradient: isSelected ? AppColors.learningGradient : null,
+          color: isSelected ? null : Colors.transparent,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'Tajawal',
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 13,
+            color: isSelected
+                ? Colors.white
+                : AppColors.getSubtextColor(isDark),
+          ),
         ),
       ),
     );
@@ -373,14 +367,17 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
   List<Map<String, dynamic>> _getSortedAndFilteredCertificates() {
     var filtered = _certificates.where((cert) {
       if (_selectedFilter == CertificateFilter.completed &&
-          cert['status'] != CertificateStatus.completed)
+          cert['status'] != CertificateStatus.completed) {
         return false;
+      }
       if (_selectedFilter == CertificateFilter.inProgress &&
-          cert['status'] != CertificateStatus.inProgress)
+          cert['status'] != CertificateStatus.inProgress) {
         return false;
+      }
       if (_selectedFilter == CertificateFilter.pending &&
-          cert['status'] != CertificateStatus.pending)
+          cert['status'] != CertificateStatus.pending) {
         return false;
+      }
 
       if (_searchQuery.isNotEmpty) {
         final title = cert['title'].toString().toLowerCase();
@@ -393,8 +390,6 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
 
     filtered.sort((a, b) {
       if (_sortBy == 'newest') {
-        // Mock date parsing or simple reverse list logic if dates were real objects
-        // For simplicity in mock: assuming list is roughly ordered or just reverse ID
         return int.parse(b['id']).compareTo(int.parse(a['id']));
       } else {
         return int.parse(a['id']).compareTo(int.parse(b['id']));
@@ -415,7 +410,7 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
           Icon(
             Icons.school_outlined,
             size: 80,
-            color: textColor.withOpacity(0.3),
+            color: textColor.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 15),
           Text(
@@ -439,13 +434,18 @@ class _MyCertificatesViewState extends State<MyCertificatesView> {
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               foregroundColor: Colors.white,
+              elevation: 4,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(30),
               ),
             ),
             child: const Text(
               'تصفح الدورات',
-              style: TextStyle(fontFamily: 'Tajawal'),
+              style: TextStyle(
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

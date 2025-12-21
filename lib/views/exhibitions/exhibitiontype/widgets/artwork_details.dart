@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/models/exhibition/artwork.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/themes/exhibition/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 
@@ -15,16 +17,15 @@ class ArtworkDetails extends StatelessWidget {
     required this.vrProvider,
   });
 
-  BuildContext? get context => null;
-
   @override
   Widget build(BuildContext context) {
     final artwork = vrProvider.currentArtwork;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.getCardColor(isDark),
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -32,44 +33,44 @@ class ArtworkDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // عنوان القسم
-            _buildSectionHeader('تفاصيل العمل الحالي'),
+            _buildSectionHeader('تفاصيل العمل الحالي', isDark),
 
             const SizedBox(height: 16),
 
             // معلومات العمل الفني
-            _buildArtworkInfo(artwork, context),
+            _buildArtworkInfo(artwork, context, isDark),
 
             const SizedBox(height: 24),
 
             // الميزات التفاعلية
-            _buildInteractiveFeatures(),
+            _buildInteractiveFeatures(isDark),
 
             const SizedBox(height: 24),
 
             // إجراءات العمل
-            _buildArtworkActions(),
+            _buildArtworkActions(isDark),
 
             const SizedBox(height: 24),
 
             // التقييم
-            _buildRatingSection(),
+            _buildRatingSection(isDark),
 
             const SizedBox(height: 24),
 
             // التعليقات
-            _buildCommentSection(),
+            _buildCommentSection(isDark),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, bool isDark) {
     return SlideInAnimation(
       delay: const Duration(milliseconds: 200),
       child: Row(
         children: [
-          Expanded(child: Icon(Icons.info, color: AppColors.primaryColor)),
+          Icon(Icons.info, color: AppColors.getPrimaryColor(isDark)),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -77,7 +78,7 @@ class ArtworkDetails extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context!).colorScheme.onSurface,
+                color: AppColors.getTextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -87,31 +88,31 @@ class ArtworkDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildArtworkInfo(Artwork artwork, BuildContext context) {
+  Widget _buildArtworkInfo(Artwork artwork, BuildContext context, bool isDark) {
     return ScaleAnimation(
       delay: const Duration(milliseconds: 400),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: AppColors.getBackgroundColor(isDark),
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         ),
         child: Column(
           children: [
-            _buildInfoRow('العنوان:', artwork.title, context),
-            _buildInfoRow('الفنان:', artwork.artist, context),
-            _buildInfoRow('السنة:', artwork.year.toString(), context),
-            _buildInfoRow('التقنية:', artwork.technique, context),
-            _buildInfoRow('الأبعاد:', artwork.dimensions, context),
-            _buildInfoRow('السعر:', artwork.formattedPrice, context),
-            _buildInfoRow('التصنيف:', artwork.category, context),
+            _buildInfoRow('العنوان:', artwork.title, isDark),
+            _buildInfoRow('الفنان:', artwork.artist, isDark),
+            _buildInfoRow('السنة:', artwork.year.toString(), isDark),
+            _buildInfoRow('التقنية:', artwork.technique, isDark),
+            _buildInfoRow('الأبعاد:', artwork.dimensions, isDark),
+            _buildInfoRow('السعر:', artwork.formattedPrice, isDark),
+            _buildInfoRow('التصنيف:', artwork.category, isDark),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, BuildContext context) {
+  Widget _buildInfoRow(String label, String value, bool isDark) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -123,7 +124,7 @@ class ArtworkDetails extends StatelessWidget {
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.secondary,
+                color: AppColors.getPrimaryColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -133,7 +134,7 @@ class ArtworkDetails extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.getTextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -143,21 +144,21 @@ class ArtworkDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildInteractiveFeatures() {
+  Widget _buildInteractiveFeatures(bool isDark) {
     return SlideInAnimation(
       delay: const Duration(milliseconds: 600),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('الميزات التفاعلية'),
+          _buildSectionHeader('الميزات التفاعلية', isDark),
           const SizedBox(height: 12),
-          ..._buildFeatureList(),
+          ..._buildFeatureList(isDark),
         ],
       ),
     );
   }
 
-  List<Widget> _buildFeatureList() {
+  List<Widget> _buildFeatureList(bool isDark) {
     final features = [
       {'icon': Icons.zoom_in, 'text': 'تكبير عالي الدقة (حتى 4K)'},
       {'icon': Icons.info_outline, 'text': 'معلومات تفصيلية عند النقر'},
@@ -175,7 +176,7 @@ class ArtworkDetails extends StatelessWidget {
               children: [
                 Icon(
                   feature['icon'] as IconData,
-                  color: Theme.of(context!).colorScheme.primary,
+                  color: AppColors.getPrimaryColor(isDark),
                   size: 18,
                 ),
                 const SizedBox(width: 12),
@@ -183,7 +184,7 @@ class ArtworkDetails extends StatelessWidget {
                   child: Text(
                     feature['text'] as String,
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: AppColors.getSubtextColor(isDark),
                       fontFamily: 'Tajawal',
                     ),
                   ),
@@ -195,13 +196,13 @@ class ArtworkDetails extends StatelessWidget {
         .toList();
   }
 
-  Widget _buildArtworkActions() {
+  Widget _buildArtworkActions(bool isDark) {
     return SlideInAnimation(
       delay: const Duration(milliseconds: 800),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('إجراءات العمل'),
+          _buildSectionHeader('إجراءات العمل', isDark),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -210,26 +211,30 @@ class ArtworkDetails extends StatelessWidget {
               _buildActionButton(
                 'إضافة للمفضلة',
                 Icons.favorite,
-                AppColors.primaryColor,
+                AppColors.getPrimaryColor(isDark),
                 vrProvider.addToFavorites,
+                isDark,
               ),
               _buildActionButton(
                 'إضافة للسلة',
                 Icons.shopping_cart,
                 AppColors.virtualGradient.colors.first,
                 vrProvider.addToCart,
+                isDark,
               ),
               _buildActionButton(
                 'تحميل عالي الجودة',
                 Icons.download,
-                AppColors.realityGradient.colors.first,
+                AppColors.openGradient.colors.first,
                 vrProvider.downloadHighRes,
+                isDark,
               ),
               _buildActionButton(
                 'ملف الفنان',
                 Icons.person,
-                AppColors.openGradient.colors.first,
+                AppColors.getPrimaryColor(isDark),
                 vrProvider.viewArtistProfile,
+                isDark,
               ),
             ],
           ),
@@ -243,9 +248,10 @@ class ArtworkDetails extends StatelessWidget {
     IconData icon,
     Color color,
     VoidCallback onTap,
+    bool isDark,
   ) {
     return Material(
-      color: Theme.of(context!).colorScheme.onSurface,
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
@@ -259,12 +265,14 @@ class ArtworkDetails extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(child: Icon(icon, color: color, size: 16)),
+              Icon(icon, color: color, size: 16),
               const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  text,
-                  style: Theme.of(context!).textTheme.bodyMedium,
+              Text(
+                text,
+                style: TextStyle(
+                  color: AppColors.getTextColor(isDark),
+                  fontSize: 14,
+                  fontFamily: 'Tajawal',
                 ),
               ),
             ],
@@ -274,30 +282,30 @@ class ArtworkDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingSection() {
+  Widget _buildRatingSection(bool isDark) {
     return SlideInAnimation(
       delay: const Duration(milliseconds: 1000),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('تقييم العمل'),
+          _buildSectionHeader('تقييم العمل', isDark),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context!).scaffoldBackgroundColor,
+              color: AppColors.getBackgroundColor(isDark),
               borderRadius: BorderRadius.circular(AppConstants.borderRadius),
             ),
             child: Column(
               children: [
                 // النجوم
-                _buildRatingStars(),
+                _buildRatingStars(isDark),
                 const SizedBox(height: 8),
                 // معلومات التقييم
                 Text(
                   'التقييم الحالي: ${vrProvider.currentArtwork.rating}/5 (${vrProvider.currentArtwork.ratingCount} تقييم)',
                   style: TextStyle(
-                    color: Theme.of(context!).primaryColorDark,
+                    color: AppColors.getTextColor(isDark),
                     fontFamily: 'Tajawal',
                   ),
                 ),
@@ -309,47 +317,57 @@ class ArtworkDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingStars() {
+  Widget _buildRatingStars(bool isDark) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(5, (index) {
-        return Expanded(
-          child: IconButton(
-            onPressed: () => vrProvider.rateArtwork(index + 1),
-            icon: Icon(
-              index < vrProvider.userRating ? Icons.star : Icons.star_border,
-              color: Theme.of(context!).primaryColor,
-              size: 28,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
+        return IconButton(
+          onPressed: () => vrProvider.rateArtwork(index + 1),
+          icon: Icon(
+            index < vrProvider.userRating ? Icons.star : Icons.star_border,
+            color: AppColors.getPrimaryColor(isDark),
+            size: 28,
           ),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
         );
       }),
     );
   }
 
-  Widget _buildCommentSection() {
+  Widget _buildCommentSection(bool isDark) {
     return SlideInAnimation(
       delay: const Duration(milliseconds: 1200),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('التعليقات المباشرة'),
+          _buildSectionHeader('التعليقات المباشرة', isDark),
           const SizedBox(height: 12),
 
           // حقل إدخال التعليق
           TextField(
             controller: TextEditingController(text: vrProvider.newComment),
             onChanged: vrProvider.setNewComment,
+            style: TextStyle(color: AppColors.getTextColor(isDark)),
             decoration: InputDecoration(
               hintText: 'اكتب تعليقك عن هذا العمل الفني...',
               hintStyle: TextStyle(
                 fontFamily: 'Tajawal',
-                color: Theme.of(context!).colorScheme.secondary,
+                color: AppColors.getSubtextColor(isDark),
               ),
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.getPrimaryColor(
+                    isDark,
+                  ).withValues(alpha: 0.3),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color: AppColors.getPrimaryColor(isDark),
+                ),
               ),
               contentPadding: const EdgeInsets.all(12),
             ),
@@ -365,28 +383,20 @@ class ArtworkDetails extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => vrProvider.addComment(vrProvider.newComment),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context!).primaryColor,
-                foregroundColor: Theme.of(context!).colorScheme.surface,
+                backgroundColor: AppColors.getPrimaryColor(isDark),
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: const Icon(
-                      Icons.send,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Expanded(child: const SizedBox(width: 6)),
-                  Expanded(
-                    child: const Text(
-                      'إرسال التعليق',
-                      style: TextStyle(fontFamily: 'Tajawal'),
-                    ),
+                children: const [
+                  Icon(Icons.send, size: 16, color: Colors.white),
+                  SizedBox(width: 8),
+                  Text(
+                    'إرسال التعليق',
+                    style: TextStyle(fontFamily: 'Tajawal'),
                   ),
                 ],
               ),
@@ -396,18 +406,21 @@ class ArtworkDetails extends StatelessWidget {
           const SizedBox(height: 16),
 
           // التعليقات الأخيرة
-          _buildRecentComments(),
+          _buildRecentComments(isDark),
         ],
       ),
     );
   }
 
-  Widget _buildRecentComments() {
+  Widget _buildRecentComments(bool isDark) {
     if (vrProvider.comments.isEmpty) {
       return Center(
         child: Text(
           'لا توجد تعليقات بعد',
-          style: Theme.of(context!).textTheme.bodyMedium,
+          style: TextStyle(
+            color: AppColors.getSubtextColor(isDark),
+            fontFamily: 'Tajawal',
+          ),
         ),
       );
     }
@@ -415,21 +428,29 @@ class ArtworkDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('آخر التعليقات:', style: Theme.of(context!).textTheme.titleLarge),
+        Text(
+          'آخر التعليقات:',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.getTextColor(isDark),
+            fontFamily: 'Tajawal',
+          ),
+        ),
         const SizedBox(height: 8),
         ...vrProvider.comments
             .take(3)
-            .map((comment) => _buildCommentItem(comment)),
+            .map((comment) => _buildCommentItem(comment, isDark)),
       ],
     );
   }
 
-  Widget _buildCommentItem(ArtworkComment comment) {
+  Widget _buildCommentItem(ArtworkComment comment, bool isDark) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context!).scaffoldBackgroundColor,
+        color: AppColors.getBackgroundColor(isDark),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -437,27 +458,33 @@ class ArtworkDetails extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  comment.userName,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                    fontFamily: 'Tajawal',
-                  ),
+              Text(
+                comment.userName,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.getTextColor(isDark),
+                  fontFamily: 'Tajawal',
                 ),
               ),
               const Spacer(),
-              Expanded(
-                child: Text(
-                  _formatDate(comment.createdAt),
-                  style: Theme.of(context!).textTheme.bodyMedium,
+              Text(
+                _formatDate(comment.createdAt),
+                style: TextStyle(
+                  color: AppColors.getSubtextColor(isDark),
+                  fontSize: 12,
+                  fontFamily: 'Tajawal',
                 ),
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(comment.comment, style: Theme.of(context!).textTheme.bodyMedium),
+          Text(
+            comment.comment,
+            style: TextStyle(
+              color: AppColors.getTextColor(isDark),
+              fontFamily: 'Tajawal',
+            ),
+          ),
           const SizedBox(height: 4),
           Row(
             children: [
@@ -465,15 +492,19 @@ class ArtworkDetails extends StatelessWidget {
                 onPressed: () => vrProvider.likeComment(comment.id),
                 icon: Icon(
                   Icons.thumb_up,
-                  color: Theme.of(context!).primaryColorDark,
+                  color: AppColors.getPrimaryColor(isDark),
                   size: 16,
                 ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
+              const SizedBox(width: 4),
               Text(
                 comment.likes.toString(),
-                style: Theme.of(context!).textTheme.bodyMedium,
+                style: TextStyle(
+                  color: AppColors.getSubtextColor(isDark),
+                  fontFamily: 'Tajawal',
+                ),
               ),
             ],
           ),

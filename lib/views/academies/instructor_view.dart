@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/views/academies/components/instructor_card.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 import '../../providers/theme_provider.dart';
@@ -16,7 +17,7 @@ class HorizontalInstructorsSection extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(32),
-      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      color: AppColors.getCardColor(isDark),
       child: Consumer<WorkshopProvider>(
         builder: (context, workshopProvider, child) {
           if (workshopProvider.isLoading) {
@@ -25,7 +26,7 @@ class HorizontalInstructorsSection extends StatelessWidget {
               child: Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+                    AppColors.getPrimaryColor(isDark),
                   ),
                 ),
               ),

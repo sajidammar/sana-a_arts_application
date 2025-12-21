@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class CommentsSheet extends StatefulWidget {
   final String postId;
@@ -40,7 +41,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -63,7 +64,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: isDark ? Colors.white : Colors.black,
+              color: AppColors.getTextColor(isDark),
             ),
           ),
           const Divider(),
@@ -84,7 +85,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                     child: Text(
                       'كن أول من يعلق!',
                       style: TextStyle(
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: AppColors.getSubtextColor(isDark),
                       ),
                     ),
                   );
@@ -104,7 +105,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                             radius: 18,
                             backgroundColor: Theme.of(
                               context,
-                            ).primaryColor.withOpacity(0.2),
+                            ).primaryColor.withValues(alpha: 0.2),
                             backgroundImage:
                                 comment.author.profileImage.isNotEmpty
                                 ? AssetImage(comment.author.profileImage)
@@ -129,9 +130,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
-                                        color: isDark
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color: AppColors.getTextColor(isDark),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -148,9 +147,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                                 Text(
                                   comment.content,
                                   style: TextStyle(
-                                    color: isDark
-                                        ? Colors.grey[300]
-                                        : Colors.black87,
+                                    color: AppColors.getSubtextColor(isDark),
                                   ),
                                 ),
                               ],
@@ -174,9 +171,9 @@ class _CommentsSheetState extends State<CommentsSheet> {
               bottom: 12 + MediaQuery.of(context).viewInsets.bottom,
             ),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+              color: AppColors.getCardColor(isDark),
               border: Border(
-                top: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                top: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
               ),
             ),
             child: Row(
@@ -185,9 +182,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF1E1E1E)
-                          : Colors.grey[100],
+                      color: AppColors.getBackgroundColor(isDark),
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: TextField(
@@ -216,3 +211,4 @@ class _CommentsSheetState extends State<CommentsSheet> {
     );
   }
 }
+

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
-
+import '../../../themes/app_colors.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -15,17 +15,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Container(
       height: 80,
       decoration: BoxDecoration(
-        color: themeProvider.isDarkMode
-            ? const Color(0xFF1E1E1E)
-            : Colors.white,
+        color: AppColors.getCardColor(isDark),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -38,18 +36,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(
-                  icon: Icons.photo_library,
-                  label: 'المعارض',
-                  index: 1,
-                  isSelected: currentIndex == 1,
-                  isDarkMode: themeProvider.isDarkMode,
-                ),
-                _buildNavItem(
                   icon: Icons.school,
                   label: 'الأكاديمية',
+                  index: 1,
+                  isSelected: currentIndex == 1,
+                  isDark: isDark,
+                ),
+                _buildNavItem(
+                  icon: Icons.photo_library,
+                  label: 'المعارض',
                   index: 2,
                   isSelected: currentIndex == 2,
-                  isDarkMode: themeProvider.isDarkMode,
+                  isDark: isDark,
                 ),
               ],
             ),
@@ -59,25 +57,20 @@ class CustomBottomNavigationBar extends StatelessWidget {
             height: 70,
             margin: const EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color(0xFFB8860B),
-                  Color(0xFF8B4513),
-                ],
-              ),
+              gradient: AppColors.virtualGradient,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFB8860B).withOpacity(0.3),
+                  color: AppColors.getPrimaryColor(
+                    isDark,
+                  ).withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.home, size: 32, color: Colors.white),
+              icon: const Icon(Icons.people, size: 32, color: Colors.white),
               onPressed: () => onTabSelected(0),
             ),
           ),
@@ -90,14 +83,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   label: 'المتجر',
                   index: 3,
                   isSelected: currentIndex == 3,
-                  isDarkMode: themeProvider.isDarkMode,
+                  isDark: isDark,
                 ),
                 _buildNavItem(
-                  icon: Icons.people,
-                  label: 'المجتمع',
+                  icon: Icons.home,
+                  label: 'الرئيسية',
                   index: 4,
                   isSelected: currentIndex == 4,
-                  isDarkMode: themeProvider.isDarkMode,
+                  isDark: isDark,
                 ),
               ],
             ),
@@ -112,7 +105,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required String label,
     required int index,
     required bool isSelected,
-    required bool isDarkMode,
+    required bool isDark,
   }) {
     return GestureDetector(
       onTap: () => onTabSelected(index),
@@ -123,17 +116,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon,
             size: 24,
             color: isSelected
-                ? (isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B))
-                : Colors.grey,
+                ? AppColors.getPrimaryColor(isDark)
+                : AppColors.getSubtextColor(isDark),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
+              fontFamily: 'Tajawal',
               color: isSelected
-                  ? (isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B))
-                  : Colors.grey,
+                  ? AppColors.getPrimaryColor(isDark)
+                  : AppColors.getSubtextColor(isDark),
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),

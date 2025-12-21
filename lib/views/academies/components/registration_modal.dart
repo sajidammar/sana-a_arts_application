@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/registration_provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class RegistrationModal extends StatelessWidget {
   final int workshopId;
@@ -263,7 +263,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
     required List<DropdownMenuItem<String>> items,
   }) {
     return DropdownButtonFormField<String>(
-      value: controller.text.isEmpty ? null : controller.text,
+      initialValue: controller.text.isEmpty ? null : controller.text,
       onChanged: (value) {
         controller.text = value ?? '';
       },

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/theme_provider.dart';
+import '../../../themes/app_colors.dart';
 
 class QuickActionCard extends StatefulWidget {
   final String title;
@@ -25,11 +28,10 @@ class _QuickActionCardState extends State<QuickActionCard> {
 
   @override
   Widget build(BuildContext context) {
-    final cardColor = widget.isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final textColor = widget.isDark ? Colors.white : const Color(0xFF2C1810);
-    final secondaryTextColor = widget.isDark
-        ? Colors.grey[400]
-        : const Color(0xFF5D4E37);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final cardColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final secondaryTextColor = AppColors.getSubtextColor(isDark);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -38,60 +40,68 @@ class _QuickActionCardState extends State<QuickActionCard> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           transform: _isHovered
-              ? Matrix4.translationValues(0, -5, 0)
+              ? Matrix4.translationValues(0, -8, 0)
               : Matrix4.identity(),
           decoration: BoxDecoration(
             color: cardColor,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: const Color(
-                  0xFF8B4513,
-                ).withOpacity(_isHovered ? 0.2 : 0.1),
+                color: isDark
+                    ? Colors.black54
+                    : (AppColors.exhibitionColor.withValues(
+                        alpha: _isHovered ? 0.2 : 0.1,
+                      )),
                 blurRadius: _isHovered ? 30 : 15,
                 offset: const Offset(0, 5),
               ),
             ],
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.05),
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFff9a9e),
-                      Color(0xFFfecfef),
-                    ], // --gradient-exhibitions
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  gradient: AppColors.exhibitionGradient,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.exhibitionColor.withValues(alpha: 0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Icon(widget.icon, color: Colors.white, size: 28),
+                child: Icon(widget.icon, color: Colors.white, size: 32),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
               Text(
                 widget.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: textColor,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 8),
               Text(
                 widget.description,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Tajawal',
-                  fontSize: 12,
+                  fontSize: 13,
                   color: secondaryTextColor,
+                  height: 1.4,
                 ),
               ),
             ],

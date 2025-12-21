@@ -1,5 +1,6 @@
 // views/components/categories_section.dart
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/views/academies/category_details_view.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 
@@ -16,7 +17,7 @@ class CategoriesSection extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(32),
-      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+      color: AppColors.getCardColor(isDark),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -69,7 +70,7 @@ class CategoryCard extends StatelessWidget {
         width: 100,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF5E6D3),
+          color: AppColors.getCardColor(isDark),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
@@ -78,7 +79,7 @@ class CategoryCard extends StatelessWidget {
             Icon(
               category.icon,
               size: 40,
-              color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+              color: AppColors.getPrimaryColor(isDark),
             ),
             const SizedBox(height: 8),
             Text(
@@ -86,9 +87,7 @@ class CategoryCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: isDark
-                    ? const Color(0xFFD4AF37)
-                    : const Color(0xFF2C1810),
+                color: AppColors.getTextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
               textAlign: TextAlign.center,
