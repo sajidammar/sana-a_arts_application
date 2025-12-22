@@ -58,11 +58,16 @@ class Exhibition {
       visitorsCount: json['visitorsCount'] ?? 0,
       imageUrl: json['imageUrl'] ?? '',
       isFeatured: json['isFeatured'] ?? false,
-      startDate: DateTime.parse(json['startDate'] ?? DateTime.now().toIso8601String()),
-      endDate: DateTime.parse(json['endDate'] ?? DateTime.now().toIso8601String()),
+      startDate: DateTime.parse(
+        json['startDate'] ?? DateTime.now().toIso8601String(),
+      ),
+      endDate: DateTime.parse(
+        json['endDate'] ?? DateTime.now().toIso8601String(),
+      ),
       tags: List<String>.from(json['tags'] ?? []),
       rating: (json['rating'] ?? 0.0).toDouble(),
-      ratingCount: json['ratingCount'] ?? 0, isActive: true,
+      ratingCount: json['ratingCount'] ?? 0,
+      isActive: true,
     );
   }
 
@@ -70,10 +75,12 @@ class Exhibition {
 
   static ExhibitionType _parseExhibitionType(String type) {
     switch (type) {
-      case 'reality':
-        return ExhibitionType.reality;
       case 'open':
         return ExhibitionType.open;
+      case 'personal':
+        return ExhibitionType.personal;
+      case 'group':
+        return ExhibitionType.group;
       case 'virtual':
       default:
         return ExhibitionType.virtual;
@@ -103,21 +110,19 @@ class Exhibition {
   }
 }
 
-enum ExhibitionType {
-  virtual,
-  reality,
-  open,
-}
+enum ExhibitionType { virtual, open, personal, group }
 
 extension ExhibitionTypeExtension on ExhibitionType {
   String get displayName {
     switch (this) {
       case ExhibitionType.virtual:
         return 'افتراضي';
-      case ExhibitionType.reality:
-        return 'واقعي';
       case ExhibitionType.open:
         return 'مفتوح';
+      case ExhibitionType.personal:
+        return 'شخصي';
+      case ExhibitionType.group:
+        return 'جماعي';
     }
   }
 
@@ -125,10 +130,12 @@ extension ExhibitionTypeExtension on ExhibitionType {
     switch (this) {
       case ExhibitionType.virtual:
         return 'افتراضي';
-      case ExhibitionType.reality:
-        return 'واقعي';
       case ExhibitionType.open:
         return 'مفتوح';
+      case ExhibitionType.personal:
+        return 'شخصي';
+      case ExhibitionType.group:
+        return 'جماعي';
     }
   }
 
@@ -140,15 +147,21 @@ extension ExhibitionTypeExtension on ExhibitionType {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
-      case ExhibitionType.reality:
-        return const LinearGradient(
-          colors: [Color(0xFFf093fb), Color(0xFFf5576c)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        );
       case ExhibitionType.open:
         return const LinearGradient(
           colors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ExhibitionType.personal:
+        return const LinearGradient(
+          colors: [Color(0xFFff9a9e), Color(0xFFfecfef)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case ExhibitionType.group:
+        return const LinearGradient(
+          colors: [Color(0xFF84fab0), Color(0xFF8fd3f4)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
@@ -159,10 +172,12 @@ extension ExhibitionTypeExtension on ExhibitionType {
     switch (this) {
       case ExhibitionType.virtual:
         return const Color(0xFF667eea);
-      case ExhibitionType.reality:
-        return const Color(0xFFf093fb);
       case ExhibitionType.open:
         return const Color(0xFF4facfe);
+      case ExhibitionType.personal:
+        return const Color(0xFFff9a9e);
+      case ExhibitionType.group:
+        return const Color(0xFF84fab0);
     }
   }
 
@@ -170,10 +185,12 @@ extension ExhibitionTypeExtension on ExhibitionType {
     switch (this) {
       case ExhibitionType.virtual:
         return Icons.card_membership_sharp;
-      case ExhibitionType.reality:
-        return Icons.location_on;
       case ExhibitionType.open:
         return Icons.upload;
+      case ExhibitionType.personal:
+        return Icons.person;
+      case ExhibitionType.group:
+        return Icons.groups;
     }
   }
 }

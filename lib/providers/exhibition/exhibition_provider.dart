@@ -2,13 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:sanaa_artl/models/exhibition/artwork.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 
+import 'package:sanaa_artl/utils/database/dao/exhibition_dao.dart';
+
 class ExhibitionProvider with ChangeNotifier {
+  final ExhibitionDao _dao = ExhibitionDao();
   List<Exhibition> _exhibitions = [];
   List<Artwork> _artworks = [];
   ExhibitionType _currentFilter = ExhibitionType.virtual;
   bool _isLoading = false;
   String _error = '';
   String _searchQuery = '';
+  // ... (Keep existing properties)
+  Set<ExhibitionType> _ownedExhibitionTypes = {};
 
   List<Exhibition> get exhibitions => _exhibitions;
   List<Artwork> get artworks => _artworks;
@@ -16,6 +21,9 @@ class ExhibitionProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String get error => _error;
   String get searchQuery => _searchQuery;
+
+  bool hasExhibitionType(ExhibitionType type) =>
+      _ownedExhibitionTypes.contains(type);
 
   // بيانات تجريبية للمعارض (تم تفريغها لاستخدام التوليد الديناميكي)
   final List<Exhibition> _demoExhibitions = [];
@@ -130,6 +138,7 @@ class ExhibitionProvider with ChangeNotifier {
       likes: 45,
     ),
   ];
+  // ...
 
   Future<void> loadExhibitions() async {
     _isLoading = true;
@@ -137,16 +146,16 @@ class ExhibitionProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // محاكاة جلب البيانات من API
-      await Future.delayed(const Duration(seconds: 1));
-
-      // إذا كانت القائمة فارغة، قم بتوليد بيانات ديناميكية
-      if (_demoExhibitions.isEmpty) {
-        _exhibitions = _generateDynamicExhibitions();
+      final data = await _dao.getAllExhibitions();
+      if (data.isNotEmpty) {
+        _exhibitions = data.map((e) => Exhibition.fromJson(e)).toList();
       } else {
-        _exhibitions = _demoExhibitions;
+        // If empty, generate demo data and save to DB
+        _exhibitions = _generateDynamicExhibitions();
+        for (var ex in _exhibitions) {
+          await _dao.insertExhibition(ex.toJson());
+        }
       }
-
       _error = '';
     } catch (e) {
       _error = 'فشل في تحميل المعارض: ${e.toString()}';
@@ -156,7 +165,39 @@ class ExhibitionProvider with ChangeNotifier {
     }
   }
 
+  Future<void> checkUserExhibitions(String userId) async {
+    try {
+      final allExhibitions = await _dao.getAllExhibitions();
+      _ownedExhibitionTypes.clear();
+
+      for (var e in allExhibitions) {
+        final ex = Exhibition.fromJson(e);
+        if (ex.curator == userId || ex.id.contains(userId)) {
+          _ownedExhibitionTypes.add(ex.type);
+        }
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error checking user exhibitions: $e');
+    }
+  }
+
+  Future<void> addExhibition(Exhibition exhibition) async {
+    try {
+      await _dao.insertExhibition(exhibition.toJson());
+      _exhibitions.add(exhibition);
+      // Update owned types locally immediately
+      _ownedExhibitionTypes.add(exhibition.type);
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to add exhibition: $e';
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   List<Exhibition> _generateDynamicExhibitions() {
+    // ... (Titles/Curators/Images setup)
     final titles = [
       'أطياف يمنية',
       'رحلة في صنعاء',
@@ -196,17 +237,16 @@ class ExhibitionProvider with ChangeNotifier {
     final random = DateTime.now().millisecondsSinceEpoch;
 
     for (int i = 0; i < 8; i++) {
-      // Simple pseudo-random using modulo
       int titleIndex = (random + i) % titles.length;
       int curatorIndex = (random + i * 2) % curators.length;
       int imgIndex = (random + i * 3) % images.length;
-      int typeIndex = (random + i) % 3; // 0, 1, 2 for types
+      int typeIndex = (random + i) % 3; // 0, 1, 2
 
       ExhibitionType type;
       if (typeIndex == 0)
         type = ExhibitionType.virtual;
       else if (typeIndex == 1)
-        type = ExhibitionType.reality;
+        type = ExhibitionType.personal; // Replaced reality with personal
       else
         type = ExhibitionType.open;
 
@@ -337,11 +377,6 @@ class ExhibitionProvider with ChangeNotifier {
 
   List<Artwork> getFeaturedArtworks() {
     return _artworks.where((artwork) => artwork.isFeatured).toList();
-  }
-
-  void addExhibition(Exhibition exhibition) {
-    _exhibitions.add(exhibition);
-    notifyListeners();
   }
 
   void updateExhibition(String id, Exhibition updatedExhibition) {

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/themes/exhibition/app_themes.dart';
+
 import 'package:sanaa_artl/themes/exhibition/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'vr_exhibition_page.dart';
@@ -167,8 +167,6 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
   void _handleExhibitionTap(BuildContext context, Exhibition exhibition) {
     if (exhibition.type == ExhibitionType.virtual) {
       _openVirtualExhibition(context);
-    } else if (exhibition.type == ExhibitionType.reality) {
-      _bookRealityExhibition(context, exhibition);
     } else {
       _viewOpenExhibition(context, exhibition);
     }
@@ -185,52 +183,6 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const VRExhibitionPage()),
-    );
-  }
-
-  void _bookRealityExhibition(BuildContext context, Exhibition exhibition) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'حجز تذكرة',
-          style: TextStyle(
-            fontFamily: 'Tajawal',
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        content: Text(
-          'جاري حجز تذكرة لمعرض: ${exhibition.title}',
-          style: TextStyle(
-            fontFamily: 'Tajawal',
-            color: Theme.of(context).primaryColorDark,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء', style: TextStyle(fontFamily: 'Tajawal')),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'تم حجز التذكرة بنجاح!',
-                    style: TextStyle(fontFamily: 'Tajawal'),
-                  ),
-                  backgroundColor: AppThemes.getSuccessColor(context),
-                ),
-              );
-            },
-            child: const Text(
-              'تأكيد الحجز',
-              style: TextStyle(fontFamily: 'Tajawal'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

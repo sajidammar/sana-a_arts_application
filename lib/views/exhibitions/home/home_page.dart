@@ -3,8 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 
 import 'widgets/hero_section.dart';
-import 'widgets/exhibition_types_section.dart';
 import 'widgets/current_exhibitions_section.dart';
+import 'widgets/exhibition_fab_menu.dart';
+import 'package:sanaa_artl/providers/user_provider.dart';
 
 class ExhibitionHomePage extends StatefulWidget {
   const ExhibitionHomePage({super.key});
@@ -27,7 +28,13 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
-      context.read<ExhibitionProvider>().loadExhibitions();
+      final userProvider = context.read<UserProvider>();
+      final exhibitionProvider = context.read<ExhibitionProvider>();
+
+      exhibitionProvider.loadExhibitions();
+      if (userProvider.currentUser != null) {
+        exhibitionProvider.checkUserExhibitions(userProvider.currentUser!.id);
+      }
     });
   }
 
@@ -41,6 +48,7 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      floatingActionButton: const ExhibitionFabMenu(),
       body: CustomScrollView(
         slivers: [
           // استبدال SliverPersistentHeader بـ SliverAppBar العادي
@@ -54,12 +62,7 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
             ),
           ),
 
-          // أنواع المعارض
-          SliverToBoxAdapter(
-            child: ExhibitionTypesSection(
-              animationController: _animationController,
-            ),
-          ),
+          // Exhibition Types Section Removed as per request (moved to FAB)
 
           // المعارض الحالية
           SliverToBoxAdapter(

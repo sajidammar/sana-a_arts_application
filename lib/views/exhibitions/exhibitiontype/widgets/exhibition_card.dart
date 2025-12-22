@@ -330,15 +330,9 @@ class ExhibitionCard extends StatelessWidget {
       children: [
         Expanded(
           child: _buildActionButton(
-            exhibition.type == ExhibitionType.virtual
-                ? 'دخول'
-                : exhibition.type == ExhibitionType.reality
-                ? 'حجز'
-                : 'عرض',
+            exhibition.type == ExhibitionType.virtual ? 'دخول' : 'عرض',
             exhibition.type == ExhibitionType.virtual
                 ? Icons.card_membership_sharp
-                : exhibition.type == ExhibitionType.reality
-                ? Icons.confirmation_num
                 : Icons.visibility,
             true,
             context,
@@ -347,15 +341,9 @@ class ExhibitionCard extends StatelessWidget {
         const SizedBox(width: 6),
         Expanded(
           child: _buildActionButton(
-            exhibition.type == ExhibitionType.virtual
-                ? 'مشاركة'
-                : exhibition.type == ExhibitionType.reality
-                ? 'اتجاهات'
-                : 'إعجاب',
+            exhibition.type == ExhibitionType.virtual ? 'مشاركة' : 'إعجاب',
             exhibition.type == ExhibitionType.virtual
                 ? Icons.share
-                : exhibition.type == ExhibitionType.reality
-                ? Icons.directions
                 : Icons.thumb_up,
             false,
             context!,

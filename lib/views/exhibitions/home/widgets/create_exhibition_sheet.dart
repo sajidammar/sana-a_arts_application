@@ -4,7 +4,8 @@ import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 
 class CreateExhibitionSheet extends StatefulWidget {
-  const CreateExhibitionSheet({super.key});
+  final ExhibitionType type;
+  const CreateExhibitionSheet({super.key, this.type = ExhibitionType.open});
 
   @override
   State<CreateExhibitionSheet> createState() => _CreateExhibitionSheetState();
@@ -41,7 +42,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
         id: 'new_${DateTime.now().millisecondsSinceEpoch}',
         title: _titleController.text,
         curator: _curatorController.text,
-        type: ExhibitionType.open, // As requested
+        type: widget.type,
         status: 'جديد',
         description: _descriptionController.text,
         date: 'مستمر',
@@ -92,7 +93,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'ارفع عملك',
+                'إنشاء ${widget.type.displayName}',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Tajawal',
