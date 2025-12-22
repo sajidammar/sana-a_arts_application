@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/user.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class ArtistCard extends StatelessWidget {
   final User artist;
@@ -18,7 +19,7 @@ class ArtistCard extends StatelessWidget {
       margin: const EdgeInsets.only(left: 12),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -51,7 +52,7 @@ class ArtistCard extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 13,
-              color: isDark ? Colors.white : Colors.black,
+              color: AppColors.getTextColor(isDark),
             ),
             textAlign: TextAlign.center,
             maxLines: 1,

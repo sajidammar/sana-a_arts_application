@@ -5,6 +5,7 @@ import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/community/widgets/artist_card.dart';
 import 'package:sanaa_artl/views/community/widgets/post_card.dart';
 import 'package:sanaa_artl/views/community/add_post_page.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -35,15 +36,13 @@ class _CommunityPageState extends State<CommunityPage>
     final isDark = themeProvider.isDarkMode;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFF5F5F5),
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
               toolbarHeight: 0,
-              backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              backgroundColor: AppColors.getCardColor(isDark),
               elevation: 1,
               pinned: true,
               floating: true,
@@ -52,7 +51,7 @@ class _CommunityPageState extends State<CommunityPage>
               bottom: TabBar(
                 controller: _tabController,
                 labelColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: Colors.grey,
+                unselectedLabelColor: AppColors.getSubtextColor(isDark),
                 indicatorColor: Theme.of(context).primaryColor,
                 tabs: const [
                   Tab(text: 'المنشورات'),
