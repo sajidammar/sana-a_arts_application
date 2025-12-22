@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'widgets/vr_viewer.dart';
 import 'widgets/vr_controls.dart';
@@ -56,20 +58,21 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
   }
 
   Widget _buildVRViewerPage(VRProvider vrProvider) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           floating: true,
           snap: true,
           pinned: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          backgroundColor: AppColors.getBackgroundColor(isDark),
           elevation: 1,
           toolbarHeight: 70,
           leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: Icon(
               Icons.arrow_back_ios_new_rounded,
-              color: Theme.of(context).iconTheme.color,
+              color: isDark ? Colors.white : Colors.black87,
               size: 20,
             ),
           ),
@@ -78,11 +81,15 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
             children: [
               Text(
                 'المعرض الافتراضي',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: TextStyle(
+                  color: AppColors.getSubtextColor(isDark),
+                  fontSize: 12,
+                ),
               ),
               Text(
                 'تراث صنعاء الخالد',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                style: TextStyle(
+                  color: AppColors.getTextColor(isDark),
                   fontFamily: 'Tajawal',
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -101,10 +108,14 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: AppColors.getPrimaryColor(
+                    isDark,
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    color: AppColors.getPrimaryColor(
+                      isDark,
+                    ).withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
@@ -113,13 +124,13 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
                     Icon(
                       Icons.image_outlined,
                       size: 14,
-                      color: Theme.of(context).primaryColor,
+                      color: AppColors.getPrimaryColor(isDark),
                     ),
                     const SizedBox(width: 6),
                     Text(
                       '${vrProvider.currentArtworkIndex + 1} / ${vrProvider.artworks.length}',
                       style: TextStyle(
-                        color: Theme.of(context).primaryColor,
+                        color: AppColors.getPrimaryColor(isDark),
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Tajawal',
                         fontSize: 12,
@@ -146,10 +157,11 @@ class _VRExhibitionPageState extends State<VRExhibitionPage>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Consumer<VRProvider>(
       builder: (context, vrProvider, child) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: AppColors.getBackgroundColor(isDark),
           body: SafeArea(
             child: Column(
               children: [

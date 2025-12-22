@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/widgets/exhibition_card.dart';
 
 class MostVisitedSection extends StatelessWidget {
@@ -33,7 +35,9 @@ class MostVisitedSection extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.visibility,
-                      color: Theme.of(context).primaryColor,
+                      color: AppColors.getPrimaryColor(
+                        Provider.of<ThemeProvider>(context).isDarkMode,
+                      ),
                       size: 28,
                     ),
                     const SizedBox(width: 8),
@@ -43,7 +47,9 @@ class MostVisitedSection extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Tajawal',
-                        color: Theme.of(context).textTheme.titleLarge?.color,
+                        color: AppColors.getTextColor(
+                          Provider.of<ThemeProvider>(context).isDarkMode,
+                        ),
                       ),
                     ),
                   ],

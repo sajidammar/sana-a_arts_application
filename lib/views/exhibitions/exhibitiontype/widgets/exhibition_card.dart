@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
-import 'package:sanaa_artl/themes/exhibition/app_themes.dart';
+import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
-import 'package:provider/provider.dart';
-import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/open_exhibition_page.dart';
+import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
 import 'package:sanaa_artl/views/shared/share_dialog.dart';
 
 class ExhibitionCard extends StatelessWidget {
@@ -25,6 +26,9 @@ class ExhibitionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return ScaleAnimation(
       delay: animationDelay,
       child: Card(
@@ -32,7 +36,7 @@ class ExhibitionCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           side: BorderSide(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+            color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.2),
             width: 1.5,
           ),
         ),
@@ -46,8 +50,8 @@ class ExhibitionCard extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
+                  AppColors.getCardColor(isDark),
+                  AppColors.getCardColor(isDark).withValues(alpha: 0.95),
                 ],
               ),
             ),
@@ -72,6 +76,7 @@ class ExhibitionCard extends StatelessWidget {
   }
 
   Widget _buildImageSection(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Stack(
       children: [
         // صورة الخلفية
@@ -79,7 +84,7 @@ class ExhibitionCard extends StatelessWidget {
           aspectRatio: 16 / 9,
           child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: AppColors.getPrimaryColor(isDark),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(AppConstants.borderRadius),
                 topRight: Radius.circular(AppConstants.borderRadius),
@@ -160,7 +165,7 @@ class ExhibitionCard extends StatelessWidget {
       ),
       child: Text(
         exhibition.type.badgeText,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -171,22 +176,23 @@ class ExhibitionCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     Color statusColor;
     switch (exhibition.status) {
       case 'مفتوح الآن':
-        statusColor = AppThemes.getSuccessColor(context);
+        statusColor = const Color(0xFF4CAF50); // Success
       case 'قريباً':
-        statusColor = AppThemes.getWarningColor(context);
+        statusColor = const Color(0xFFFFA726); // Warning
       case 'انتهى':
-        statusColor = AppThemes.getErrorColor(context);
+        statusColor = const Color(0xFFF44336); // Error
       default:
-        statusColor = AppThemes.getInfoColor(context);
+        statusColor = const Color(0xFF2196F3); // Info
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.9),
+        color: AppColors.getPrimaryColor(isDark).withOpacity(0.9),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -203,7 +209,7 @@ class ExhibitionCard extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             exhibition.status,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 10,
               fontFamily: 'Tajawal',
@@ -214,7 +220,8 @@ class ExhibitionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentSection(dynamic context) {
+  Widget _buildContentSection(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -227,9 +234,7 @@ class ExhibitionCard extends StatelessWidget {
               fontSize: 15,
               fontWeight: FontWeight.bold,
               fontFamily: 'Tajawal',
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Theme.of(context).textTheme.titleLarge?.color,
+              color: AppColors.getTextColor(isDark),
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -242,7 +247,7 @@ class ExhibitionCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.person,
-                color: Theme.of(context).primaryColor,
+                color: AppColors.getPrimaryColor(isDark),
                 size: 16,
               ),
               const SizedBox(width: 4),
@@ -250,9 +255,9 @@ class ExhibitionCard extends StatelessWidget {
                 child: Text(
                   'المنسق: ${exhibition.curator}',
                   style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark
+                    color: isDark
                         ? Colors.white.withOpacity(0.9)
-                        : Theme.of(context).primaryColor,
+                        : AppColors.getPrimaryColor(isDark),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Tajawal',
@@ -272,9 +277,7 @@ class ExhibitionCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontFamily: 'Tajawal',
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.8)
-                  : Theme.of(context).textTheme.bodyMedium?.color,
+              color: AppColors.getSubtextColor(isDark),
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -294,14 +297,15 @@ class ExhibitionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsGrid(dynamic context) {
+  Widget _buildDetailsGrid(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+        color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -332,18 +336,17 @@ class ExhibitionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailItem(IconData icon, String text, context) {
+  Widget _buildDetailItem(IconData icon, String text, BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Row(
       children: [
-        Icon(icon, color: Theme.of(context).primaryColor, size: 14),
+        Icon(icon, color: AppColors.getPrimaryColor(isDark), size: 14),
         const SizedBox(width: 4),
         Expanded(
           child: Text(
             text,
             style: TextStyle(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white.withOpacity(0.85)
-                  : Theme.of(context).primaryColorDark,
+              color: AppColors.getSubtextColor(isDark),
               fontSize: 10,
               fontFamily: 'Tajawal',
             ),
@@ -406,19 +409,26 @@ class ExhibitionCard extends StatelessWidget {
     BuildContext context, {
     required VoidCallback onPressed,
   }) {
+    final isDark = Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ).isDarkMode;
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: isPrimary
-            ? Theme.of(context).primaryColor
+            ? AppColors.getPrimaryColor(isDark)
             : Colors.transparent,
         foregroundColor: isPrimary
-            ? Colors.white
-            : Theme.of(context).primaryColor,
+            ? (isDark ? Colors.black : Colors.white)
+            : AppColors.getPrimaryColor(isDark),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
-          side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+          side: BorderSide(
+            color: AppColors.getPrimaryColor(isDark),
+            width: 1.5,
+          ),
         ),
         elevation: isPrimary ? 2 : 0,
       ),

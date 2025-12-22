@@ -4,7 +4,8 @@ import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 
-import 'package:sanaa_artl/themes/exhibition/colors.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'vr_exhibition_page.dart';
 import 'widgets/exhibition_card.dart';
@@ -46,8 +47,9 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: CustomScrollView(
         slivers: [
           // الهيدر
@@ -83,22 +85,23 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
   }
 
   Widget _buildAppBar() {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return SliverAppBar(
-      backgroundColor: Theme.of(
-        context,
-      ).colorScheme.surface.withValues(alpha: 0.95),
+      backgroundColor: AppColors.getBackgroundColor(
+        isDark,
+      ).withValues(alpha: 0.95),
       elevation: 2,
       pinned: true,
       expandedHeight: 120,
       flexibleSpace: FlexibleSpaceBar(
         title: Row(
           children: [
-            Icon(Icons.art_track, color: Theme.of(context).primaryColor),
+            Icon(Icons.art_track, color: AppColors.getPrimaryColor(isDark)),
             const SizedBox(width: 8),
             Text(
               'المعارض الفنية',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: AppColors.getTextColor(isDark),
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 fontFamily: 'Tajawal',

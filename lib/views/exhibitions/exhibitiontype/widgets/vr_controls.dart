@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/providers/wishlist_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class VRControls extends StatefulWidget {
   final AnimationController animationController;
@@ -81,10 +83,11 @@ class _VRControlsState extends State<VRControls>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: AppColors.getBackgroundColor(isDark),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).shadowColor.withValues(alpha: 0.1),
@@ -110,6 +113,7 @@ class _VRControlsState extends State<VRControls>
                       Icons.favorite,
                       'المفضلة',
                       0,
+                      isDark,
                       () {
                         _onItemTapped(0);
                         widget.vrProvider.addToFavorites();
@@ -138,6 +142,7 @@ class _VRControlsState extends State<VRControls>
                       Icons.shopping_bag,
                       'السلة',
                       1,
+                      isDark,
                       () {
                         _onItemTapped(1);
                       },
@@ -148,6 +153,7 @@ class _VRControlsState extends State<VRControls>
                       Icons.vrpano_rounded,
                       'VR',
                       2,
+                      isDark,
                       () {
                         _onItemTapped(2);
                       },
@@ -158,6 +164,7 @@ class _VRControlsState extends State<VRControls>
                       Icons.person,
                       'الفنان',
                       3,
+                      isDark,
                       () {
                         _onItemTapped(3);
                       },
@@ -168,6 +175,7 @@ class _VRControlsState extends State<VRControls>
                       Icons.share,
                       'مشاركة',
                       4,
+                      isDark,
                       () {
                         _onItemTapped(4);
                         _shareArtwork(context);
@@ -194,13 +202,13 @@ class _VRControlsState extends State<VRControls>
                         height: 60,
                         width: 60,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: AppColors.getPrimaryColor(isDark),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Theme.of(
-                                context,
-                              ).primaryColor.withValues(alpha: 0.4),
+                              color: AppColors.getPrimaryColor(
+                                isDark,
+                              ).withValues(alpha: 0.4),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
@@ -278,6 +286,7 @@ class _VRControlsState extends State<VRControls>
     IconData selectedIcon,
     String label,
     int index,
+    bool isDark,
     VoidCallback onTap,
   ) {
     final isSelected = _selectedIndex == index;
@@ -299,9 +308,7 @@ class _VRControlsState extends State<VRControls>
                 opacity: isSelected ? 0.0 : 1.0,
                 child: Icon(
                   icon,
-                  color: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  color: AppColors.getTextColor(isDark).withValues(alpha: 0.6),
                   size: 24,
                 ),
               ),
@@ -313,7 +320,7 @@ class _VRControlsState extends State<VRControls>
                 child: Text(
                   label,
                   style: TextStyle(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
+                    color: AppColors.getSubtextColor(isDark),
                     fontSize: 12,
                     fontFamily: 'Tajawal',
                     fontWeight: FontWeight.w500,

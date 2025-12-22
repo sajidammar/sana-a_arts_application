@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 import 'widgets/hero_section.dart';
 import 'widgets/current_exhibitions_section.dart';
@@ -48,8 +50,9 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       floatingActionButton: const ExhibitionFabMenu(),
       body: CustomScrollView(
         slivers: [

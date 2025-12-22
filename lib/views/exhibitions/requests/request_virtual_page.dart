@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/user_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class RequestVirtualPage extends StatefulWidget {
   const RequestVirtualPage({super.key});
@@ -53,6 +55,7 @@ class _RequestVirtualPageState extends State<RequestVirtualPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
       appBar: AppBar(title: const Text('طلب معرض افتراضي')),
       body: Padding(
@@ -91,7 +94,7 @@ class _RequestVirtualPageState extends State<RequestVirtualPage> {
               ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: AppColors.getPrimaryColor(isDark),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.all(16),
                 ),

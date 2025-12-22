@@ -44,6 +44,18 @@ class AppColors {
     colors: [Color(0xFF667eea), Color(0xFF764ba2)],
   );
 
+  static const LinearGradient virtualGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFD4AF37), Color(0xFFB8860B)],
+  );
+
+  static const LinearGradient openGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF38ef7d), Color(0xFF11998e)],
+  );
+
   // Helper Methods
   static Color getLevelColor(String level) {
     switch (level.toLowerCase()) {

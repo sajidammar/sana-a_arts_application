@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class CreateExhibitionSheet extends StatefulWidget {
   final ExhibitionType type;
@@ -74,6 +76,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Container(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -82,7 +85,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
         right: 24,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: AppColors.getBackgroundColor(isDark),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
       ),
       child: SingleChildScrollView(
@@ -173,7 +176,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
                         decoration: BoxDecoration(
                           border: isSelected
                               ? Border.all(
-                                  color: Theme.of(context).primaryColor,
+                                  color: AppColors.getPrimaryColor(isDark),
                                   width: 3,
                                 )
                               : null,
@@ -199,7 +202,7 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
               ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: AppColors.getPrimaryColor(isDark),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

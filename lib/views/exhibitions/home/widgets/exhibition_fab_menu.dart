@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'dart:ui';
@@ -60,10 +62,11 @@ class _ExhibitionFabMenuState extends State<ExhibitionFabMenu>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     // We only render the main FAB here. The menu is an overlay route.
     return FloatingActionButton(
       onPressed: _toggleMenu,
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: AppColors.getPrimaryColor(isDark),
       child: const Icon(Icons.museum_outlined, color: Colors.white),
     );
   }
@@ -115,6 +118,7 @@ class _ExhibitionMenuContent extends StatelessWidget {
   Widget build(BuildContext context) {
     // Access provider to check ownership
     final provider = Provider.of<ExhibitionProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Stack(
       children: [
@@ -188,7 +192,7 @@ class _ExhibitionMenuContent extends StatelessWidget {
               onClose();
               Navigator.of(context).pop();
             },
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: AppColors.getPrimaryColor(isDark),
             elevation: 4,
             child: const Icon(Icons.close, color: Colors.white),
           ),
@@ -206,6 +210,7 @@ class _ExhibitionMenuContent extends StatelessWidget {
     bool isOwned,
   ) {
     final String tooltipMessage = isOwned ? ownedLabel : requestLabel;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return GestureDetector(
       onTap: () {
@@ -217,10 +222,10 @@ class _ExhibitionMenuContent extends StatelessWidget {
         message: tooltipMessage,
         preferBelow: false,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withOpacity(0.9),
+          color: AppColors.getCardColor(isDark).withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Theme.of(context).primaryColor.withOpacity(0.2),
+            color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.2),
           ),
           boxShadow: [
             BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4),
@@ -228,7 +233,7 @@ class _ExhibitionMenuContent extends StatelessWidget {
         ),
         textStyle: TextStyle(
           fontFamily: 'Tajawal',
-          color: Theme.of(context).colorScheme.onSurface,
+          color: AppColors.getTextColor(isDark),
           fontSize: 12,
         ),
         child: Container(
@@ -259,11 +264,6 @@ class _ExhibitionMenuContent extends StatelessWidget {
   ) {
     if (isOwned) {
       if (type == ExhibitionType.virtual) {
-        // Navigate to VR viewing or simple detail page
-        // For now, let's say VR page
-        // We might need to load specific data first.
-        // Simplified: Show snackbar or go to listing filtered by "My Exhibitions"?
-        // User "Exhibitions itself appears".
         _showOwnedExhibition(context, type);
       } else {
         _showOwnedExhibition(context, type);
@@ -291,15 +291,6 @@ class _ExhibitionMenuContent extends StatelessWidget {
 
   void _showOwnedExhibition(BuildContext context, ExhibitionType type) {
     if (type == ExhibitionType.virtual) {
-      // Provider logic to get works needed? VRExhibitionPage handles it?
-      // ExhibitionsPage logic:
-      // final exhibitionProvider = Provider.of<ExhibitionProvider>(context, listen: false);
-      // final vrProvider = Provider.of<VRProvider>(context, listen: false);
-      // vrProvider.loadArtworks(exhibitionProvider.artworks);
-      // Navigator.push...
-
-      // We need to import VRProvider if we use it, but for now let's just push the page
-      // assuming the page handles its data or we just show it.
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const VRExhibitionPage()),

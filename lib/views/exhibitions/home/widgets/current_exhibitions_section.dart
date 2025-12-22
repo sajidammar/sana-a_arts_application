@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/widgets/exhibition_card.dart';
 
 class CurrentExhibitionsSection extends StatefulWidget {
@@ -73,7 +75,9 @@ class _CurrentExhibitionsSectionState extends State<CurrentExhibitionsSection> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Tajawal',
-                    color: Theme.of(context).textTheme.titleLarge?.color,
+                    color: AppColors.getTextColor(
+                      Provider.of<ThemeProvider>(context).isDarkMode,
+                    ),
                   ),
                 ),
               ),

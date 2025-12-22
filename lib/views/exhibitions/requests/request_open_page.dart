@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/user_provider.dart';
+import 'package:sanaa_artl/providers/theme_provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class RequestOpenPage extends StatefulWidget {
   const RequestOpenPage({super.key});
@@ -56,6 +58,7 @@ class _RequestOpenPageState extends State<RequestOpenPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
       appBar: AppBar(title: const Text('طلب معرض مفتوح')),
       body: Padding(
@@ -95,7 +98,7 @@ class _RequestOpenPageState extends State<RequestOpenPage> {
               ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: AppColors.getPrimaryColor(isDark),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.all(16),
                 ),
