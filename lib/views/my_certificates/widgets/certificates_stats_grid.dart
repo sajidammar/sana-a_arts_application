@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../themes/academy/colors.dart';
 
 class CertificatesStatsGrid extends StatelessWidget {
   const CertificatesStatsGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDarkMode;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -65,21 +65,16 @@ class CertificatesStatsGrid extends StatelessWidget {
     IconData icon,
     bool isDark,
   ) {
-    // Gradient mock for icon bg
-    const gradient = LinearGradient(
-      colors: [Color(0xFF667eea), Color(0xFF764ba2)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        color: AppColors.getCardColor(isDark),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -90,28 +85,37 @@ class CertificatesStatsGrid extends StatelessWidget {
           Container(
             width: 60,
             height: 60,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: gradient,
+              gradient: AppColors.learningGradient,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF667eea).withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Icon(icon, color: Colors.white, size: 28),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontFamily: 'Tajawal',
               fontWeight: FontWeight.w800,
-              color: Color(0xFFB8860B),
+              color: AppColors.getPrimaryColor(isDark),
             ),
           ),
+          const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
               fontFamily: 'Tajawal',
-              color: isDark ? Colors.grey[400] : const Color(0xFF5D4E37),
+              color: AppColors.getSubtextColor(isDark),
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

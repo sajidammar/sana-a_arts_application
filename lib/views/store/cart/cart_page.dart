@@ -3,16 +3,24 @@ import 'package:provider/provider.dart';
 import '../../../controllers/store/cart_controller.dart';
 import '../../../models/store/cart_model.dart';
 import '../../../providers/store/cart_provider.dart';
-import '../../../themes/store/app_theme.dart';
-import '../../../utils/store/app_constants.dart';
+import '../../../providers/theme_provider.dart';
+import '../../../themes/academy/colors.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final cardColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: backgroundColor,
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           return Column(
@@ -21,26 +29,26 @@ class CartPage extends StatelessWidget {
                 child: CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      backgroundColor: Theme.of(
-                        context,
-                      ).appBarTheme.backgroundColor,
-                      elevation: 1,
+                      backgroundColor: cardColor,
+                      elevation: 0,
                       floating: true,
                       snap: true,
                       pinned: true,
                       title: Text(
                         'سلة التسوق',
                         style: TextStyle(
-                          color: AppConstants.textColor,
+                          color: textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
+                          fontFamily: 'Tajawal',
                         ),
                       ),
                       centerTitle: true,
                       leading: IconButton(
                         icon: Icon(
-                          Icons.arrow_back,
-                          color: AppConstants.textColor,
+                          Icons.arrow_back_ios_new,
+                          color: primaryColor,
+                          size: 20,
                         ),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -48,12 +56,15 @@ class CartPage extends StatelessWidget {
                     cartProvider.cartItems.isEmpty
                         ? SliverFillRemaining(
                             hasScrollBody: false,
-                            child: _buildEmptyCart(context),
+                            child: _buildEmptyCart(
+                              context,
+                              isDark,
+                              primaryColor,
+                              textColor,
+                            ),
                           )
                         : SliverPadding(
-                            padding: EdgeInsets.all(
-                              AppConstants.defaultPadding,
-                            ),
+                            padding: const EdgeInsets.all(16),
                             sliver: SliverList(
                               delegate: SliverChildBuilderDelegate((
                                 context,
@@ -63,6 +74,10 @@ class CartPage extends StatelessWidget {
                                   cartProvider.cartItems[index],
                                   index,
                                   context,
+                                  isDark,
+                                  primaryColor,
+                                  textColor,
+                                  cardColor,
                                 );
                               }, childCount: cartProvider.cartItems.length),
                             ),
@@ -71,7 +86,14 @@ class CartPage extends StatelessWidget {
                 ),
               ),
               if (cartProvider.cartItems.isNotEmpty)
-                _buildOrderSummary(cartProvider, context),
+                _buildOrderSummary(
+                  cartProvider,
+                  context,
+                  isDark,
+                  primaryColor,
+                  textColor,
+                  cardColor,
+                ),
             ],
           );
         },
@@ -79,67 +101,121 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyCart(BuildContext context) {
+  Widget _buildEmptyCart(
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+  ) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey[400]),
-          SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              color: primaryColor.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.shopping_cart_outlined,
+              size: 80,
+              color: primaryColor,
+            ),
+          ),
+          const SizedBox(height: 25),
           Text(
             'سلة التسوق فارغة',
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
+              fontFamily: 'Tajawal',
+              color: textColor,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 12),
           Text(
             'أضف بعض الأعمال الفنية إلى سلتك',
-            style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: 'Tajawal',
+              color: AppColors.getSubtextColor(isDark),
+            ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 40),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppConstants.primaryColor,
-              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  AppConstants.defaultBorderRadius,
-                ),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              elevation: 0,
+            ),
+            child: const Text(
+              'تصفح المتجر',
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
               ),
             ),
-            child: Text('تصفح المتجر', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCartItem(CartItem item, int index, BuildContext context) {
+  Widget _buildCartItem(
+    CartItem item,
+    int index,
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final cartController = CartController(context);
 
-    return Card(
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black26
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(25),
-              decoration: AppTheme.getGradientDecoration(
-                context,
-              ).copyWith(borderRadius: BorderRadius.circular(8)),
-              child: Icon(Icons.image, color: Colors.white, size: 30),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: 90,
+                height: 90,
+                decoration: const BoxDecoration(
+                  gradient: AppColors.storeGradient,
+                ),
+                child: const Icon(
+                  Icons.palette_outlined,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,97 +223,55 @@ class CartPage extends StatelessWidget {
                   Text(
                     item.product.title,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppConstants.textColor,
+                      fontFamily: 'Tajawal',
+                      color: textColor,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     item.product.artist,
                     style: TextStyle(
-                      fontSize: 14,
-                      color: AppConstants.primaryColor,
+                      fontSize: 13,
+                      fontFamily: 'Tajawal',
+                      color: primaryColor,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      Text(
-                        'الكمية:',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[300]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove, size: 16),
-                              onPressed: () => cartProvider.updateQuantity(
-                                index,
-                                item.quantity - 1,
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              constraints: const BoxConstraints(),
-                              style: IconButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: Text(
-                                item.quantity.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.add, size: 16),
-                              onPressed: () => cartProvider.updateQuantity(
-                                index,
-                                item.quantity + 1,
-                              ),
-                              padding: const EdgeInsets.all(4),
-                              constraints: const BoxConstraints(),
-                              style: IconButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 12),
+                  _buildQuantitySelector(
+                    cartProvider,
+                    index,
+                    item,
+                    isDark,
+                    primaryColor,
+                    textColor,
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '\$${(item.product.price * item.quantity).toStringAsFixed(2)}',
+                  '\$${(item.product.price * item.quantity).toStringAsFixed(0)}',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppConstants.primaryColor,
+                    fontFamily: 'Tajawal',
+                    color: primaryColor,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 12),
                 IconButton(
-                  icon: Icon(Icons.delete_outline, color: Colors.red),
+                  icon: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: Colors.redAccent,
+                  ),
                   onPressed: () {
                     cartProvider.removeItem(index);
                     cartController.showRemoveSnackBar();
@@ -251,53 +285,154 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderSummary(CartProvider cartProvider, BuildContext context) {
+  Widget _buildQuantitySelector(
+    CartProvider cartProvider,
+    int index,
+    CartItem item,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+  ) {
     return Container(
-      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).appBarTheme.backgroundColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+        color: isDark ? Colors.white12 : Colors.grey.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildQuantityBtn(
+            Icons.remove,
+            () => cartProvider.updateQuantity(index, item.quantity - 1),
+            isDark,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              item.quantity.toString(),
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+                color: textColor,
+              ),
+            ),
+          ),
+          _buildQuantityBtn(
+            Icons.add,
+            () => cartProvider.updateQuantity(index, item.quantity + 1),
+            isDark,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuantityBtn(IconData icon, VoidCallback onPressed, bool isDark) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: Icon(
+          icon,
+          size: 16,
+          color: isDark ? Colors.white70 : Colors.black54,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderSummary(
+    CartProvider cartProvider,
+    BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color textColor,
+    Color cardColor,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 1),
+          BoxShadow(
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
         ],
       ),
       child: Column(
         children: [
-          _buildSummaryRow('المجموع الفرعي', cartProvider.subtotal),
-          _buildSummaryRow('الشحن', cartProvider.shipping),
-          _buildSummaryRow('الضريبة (15%)', cartProvider.tax),
-          Divider(height: 24, thickness: 1),
+          _buildSummaryRow(
+            'المجموع الفرعي',
+            cartProvider.subtotal,
+            isDark,
+            textColor,
+            primaryColor,
+          ),
+          _buildSummaryRow(
+            'الشحن',
+            cartProvider.shipping,
+            isDark,
+            textColor,
+            primaryColor,
+          ),
+          _buildSummaryRow(
+            'الضريبة (15%)',
+            cartProvider.tax,
+            isDark,
+            textColor,
+            primaryColor,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Divider(
+              color: isDark ? Colors.white10 : Colors.black12,
+              thickness: 1,
+            ),
+          ),
           _buildSummaryRow(
             'المجموع النهائي',
             cartProvider.total,
+            isDark,
+            textColor,
+            primaryColor,
             isTotal: true,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
-            height: 56,
+            height: 58,
             child: ElevatedButton(
               onPressed: () => _proceedToCheckout(cartProvider, context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppConstants.primaryColor,
+                backgroundColor: primaryColor,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppConstants.defaultBorderRadius,
-                  ),
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                elevation: 2,
+                elevation: 0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.credit_card, size: 24),
-                  SizedBox(width: 8),
+                children: const [
+                  Icon(Icons.payment_rounded, size: 24),
+                  SizedBox(width: 12),
                   Text(
                     'متابعة إلى الدفع',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Tajawal',
+                    ),
                   ),
                 ],
               ),
@@ -308,31 +443,35 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(String label, double amount, {bool isTotal = false}) {
+  Widget _buildSummaryRow(
+    String label,
+    double amount,
+    bool isDark,
+    Color textColor,
+    Color primaryColor, {
+    bool isTotal = false,
+  }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: isTotal ? 18 : 16,
-                fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-                color: isTotal ? AppConstants.textColor : Colors.grey[700],
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: isTotal ? 18 : 15,
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.w500,
+              fontFamily: 'Tajawal',
+              color: isTotal ? textColor : AppColors.getSubtextColor(isDark),
             ),
           ),
-          SizedBox(width: 8),
           Text(
-            '\$${amount.toStringAsFixed(2)}',
+            '\$${amount.toStringAsFixed(0)}',
             style: TextStyle(
-              fontSize: isTotal ? 20 : 16,
+              fontSize: isTotal ? 22 : 16,
               fontWeight: FontWeight.bold,
-              color: isTotal
-                  ? AppConstants.primaryColor
-                  : AppConstants.textColor,
+              fontFamily: 'Tajawal',
+              color: isTotal ? primaryColor : textColor,
             ),
           ),
         ],
@@ -348,11 +487,5 @@ class CartPage extends StatelessWidget {
       return;
     }
     Navigator.pushNamed(context, '/order-history');
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => CheckoutPage(cartItems: cartProvider.cartItems, total: cartProvider.total),
-    //   ),
-    // );
   }
 }

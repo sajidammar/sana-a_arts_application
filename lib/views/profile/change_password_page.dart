@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../themes/academy/colors.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -32,64 +33,67 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
 
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             title: const Text(
               'تغيير كلمة المرور',
-              style: TextStyle(fontFamily: 'Tajawal'),
+              style: TextStyle(
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            foregroundColor: isDark
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
-            elevation: 2,
+            backgroundColor: isDark ? AppColors.darkCard : Colors.white,
+            foregroundColor: primaryColor,
+            elevation: 0,
             pinned: true,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     // رسالة تعليمات
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color:
-                            (isDark
-                                    ? const Color(0xFFD4AF37)
-                                    : const Color(0xFFB8860B))
-                                .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: primaryColor.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.info_outline,
-                            color: isDark
-                                ? const Color(0xFFD4AF37)
-                                : const Color(0xFFB8860B),
+                            color: primaryColor,
+                            size: 24,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Text(
                               'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل',
                               style: TextStyle(
                                 fontFamily: 'Tajawal',
-                                color: isDark ? Colors.white : Colors.black87,
+                                color: textColor,
+                                fontSize: 14,
+                                height: 1.5,
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
 
                     // كلمة المرور الحالية
                     _buildPasswordField(
@@ -103,6 +107,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         );
                       },
                       isDark: isDark,
+                      primaryColor: primaryColor,
                     ),
                     const SizedBox(height: 16),
 
@@ -117,6 +122,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         );
                       },
                       isDark: isDark,
+                      primaryColor: primaryColor,
                     ),
                     const SizedBox(height: 16),
 
@@ -132,37 +138,46 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         );
                       },
                       isDark: isDark,
+                      primaryColor: primaryColor,
                       isConfirm: true,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 40),
 
                     // زر الحفظ
                     SizedBox(
                       width: double.infinity,
+                      height: 55,
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('تم تغيير كلمة المرور بنجاح'),
+                              SnackBar(
+                                content: const Text(
+                                  'تم تغيير كلمة المرور بنجاح',
+                                  style: TextStyle(fontFamily: 'Tajawal'),
+                                ),
+                                backgroundColor: primaryColor,
                               ),
                             );
                             Navigator.pop(context);
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isDark
-                              ? const Color(0xFFD4AF37)
-                              : const Color(0xFFB8860B),
-                          foregroundColor: isDark ? Colors.black : Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          elevation: 4,
+                          shadowColor: primaryColor.withValues(alpha: 0.3),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                         child: const Text(
                           'تغيير كلمة المرور',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Tajawal'),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Tajawal',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -182,6 +197,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     required bool obscureText,
     required VoidCallback onToggleVisibility,
     required bool isDark,
+    required Color primaryColor,
     bool isConfirm = false,
   }) {
     return TextFormField(
@@ -190,44 +206,52 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       style: TextStyle(
         fontFamily: 'Tajawal',
         color: isDark ? Colors.white : Colors.black87,
+        fontSize: 16,
       ),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
           fontFamily: 'Tajawal',
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: AppColors.getSubtextColor(isDark),
         ),
         prefixIcon: Icon(
-          Icons.lock,
-          color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
+          Icons.lock_outline,
+          color: primaryColor.withValues(alpha: 0.7),
         ),
         suffixIcon: IconButton(
           icon: Icon(
-            obscureText ? Icons.visibility_off : Icons.visibility,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+            obscureText
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            color: AppColors.getSubtextColor(isDark).withValues(alpha: 0.6),
           ),
           onPressed: onToggleVisibility,
         ),
         filled: true,
-        fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        fillColor: isDark ? AppColors.darkCard : Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+            color: isDark
+                ? Colors.white10
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+            color: isDark
+                ? Colors.white12
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: primaryColor, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
         ),
       ),
       validator: (value) {

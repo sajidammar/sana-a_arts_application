@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../themes/academy/colors.dart';
 
 class StatsOverview extends StatelessWidget {
   const StatsOverview({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDarkMode;
-
-    final backgroundColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final surfaceColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(15),
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -28,24 +29,40 @@ class StatsOverview extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            'نظرة عامة على معارضي',
-            style: TextStyle(
-              fontFamily: 'Tajawal',
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.getPrimaryColor(
+                    isDark,
+                  ).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.analytics,
+                  color: AppColors.getPrimaryColor(isDark),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'نظرة عامة على معارضي',
+                style: TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           LayoutBuilder(
             builder: (context, constraints) {
-              // Adaptive Grid
-              // Since we have fixed 6 items, we can try to fit them.
-
               return Wrap(
-                spacing: 15,
-                runSpacing: 15,
+                spacing: 16,
+                runSpacing: 16,
                 alignment: WrapAlignment.center,
                 children: [
                   _buildStatItem('إجمالي المعارض', '12', isDark),
@@ -65,17 +82,22 @@ class StatsOverview extends StatelessWidget {
 
   Widget _buildStatItem(String label, String value, bool isDark) {
     final containerColor = isDark
-        ? const Color(0xFF121212)
-        : const Color(0xFFF5E6D3);
-    final primaryColor = const Color(0xFFB8860B);
-    final labelColor = isDark ? Colors.grey[400] : const Color(0xFF5D4E37);
+        ? Colors.white.withValues(alpha: 0.05)
+        : AppColors.backgroundSecondary.withValues(alpha: 0.5);
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final labelColor = AppColors.getSubtextColor(isDark);
 
     return Container(
       constraints: const BoxConstraints(minWidth: 120),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         color: containerColor,
         borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.05),
+        ),
       ),
       child: Column(
         children: [
@@ -83,12 +105,12 @@ class StatsOverview extends StatelessWidget {
             value,
             style: TextStyle(
               fontFamily: 'Tajawal',
-              fontSize: 24,
+              fontSize: 26,
               fontWeight: FontWeight.w800,
               color: primaryColor,
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 6),
           Text(
             label,
             textAlign: TextAlign.center,
@@ -96,6 +118,7 @@ class StatsOverview extends StatelessWidget {
               fontFamily: 'Tajawal',
               fontSize: 12,
               color: labelColor,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

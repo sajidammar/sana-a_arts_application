@@ -4,7 +4,8 @@ import '../../controllers/store/product_controller.dart';
 import '../../models/store/product_model.dart';
 import '../../providers/store/cart_provider.dart';
 import '../../providers/store/product_provider.dart';
-import '../../themes/store/app_theme.dart';
+import '../../providers/theme_provider.dart';
+import '../../themes/academy/colors.dart';
 import '../../utils/store/app_constants.dart';
 import 'cart/cart_page.dart';
 import '../../providers/wishlist_provider.dart';
@@ -37,17 +38,37 @@ class _StorePageState extends State<StorePage> {
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final cardColor = AppColors.getCardColor(isDark);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           // Header removed as per global layout update
           SliverToBoxAdapter(
             child: Column(
               children: [
-                _buildSearchAndFilters(productProvider, context),
-                _buildProductsGrid(productProvider, cartProvider, context),
+                _buildSearchAndFilters(
+                  productProvider,
+                  context,
+                  isDark,
+                  primaryColor,
+                  cardColor,
+                ),
+                _buildProductsGrid(
+                  productProvider,
+                  cartProvider,
+                  context,
+                  isDark,
+                  textColor,
+                  primaryColor,
+                ),
               ],
             ),
           ),
@@ -60,7 +81,7 @@ class _StorePageState extends State<StorePage> {
             MaterialPageRoute(builder: (context) => const CartPage()),
           );
         },
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: primaryColor,
         child: Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
@@ -189,59 +210,52 @@ class _StorePageState extends State<StorePage> {
   Widget _buildSearchAndFilters(
     ProductProvider productProvider,
     BuildContext context,
+    bool isDark,
+    Color primaryColor,
+    Color cardColor,
   ) {
     return Container(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
-      color: Theme.of(context).cardTheme.color,
+      color: isDark ? AppColors.darkBackground : AppColors.backgroundMain,
       child: Column(
         children: [
-          // TextField(
-          //   decoration: InputDecoration(
-          //     hintText: 'ابحث عن لوحة أو فنان...',
-          //     prefixIcon: Icon(Icons.search, color: Theme.of(context).iconTheme.color),
-          //     border: OutlineInputBorder(
-          //       borderRadius: BorderRadius.circular(15),
-          //     ),
-          //     filled: true,
-          //     fillColor: Theme.of(context).brightness == Brightness.dark
-          //         ? Color(0xFF2D2D2D)
-          //         : Colors.white,
-          //     hintStyle: TextStyle(
-          //       color: Theme.of(context).brightness == Brightness.dark
-          //           ? Colors.grey.shade500
-          //           : Colors.grey.shade600,
-          //     ),
-          //   ),
-          //   style: TextStyle(
-          //     color: AppTheme.getTextColor(context),
-          //   ),
-          // ),
-          // SizedBox(height: 16),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: List.generate(productProvider.filters.length, (index) {
+                final isSelected = productProvider.selectedFilter == index;
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: FilterChip(
                     label: Text(
                       productProvider.filters[index],
                       style: TextStyle(
-                        color: productProvider.selectedFilter == index
+                        fontFamily: 'Tajawal',
+                        color: isSelected
                             ? Colors.white
-                            : AppTheme.getTextColor(context),
+                            : AppColors.getTextColor(isDark),
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
-                    selected: productProvider.selectedFilter == index,
+                    selected: isSelected,
                     onSelected: (bool selected) {
                       productProvider.filterProducts(index);
                     },
-                    selectedColor: Theme.of(context).primaryColor,
+                    selectedColor: primaryColor,
                     checkmarkColor: Colors.white,
-                    backgroundColor:
-                        Theme.of(context).brightness == Brightness.dark
-                        ? Color(0xFF2D2D2D)
-                        : Colors.grey.shade200,
+                    backgroundColor: isDark ? AppColors.darkCard : Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: isSelected
+                            ? Colors.transparent
+                            : (isDark
+                                  ? Colors.white12
+                                  : Colors.black.withValues(alpha: 0.05)),
+                      ),
+                    ),
                   ),
                 );
               }),
@@ -256,6 +270,9 @@ class _StorePageState extends State<StorePage> {
     ProductProvider productProvider,
     CartProvider cartProvider,
     BuildContext context,
+    bool isDark,
+    Color textColor,
+    Color primaryColor,
   ) {
     return Padding(
       padding: EdgeInsets.all(AppConstants.defaultPadding),
@@ -265,20 +282,21 @@ class _StorePageState extends State<StorePage> {
           Text(
             'الأعمال الفنية المتاحة',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppTheme.getTextColor(context),
+              fontFamily: 'Tajawal',
+              color: textColor,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 20),
           GridView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
               crossAxisSpacing: 16,
-              mainAxisSpacing: 20,
-              childAspectRatio: 0.90,
+              mainAxisSpacing: 24,
+              childAspectRatio: 0.85,
             ),
             itemCount: productProvider.filteredProducts.length,
             itemBuilder: (context, index) {
@@ -286,6 +304,8 @@ class _StorePageState extends State<StorePage> {
                 productProvider.filteredProducts[index],
                 cartProvider,
                 context,
+                isDark,
+                primaryColor,
               );
             },
           ),
@@ -298,9 +318,13 @@ class _StorePageState extends State<StorePage> {
     Product product,
     CartProvider cartProvider,
     BuildContext context,
+    bool isDark,
+    Color primaryColor,
   ) {
     final productController = ProductController(context);
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final subtextColor = AppColors.getSubtextColor(isDark);
 
     return GestureDetector(
       onTap: () {
@@ -308,14 +332,22 @@ class _StorePageState extends State<StorePage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor, // Using card theme color
-          borderRadius: BorderRadius.circular(20),
+          color: cardColor,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: isDark
+                  ? Colors.black45
+                  : Colors.black.withValues(alpha: 0.05),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // Important for fitting
             children: [
               // Image Section
               AspectRatio(
@@ -330,10 +362,12 @@ class _StorePageState extends State<StorePage> {
                             fit: BoxFit.cover,
                           )
                         : Container(
-                            decoration: AppTheme.getGradientDecoration(context),
+                            decoration: const BoxDecoration(
+                              gradient: AppColors.storeGradient,
+                            ),
                             child: const Center(
                               child: Icon(
-                                Icons.image,
+                                Icons.image_outlined,
                                 color: Colors.white,
                                 size: 40,
                               ),
@@ -341,18 +375,24 @@ class _StorePageState extends State<StorePage> {
                           ),
                     if (product.isNew || product.discount > 0)
                       Positioned(
-                        top: 12,
-                        right: 12,
+                        top: 15,
+                        right: 15,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
+                            horizontal: 12,
+                            vertical: 6,
                           ),
                           decoration: BoxDecoration(
                             color: product.discount > 0
                                 ? Colors.red
-                                : Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(20),
+                                : primaryColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.2),
+                                blurRadius: 4,
+                              ),
+                            ],
                           ),
                           child: Text(
                             product.discount > 0
@@ -360,15 +400,16 @@ class _StorePageState extends State<StorePage> {
                                 : 'جديد',
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 11,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'Tajawal',
                             ),
                           ),
                         ),
                       ),
                     Positioned(
-                      top: 12,
-                      left: 12,
+                      top: 15,
+                      left: 15,
                       child: Consumer<WishlistProvider>(
                         builder: (context, wishlistProvider, child) {
                           final isFavorite = wishlistProvider.isInWishlist(
@@ -376,12 +417,12 @@ class _StorePageState extends State<StorePage> {
                           );
                           return Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               shape: BoxShape.circle,
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.black12,
-                                  blurRadius: 4,
+                                  blurRadius: 8,
                                   offset: Offset(0, 2),
                                 ),
                               ],
@@ -392,11 +433,11 @@ class _StorePageState extends State<StorePage> {
                                     ? Icons.favorite
                                     : Icons.favorite_border,
                                 color: isFavorite ? Colors.red : Colors.grey,
-                                size: 20,
+                                size: 22,
                               ),
                               constraints: const BoxConstraints(
-                                minWidth: 32,
-                                minHeight: 32,
+                                minWidth: 40,
+                                minHeight: 40,
                               ),
                               padding: EdgeInsets.zero,
                               onPressed: () {
@@ -424,44 +465,70 @@ class _StorePageState extends State<StorePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12), // Reduced padding
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      product.title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16, // Restored font size
-                        color: AppTheme.getTextColor(context),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            product.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'Tajawal',
+                              color: textColor,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star_rounded,
+                              color: Colors.amber,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${product.rating}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Tajawal',
+                                color: textColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
                       product.artist,
                       style: TextStyle(
-                        color: AppTheme.getSecondaryTextColor(context),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                        color: primaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Tajawal',
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    // Removed Description to save space as per user request implicit context of overflow
-                    // Or keep it but very short
+                    const SizedBox(height: 8),
                     Text(
                       product.description,
                       style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                        height: 1.2,
+                        color: subtextColor,
+                        fontSize: 13,
+                        fontFamily: 'Tajawal',
+                        height: 1.3,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -471,71 +538,58 @@ class _StorePageState extends State<StorePage> {
                             if (product.discount > 0)
                               Text(
                                 '\$${product.originalPrice.toStringAsFixed(0)}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
-                                  color: Colors.grey,
-                                  fontSize: 11,
+                                  color: subtextColor.withValues(alpha: 0.5),
+                                  fontSize: 12,
+                                  fontFamily: 'Tajawal',
                                 ),
                               ),
                             Text(
                               '\$${product.price}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Theme.of(context).primaryColor,
+                                fontSize: 22,
+                                fontFamily: 'Tajawal',
+                                color: primaryColor,
                               ),
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
+                        ElevatedButton(
+                          onPressed: () {
+                            cartProvider.addToCart(product);
+                            productController.showAddToCartSnackBar(product);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '${product.rating}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.getTextColor(context),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    ElevatedButton(
-                      onPressed: () {
-                        cartProvider.addToCart(product);
-                        productController.showAddToCartSnackBar(product);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.shopping_cart_outlined, size: 18),
-                          SizedBox(width: 6),
-                          Text(
-                            'أضف للسلة',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
                             ),
                           ),
-                        ],
-                      ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(Icons.add_shopping_cart_rounded, size: 20),
+                              SizedBox(width: 8),
+                              Text(
+                                'أضف للسلة',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Tajawal',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

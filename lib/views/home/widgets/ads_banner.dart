@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/academy/colors.dart';
 
 class AdsBanner extends StatefulWidget {
   const AdsBanner({super.key});
@@ -64,17 +65,21 @@ class _AdsBannerState extends State<AdsBanner> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 170,
-      width: double.infinity, // Use full width or constrain if needed
+      height: 180,
+      width: double.infinity,
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
             PageView.builder(
@@ -90,39 +95,32 @@ class _AdsBannerState extends State<AdsBanner> {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Background Image
                     Image.asset(
                       ad['image']!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [Color(0xFF8B4513), Color(0xFFB8860B)],
-                            ),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.virtualGradient,
                           ),
                         );
                       },
                     ),
-                    // Gradient Overlay
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.centerRight,
                           end: Alignment.centerLeft,
                           colors: [
-                            Colors.black.withOpacity(0.8),
-                            Colors.black.withOpacity(0.4),
+                            Colors.black.withValues(alpha: 0.8),
+                            Colors.black.withValues(alpha: 0.4),
                             Colors.transparent,
                           ],
                         ),
                       ),
                     ),
-                    // Content
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(24),
                       child: Row(
                         children: [
                           Expanded(
@@ -134,17 +132,19 @@ class _AdsBannerState extends State<AdsBanner> {
                                   ad['title']!,
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 20,
+                                    fontSize: 22,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Tajawal',
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   ad['description']!,
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: Colors.white.withValues(alpha: 0.9),
                                     fontSize: 14,
                                     height: 1.4,
+                                    fontFamily: 'Tajawal',
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -153,17 +153,16 @@ class _AdsBannerState extends State<AdsBanner> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // Optional Icon or Action Button
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.arrow_forward_ios,
                               color: Colors.white,
-                              size: 20,
+                              size: 18,
                             ),
                           ),
                         ],
@@ -173,22 +172,19 @@ class _AdsBannerState extends State<AdsBanner> {
                 );
               },
             ),
-
-            // Indicators
             Positioned(
-              bottom: 12,
-              left:
-                  20, // Align left for RTL context might need adjustment, but usually center or side is fine
+              bottom: 16,
+              left: 24,
               child: Row(
                 children: _ads.asMap().entries.map((entry) {
                   return Container(
-                    width: 8.0,
+                    width: _currentPage == entry.key ? 20.0 : 8.0,
                     height: 8.0,
                     margin: const EdgeInsets.symmetric(horizontal: 4.0),
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withOpacity(
-                        _currentPage == entry.key ? 0.9 : 0.4,
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.white.withValues(
+                        alpha: _currentPage == entry.key ? 0.9 : 0.4,
                       ),
                     ),
                   );

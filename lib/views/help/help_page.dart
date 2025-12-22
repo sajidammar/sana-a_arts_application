@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../themes/academy/colors.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDarkMode;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -21,10 +19,8 @@ class HelpPage extends StatelessWidget {
               'المساعدة والدعم',
               style: TextStyle(fontFamily: 'Tajawal'),
             ),
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            foregroundColor: isDark
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
+            backgroundColor: AppColors.getCardColor(isDark),
+            foregroundColor: AppColors.getPrimaryColor(isDark),
             elevation: 2,
             pinned: true,
           ),
@@ -47,7 +43,12 @@ class HelpPage extends StatelessWidget {
                   description: 'تحدث مع فريق الدعم مباشرة',
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('سيتم فتح الدردشة قريباً')),
+                      const SnackBar(
+                        content: Text(
+                          'سيتم فتح الدردشة قريباً',
+                          style: TextStyle(fontFamily: 'Tajawal'),
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -94,11 +95,11 @@ class HelpPage extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: AppColors.getCardColor(isDark),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black26 : Colors.grey.withOpacity(0.1),
+            color: isDark ? Colors.black26 : Colors.grey.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -109,15 +110,10 @@ class HelpPage extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: (isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B))
-                .withOpacity(0.1),
+            color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(
-            icon,
-            color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
-            size: 24,
-          ),
+          child: Icon(icon, color: AppColors.getPrimaryColor(isDark), size: 24),
         ),
         title: Text(
           title,
@@ -125,7 +121,7 @@ class HelpPage extends StatelessWidget {
             fontSize: 16,
             fontWeight: FontWeight.bold,
             fontFamily: 'Tajawal',
-            color: isDark ? Colors.white : Colors.black87,
+            color: AppColors.getTextColor(isDark),
           ),
         ),
         subtitle: Padding(
@@ -135,14 +131,14 @@ class HelpPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontFamily: 'Tajawal',
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: AppColors.getSubtextColor(isDark),
             ),
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: isDark ? Colors.grey[600] : Colors.grey[400],
+          color: AppColors.getSubtextColor(isDark).withValues(alpha: 0.5),
         ),
         onTap: onTap,
       ),
@@ -153,11 +149,7 @@ class HelpPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF8B4513), Color(0xFFB8860B)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: AppColors.virtualGradient,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/store/cart_provider.dart';
-import '../../../providers/store/product_provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../../../themes/academy/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onMenuPressed;
@@ -23,21 +23,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    Provider.of<ProductProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     final cartProvider = Provider.of<CartProvider>(context);
 
     return AppBar(
-      backgroundColor: themeProvider.isDarkMode
-          ? const Color(0xFF1E1E1E)
-          : Colors.white,
+      backgroundColor: AppColors.getCardColor(isDark),
       elevation: 2,
       leading: IconButton(
         icon: Icon(
           Icons.menu,
-          color: themeProvider.isDarkMode
-              ? const Color(0xFFD4AF37)
-              : const Color(0xFFB8860B),
+          color: AppColors.getPrimaryColor(isDark),
           size: 28,
         ),
         onPressed: onMenuPressed,
@@ -50,32 +45,34 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Container(
                 height: 45,
                 decoration: BoxDecoration(
-                  color: themeProvider.isDarkMode
+                  color: isDark
                       ? const Color(0xFF2D2D2D)
                       : const Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.circular(25),
                   border: Border.all(
-                    color: themeProvider.isDarkMode
-                        ? const Color(0xFFD4AF37)
-                        : const Color(0xFFB8860B),
+                    color: AppColors.getPrimaryColor(
+                      isDark,
+                    ).withValues(alpha: 0.3),
                   ),
                 ),
                 child: TextField(
+                  style: TextStyle(color: AppColors.getTextColor(isDark)),
                   decoration: InputDecoration(
                     hintText: 'ابحث عن الأعمال الفنية...',
                     hintStyle: TextStyle(
-                      color: themeProvider.isDarkMode
-                          ? const Color(0xFFB0B0B0)
-                          : const Color(0xFF666666),
+                      color: AppColors.getSubtextColor(isDark),
+                      fontFamily: 'Tajawal',
                     ),
                     prefixIcon: Icon(
                       Icons.search,
-                      color: themeProvider.isDarkMode
-                          ? const Color(0xFFD4AF37)
-                          : const Color(0xFFB8860B),
+                      color: AppColors.getPrimaryColor(isDark),
+                      size: 20,
                     ),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 8,
+                    ),
                   ),
                   onTap: onSearchPressed,
                 ),
@@ -88,32 +85,36 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(
             Icons.notifications_none,
-            color: themeProvider.isDarkMode
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
+            color: AppColors.getPrimaryColor(isDark),
             size: 28,
           ),
           onPressed: onNotificationsPressed,
         ),
-
         IconButton(
           icon: Stack(
             children: [
-              Icon(Icons.shopping_cart, color: Theme.of(context).primaryColor),
+              Icon(
+                Icons.shopping_cart,
+                color: AppColors.getPrimaryColor(isDark),
+                size: 24,
+              ),
               if (cartProvider.cartItems.isNotEmpty)
                 Positioned(
                   right: 0,
                   top: 0,
                   child: Container(
-                    padding: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: BoxConstraints(minWidth: 16, minHeight: 16),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
                     child: Text(
                       '${cartProvider.cartItems.length}',
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../themes/academy/colors.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -32,27 +33,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
 
+    final primaryColor = AppColors.getPrimaryColor(isDark);
+    final backgroundColor = AppColors.getBackgroundColor(isDark);
+
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFFDF6E3),
+      backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             title: const Text(
               'تعديل الملف الشخصي',
-              style: TextStyle(fontFamily: 'Tajawal'),
+              style: TextStyle(
+                fontFamily: 'Tajawal',
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-            foregroundColor: isDark
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
-            elevation: 2,
+            backgroundColor: isDark ? AppColors.darkCard : Colors.white,
+            foregroundColor: primaryColor,
+            elevation: 0,
             pinned: true,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -61,16 +64,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Stack(
                       children: [
                         Container(
-                          width: 120,
-                          height: 120,
+                          width: 130,
+                          height: 130,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isDark
-                                  ? const Color(0xFFD4AF37)
-                                  : const Color(0xFFB8860B),
-                              width: 3,
-                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: primaryColor.withValues(alpha: 0.2),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                            border: Border.all(color: primaryColor, width: 3),
                             image: const DecorationImage(
                               image: AssetImage('assets/images/image1.jpg'),
                               fit: BoxFit.cover,
@@ -78,33 +83,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                         ),
                         Positioned(
-                          bottom: 0,
-                          right: 0,
+                          bottom: 5,
+                          right: 5,
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: isDark
-                                  ? const Color(0xFFD4AF37)
-                                  : const Color(0xFFB8860B),
+                              color: primaryColor,
                               shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
                             child: const Icon(
-                              Icons.camera_alt,
+                              Icons.camera_alt_outlined,
                               color: Colors.white,
-                              size: 20,
+                              size: 22,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
 
                     // الاسم
                     _buildTextField(
                       controller: _nameController,
                       label: 'الاسم الكامل',
-                      icon: Icons.person,
+                      icon: Icons.person_outline,
                       isDark: isDark,
+                      primaryColor: primaryColor,
                     ),
                     const SizedBox(height: 16),
 
@@ -112,8 +122,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _buildTextField(
                       controller: _emailController,
                       label: 'البريد الإلكتروني',
-                      icon: Icons.email,
+                      icon: Icons.email_outlined,
                       isDark: isDark,
+                      primaryColor: primaryColor,
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 16),
@@ -122,8 +133,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _buildTextField(
                       controller: _phoneController,
                       label: 'رقم الهاتف',
-                      icon: Icons.phone,
+                      icon: Icons.phone_android_outlined,
                       isDark: isDark,
+                      primaryColor: primaryColor,
                       keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 16),
@@ -132,8 +144,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _buildTextField(
                       controller: _cityController,
                       label: 'المدينة',
-                      icon: Icons.location_on,
+                      icon: Icons.location_on_outlined,
                       isDark: isDark,
+                      primaryColor: primaryColor,
                     ),
                     const SizedBox(height: 16),
 
@@ -141,42 +154,52 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _buildTextField(
                       controller: _bioController,
                       label: 'النبذة الشخصية',
-                      icon: Icons.description,
+                      icon: Icons.description_outlined,
                       isDark: isDark,
-                      maxLines: 3,
+                      primaryColor: primaryColor,
+                      maxLines: 4,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 40),
 
                     // زر الحفظ
                     SizedBox(
                       width: double.infinity,
+                      height: 55,
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('تم حفظ التعديلات بنجاح'),
+                              SnackBar(
+                                content: const Text(
+                                  'تم حفظ التعديلات بنجاح',
+                                  style: TextStyle(fontFamily: 'Tajawal'),
+                                ),
+                                backgroundColor: primaryColor,
                               ),
                             );
                             Navigator.pop(context);
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isDark
-                              ? const Color(0xFFD4AF37)
-                              : const Color(0xFFB8860B),
-                          foregroundColor: isDark ? Colors.black : Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          elevation: 4,
+                          shadowColor: primaryColor.withValues(alpha: 0.3),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                         child: const Text(
                           'حفظ التعديلات',
-                          style: TextStyle(fontSize: 16, fontFamily: 'Tajawal'),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Tajawal',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -192,6 +215,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     required String label,
     required IconData icon,
     required bool isDark,
+    required Color primaryColor,
     TextInputType? keyboardType,
     int maxLines = 1,
   }) {
@@ -202,37 +226,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
       style: TextStyle(
         fontFamily: 'Tajawal',
         color: isDark ? Colors.white : Colors.black87,
+        fontSize: 16,
       ),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
           fontFamily: 'Tajawal',
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: AppColors.getSubtextColor(isDark),
         ),
-        prefixIcon: Icon(
-          icon,
-          color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
-        ),
+        prefixIcon: Icon(icon, color: primaryColor.withValues(alpha: 0.7)),
         filled: true,
-        fillColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        fillColor: isDark ? AppColors.darkCard : Colors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+            color: isDark
+                ? Colors.white10
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(
-            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+            color: isDark
+                ? Colors.white12
+                : Colors.black.withValues(alpha: 0.05),
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: isDark ? const Color(0xFFD4AF37) : const Color(0xFFB8860B),
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: primaryColor, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
         ),
       ),
       validator: (value) {

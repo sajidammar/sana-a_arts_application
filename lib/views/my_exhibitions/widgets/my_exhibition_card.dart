@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/theme_provider.dart';
+import '../../../themes/academy/colors.dart';
 import '../my_exhibitions_view.dart'; // For ExhibitionStatus enum
 
 class MyExhibitionCard extends StatelessWidget {
@@ -9,20 +12,21 @@ class MyExhibitionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
-    final secondaryTextColor = isDark
-        ? Colors.grey[400]!
-        : const Color(0xFF5D4E37);
-    final primaryColor = const Color(0xFFB8860B);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final surfaceColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final secondaryTextColor = AppColors.getSubtextColor(isDark);
+    final primaryColor = AppColors.getPrimaryColor(isDark);
 
     return Container(
       decoration: BoxDecoration(
         color: surfaceColor,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF8B4513).withOpacity(0.1),
+            color: isDark
+                ? Colors.black45
+                : Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -40,12 +44,15 @@ class MyExhibitionCard extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 16 / 9,
                   child: Container(
-                    color: Colors.grey[300],
+                    color: isDark ? Colors.grey[900] : Colors.grey[200],
                     child: Image.asset(
                       data['image'],
                       fit: BoxFit.cover,
-                      errorBuilder: (ctx, err, stack) =>
-                          Icon(Icons.image, size: 50, color: Colors.grey[600]),
+                      errorBuilder: (ctx, err, stack) => Icon(
+                        Icons.image,
+                        size: 50,
+                        color: secondaryTextColor.withValues(alpha: 0.3),
+                      ),
                     ),
                   ),
                 ),
@@ -57,6 +64,7 @@ class MyExhibitionCard extends StatelessWidget {
                     textColor,
                     secondaryTextColor,
                     true,
+                    isDark,
                   ),
                 ),
               ],
@@ -67,30 +75,31 @@ class MyExhibitionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: Image.asset(
                       data['image'],
                       fit: BoxFit.cover,
                       errorBuilder: (ctx, err, stack) => Container(
-                        color: Colors.grey[300],
+                        color: isDark ? Colors.grey[900] : Colors.grey[200],
                         child: Icon(
                           Icons.image,
                           size: 50,
-                          color: Colors.grey[600],
+                          color: secondaryTextColor.withValues(alpha: 0.3),
                         ),
                       ),
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 3,
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(24),
                       child: _buildContent(
                         context,
                         primaryColor,
                         textColor,
                         secondaryTextColor,
                         false,
+                        isDark,
                       ),
                     ),
                   ),
@@ -104,11 +113,12 @@ class MyExhibitionCard extends StatelessWidget {
   }
 
   Widget _buildContent(
-    context,
+    BuildContext context,
     Color primaryColor,
     Color textColor,
     Color secondaryTextColor,
     bool isMobile,
+    bool isDark,
   ) {
     final status = data['status'] as ExhibitionStatus;
 
@@ -119,15 +129,18 @@ class MyExhibitionCard extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
-              color: _getStatusColor(status),
-              borderRadius: BorderRadius.circular(20),
+              color: _getStatusColor(status).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: _getStatusColor(status).withValues(alpha: 0.5),
+              ),
             ),
             child: Text(
               _getStatusLabel(status),
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: _getStatusColor(status),
                 fontFamily: 'Tajawal',
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
@@ -136,25 +149,25 @@ class MyExhibitionCard extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
 
         Text(
           data['title'],
           style: TextStyle(
             fontFamily: 'Tajawal',
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
             color: textColor,
           ),
         ),
 
-        const SizedBox(height: 5),
+        const SizedBox(height: 8),
 
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.location_on, size: 16, color: secondaryTextColor),
-            const SizedBox(width: 5),
+            const SizedBox(width: 6),
             Text(
               data['location'],
               style: TextStyle(
@@ -166,14 +179,21 @@ class MyExhibitionCard extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
 
         // Dates Box
         Container(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF5E6D3),
-            borderRadius: BorderRadius.circular(10),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : AppColors.backgroundSecondary.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.05),
+            ),
           ),
           child: Column(
             children: [
@@ -184,14 +204,14 @@ class MyExhibitionCard extends StatelessWidget {
                   textColor,
                   secondaryTextColor,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 12),
                 _buildDateRow(
                   'تاريخ الانتهاء:',
                   data['endDate'],
                   textColor,
                   secondaryTextColor,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 12),
                 _buildDateRow(
                   status == ExhibitionStatus.completed
                       ? 'مدة المعرض:'
@@ -204,6 +224,7 @@ class MyExhibitionCard extends StatelessWidget {
                   textColor,
                   secondaryTextColor,
                   isHighlight: true,
+                  highlightColor: primaryColor,
                 ),
               ] else ...[
                 _buildDateRow(
@@ -212,19 +233,21 @@ class MyExhibitionCard extends StatelessWidget {
                   textColor,
                   secondaryTextColor,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 12),
                 _buildDateRow(
                   'حالة التحضير:',
                   '${(data['progress'] * 100).toInt()}%',
                   textColor,
                   secondaryTextColor,
+                  isHighlight: true,
+                  highlightColor: primaryColor,
                 ),
               ],
             ],
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
 
         // Stats Row
         Row(
@@ -251,12 +274,12 @@ class MyExhibitionCard extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
         // Actions
         Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: _buildActions(context, status),
+          spacing: 12,
+          runSpacing: 12,
+          children: _buildActions(context, status, isDark),
         ),
       ],
     );
@@ -268,6 +291,7 @@ class MyExhibitionCard extends StatelessWidget {
     Color textColor,
     Color secondaryTextColor, {
     bool isHighlight = false,
+    Color? highlightColor,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -276,7 +300,7 @@ class MyExhibitionCard extends StatelessWidget {
           label,
           style: TextStyle(
             fontFamily: 'Tajawal',
-            fontSize: 13,
+            fontSize: 14,
             color: secondaryTextColor,
           ),
         ),
@@ -286,7 +310,7 @@ class MyExhibitionCard extends StatelessWidget {
             fontFamily: 'Tajawal',
             fontSize: 14,
             fontWeight: isHighlight ? FontWeight.bold : FontWeight.w500,
-            color: textColor,
+            color: isHighlight ? (highlightColor ?? textColor) : textColor,
           ),
         ),
       ],
@@ -305,11 +329,12 @@ class MyExhibitionCard extends StatelessWidget {
           value,
           style: TextStyle(
             fontFamily: 'Tajawal',
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: primaryColor,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
@@ -329,7 +354,7 @@ class MyExhibitionCard extends StatelessWidget {
       case ExhibitionStatus.upcoming:
         return const Color(0xFF17a2b8);
       case ExhibitionStatus.completed:
-        return const Color(0xFF5D4E37); // secondary
+        return AppColors.textPrimary;
       case ExhibitionStatus.draft:
         return const Color(0xFFffc107);
     }
@@ -348,16 +373,32 @@ class MyExhibitionCard extends StatelessWidget {
     }
   }
 
-  List<Widget> _buildActions(BuildContext context, ExhibitionStatus status) {
+  List<Widget> _buildActions(
+    BuildContext context,
+    ExhibitionStatus status,
+    bool isDark,
+  ) {
     List<Widget> actions = [
-      _buildActionButton(context, 'عرض', Icons.visibility, isPrimary: true),
+      _buildActionButton(
+        context,
+        'عرض',
+        Icons.visibility,
+        isDark,
+        isPrimary: true,
+      ),
     ];
 
     if (status == ExhibitionStatus.active ||
         status == ExhibitionStatus.upcoming) {
-      actions.add(_buildActionButton(context, 'تعديل', Icons.edit));
+      actions.add(_buildActionButton(context, 'تعديل', Icons.edit, isDark));
       actions.add(
-        _buildActionButton(context, 'إضافة عمل', Icons.add, isSuccess: true),
+        _buildActionButton(
+          context,
+          'إضافة عمل',
+          Icons.add,
+          isDark,
+          isSuccess: true,
+        ),
       );
     }
 
@@ -367,23 +408,32 @@ class MyExhibitionCard extends StatelessWidget {
           context,
           'نشر',
           Icons.broadcast_on_personal,
+          isDark,
           isWarning: true,
         ),
       );
     }
 
     if (status == ExhibitionStatus.completed) {
-      actions.add(_buildActionButton(context, 'التقرير', Icons.bar_chart));
-      actions.add(_buildActionButton(context, 'تحميل', Icons.download));
+      actions.add(
+        _buildActionButton(context, 'التقرير', Icons.bar_chart, isDark),
+      );
+      actions.add(_buildActionButton(context, 'تحميل', Icons.download, isDark));
     }
 
     if (status == ExhibitionStatus.draft) {
-      actions.add(_buildActionButton(context, 'إكمال', Icons.edit));
+      actions.add(_buildActionButton(context, 'إكمال', Icons.edit, isDark));
       actions.add(
-        _buildActionButton(context, 'إضافة عمل', Icons.add, isSuccess: true),
+        _buildActionButton(
+          context,
+          'إضافة عمل',
+          Icons.add,
+          isDark,
+          isSuccess: true,
+        ),
       );
       actions.add(
-        _buildActionButton(context, 'حفظ', Icons.save, isWarning: true),
+        _buildActionButton(context, 'حفظ', Icons.save, isDark, isWarning: true),
       );
     }
 
@@ -393,21 +443,18 @@ class MyExhibitionCard extends StatelessWidget {
   Widget _buildActionButton(
     BuildContext context,
     String label,
-    IconData icon, {
+    IconData icon,
+    bool isDark, {
     bool isPrimary = false,
     bool isSuccess = false,
     bool isWarning = false,
   }) {
-    Color bgColor;
-    Color fgColor;
+    Color? bgColor;
+    Color? fgColor;
+    Gradient? gradient;
 
     if (isPrimary) {
-      bgColor = const Color(0xFFFECFEF); // Gradient mock
-      fgColor = const Color(
-        0xFFB8860B,
-      ); // Actually gradient usually has white text but let's stick to design
-      // The CSS says primary is gradient. Let's use primary color for simplicity or gradient container
-      bgColor = const Color(0xFFB8860B);
+      gradient = AppColors.exhibitionGradient;
       fgColor = Colors.white;
     } else if (isSuccess) {
       bgColor = const Color(0xFF28a745);
@@ -416,23 +463,47 @@ class MyExhibitionCard extends StatelessWidget {
       bgColor = const Color(0xFFffc107);
       fgColor = Colors.white;
     } else {
-      bgColor = isDark ? Colors.grey[800]! : Colors.grey[200]!;
-      fgColor = isDark ? Colors.white : Colors.black87;
+      bgColor = isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : AppColors.backgroundSecondary.withValues(alpha: 0.8);
+      fgColor = AppColors.getTextColor(isDark);
     }
 
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, size: 16),
-      label: Text(
-        label,
-        style: const TextStyle(fontFamily: 'Tajawal', fontSize: 12),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: gradient != null
+            ? [
+                BoxShadow(
+                  color: AppColors.exhibitionColor.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: bgColor,
-        foregroundColor: fgColor,
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: ElevatedButton.icon(
+        onPressed: () {},
+        icon: Icon(icon, size: 16),
+        label: Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'Tajawal',
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: gradient != null ? Colors.transparent : bgColor,
+          foregroundColor: fgColor,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
     );
   }

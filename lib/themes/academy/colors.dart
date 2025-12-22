@@ -7,6 +7,7 @@ class AppColors {
   static const Color primaryDark = Color(0xFF8B6914);
   static const Color secondaryColor = Color(0xFF8B4513);
   static const Color accentColor = Color(0xFFFF6B35);
+  static const Color starGold = Color(0xFFFFD700);
 
   // Text Colors
   static const Color textPrimary = Color(0xFF2C1810);
@@ -22,8 +23,13 @@ class AppColors {
   static const Color darkCard = Color(0xFF2C2C2C);
   static const Color darkPrimary = Color(0xFFD4AF37);
 
-  // Special Colors
-  static const Color starGold = Color(0xFFFFD700);
+  static const Color openColor = Color(0xFF38ef7d);
+
+  // Module Specific Colors
+  static const Color exhibitionColor = Color(0xFFFF6D8E);
+  static const Color storeColor = Color(0xFF4CAF50);
+  static const Color communityColor = Color(0xFF2196F3);
+  static const Color profileColor = Color(0xFF9C27B0);
 
   // Gradients
   static const LinearGradient goldGradient = LinearGradient(
@@ -54,6 +60,18 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [Color(0xFF38ef7d), Color(0xFF11998e)],
+  );
+
+  static const LinearGradient exhibitionGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFff9a9e), Color(0xFFfecfef)],
+  );
+
+  static const LinearGradient storeGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF4CAF50), Color(0xFF8BC34A)],
   );
 
   // Helper Methods
