@@ -5,7 +5,7 @@ import 'package:sanaa_artl/models/community/post.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/community/widgets/comments_sheet.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -24,7 +24,7 @@ class PostCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -261,3 +261,4 @@ class PostCard extends StatelessWidget {
     return AssetImage(imageUrl);
   }
 }
+

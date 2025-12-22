@@ -4,7 +4,7 @@ import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
 import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';

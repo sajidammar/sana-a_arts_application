@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../themes/academy/colors.dart';
+import '../../themes/app_colors.dart';
 import 'edit_profile_page.dart';
 import 'change_password_page.dart';
 import '../settings/notifications_page.dart';

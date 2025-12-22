@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 import 'widgets/hero_section.dart';
 import 'widgets/current_exhibitions_section.dart';

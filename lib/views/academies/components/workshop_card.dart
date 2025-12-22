@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/academy/workshop.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class WorkshopCard extends StatelessWidget {
@@ -32,7 +32,7 @@ class WorkshopCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -209,7 +209,7 @@ class WorkshopCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -380,3 +380,4 @@ class WorkshopCard extends StatelessWidget {
     );
   }
 }
+

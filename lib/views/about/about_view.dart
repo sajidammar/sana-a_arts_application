@@ -184,8 +184,9 @@ class AboutPage extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        Text(label, style: TextStyle(color: Colors.white.withOpacity(0.9))),
+        Text(label, style: TextStyle(color: Colors.white.withValues(alpha: 0.9))),
       ],
     );
   }
 }
+

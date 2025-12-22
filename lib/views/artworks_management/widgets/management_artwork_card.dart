@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class ManagementArtworkCard extends StatefulWidget {
@@ -62,8 +62,8 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
           boxShadow: [
             BoxShadow(
               color: _isHovered
-                  ? AppColors.secondaryColor.withOpacity(0.2)
-                  : AppColors.secondaryColor.withOpacity(0.1),
+                  ? AppColors.secondaryColor.withValues(alpha: 0.2)
+                  : AppColors.secondaryColor.withValues(alpha: 0.1),
               blurRadius: _isHovered ? 35 : 15,
               offset: _isHovered ? const Offset(0, 15) : const Offset(0, 5),
             ),
@@ -94,7 +94,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
                   ),
                   if (_isHovered)
                     Container(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(alpha: 0.7),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -147,7 +147,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: widget.statusColor.withOpacity(0.1),
+                          color: widget.statusColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -188,7 +188,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
                             'تعديل',
                             Icons.edit,
                             const Color(0xFF17a2b8),
-                            const Color(0xFF17a2b8).withOpacity(0.1),
+                            const Color(0xFF17a2b8).withValues(alpha: 0.1),
                             widget.onEdit,
                           ),
                         ),
@@ -198,7 +198,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
                             'حذف',
                             Icons.delete,
                             const Color(0xFFdc3545),
-                            const Color(0xFFdc3545).withOpacity(0.1),
+                            const Color(0xFFdc3545).withValues(alpha: 0.1),
                             widget.onDelete,
                           ),
                         ),
@@ -278,3 +278,4 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
     );
   }
 }
+

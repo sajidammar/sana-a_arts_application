@@ -1,4 +1,3 @@
-// theme/colors.dart
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -17,13 +16,22 @@ class AppColors {
   static const Color backgroundMain = Color(0xFFFDF6E3);
   static const Color backgroundSecondary = Color(0xFFF5E6D3);
   static const Color white = Color(0xFFFFFFFF);
+  static const Color grey = Color(0xFF757575);
+  static const Color lightGrey = Color(0xFFE0E0E0);
+  static const Color darkGrey = Color(0xFF424242);
+  static const Color black = Color(0xFF000000);
 
   // Background Colors - Dark Mode
   static const Color darkBackground = Color(0xFF1E1E1E);
   static const Color darkCard = Color(0xFF2C2C2C);
   static const Color darkPrimary = Color(0xFFD4AF37);
 
+  // Status Colors
   static const Color openColor = Color(0xFF38ef7d);
+  static const Color success = Color(0xFF4CAF50);
+  static const Color warning = Color(0xFFFFA726);
+  static const Color error = Color(0xFFF44336);
+  static const Color info = Color(0xFF2196F3);
 
   // Module Specific Colors
   static const Color exhibitionColor = Color(0xFFFF6D8E);
@@ -92,9 +100,11 @@ class AppColors {
   static Color getPrimaryColor(bool isDark) =>
       isDark ? darkPrimary : primaryColor;
   static Color getBackgroundColor(bool isDark) =>
-      isDark ? darkBackground : backgroundMain;
+      isDark ? const Color(0xFF121212) : backgroundMain;
   static Color getCardColor(bool isDark) => isDark ? darkCard : white;
   static Color getTextColor(bool isDark) => isDark ? white : textPrimary;
   static Color getSubtextColor(bool isDark) =>
       isDark ? const Color(0xFFB0B0B0) : textSecondary;
+  static Color getSurfaceColor(bool isDark) =>
+      isDark ? const Color(0xFF1E1E1E) : backgroundSecondary;
 }

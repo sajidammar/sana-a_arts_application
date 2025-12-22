@@ -129,7 +129,7 @@ class _MyAppState extends State<MyApp> {
           supportedLocales: const [Locale('ar', 'AE')],
           locale: const Locale('ar', 'AE'),
           theme: themeProvider.isDarkMode ? AppTheme.dark : AppTheme.light,
-          home: _isInitialized ? const Home_Page() : const _LoadingScreen(),
+          home: _isInitialized ? const HomePage() : const _LoadingScreen(),
           routes: {
             '/exhibition': (context) => ExhibitionHomePage(),
             '/home': (context) => StorePage(),

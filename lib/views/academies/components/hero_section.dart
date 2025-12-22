@@ -1,6 +1,6 @@
 // views/components/hero_section.dart
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -92,9 +92,9 @@ class _HeroSectionState extends State<HeroSection> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.3),
+                  Colors.black.withValues(alpha: 0.3),
                   Colors.transparent,
-                  Colors.black.withOpacity(0.6),
+                  Colors.black.withValues(alpha: 0.6),
                 ],
               ),
             ),
@@ -153,8 +153,8 @@ class _HeroSectionState extends State<HeroSection> {
                   margin: const EdgeInsets.symmetric(horizontal: 4.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(
-                      _currentPage == entry.key ? 0.9 : 0.4,
+                    color: Colors.white.withValues(
+                      alpha: _currentPage == entry.key ? 0.9 : 0.4,
                     ),
                   ),
                 );

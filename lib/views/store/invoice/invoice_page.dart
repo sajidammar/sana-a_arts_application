@@ -4,7 +4,7 @@ import '../../../controllers/store/invoice_controller.dart';
 import '../../../models/store/invoice_model.dart';
 import '../../../providers/store/invoice_provider.dart';
 import '../../../providers/theme_provider.dart';
-import '../../../themes/academy/colors.dart';
+import '../../../themes/app_colors.dart';
 
 class InvoicePage extends StatelessWidget {
   const InvoicePage({super.key});

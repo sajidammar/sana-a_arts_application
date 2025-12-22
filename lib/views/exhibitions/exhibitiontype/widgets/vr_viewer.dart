@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'vr_comments_sidebar.dart';
 
@@ -165,7 +165,7 @@ class _VRViewerState extends State<VRViewer> {
           offset: Offset(-10 * value, -10 * value),
           child: CustomPaint(
             size: Size.infinite,
-            painter: _VRGridPainter(color: Colors.white.withOpacity(0.1)),
+            painter: _VRGridPainter(color: Colors.white.withValues(alpha: 0.1)),
           ),
         );
       },
@@ -200,7 +200,7 @@ class _VRViewerState extends State<VRViewer> {
     Widget iconWidget = Icon(
       icon,
       size: size,
-      color: Colors.white.withOpacity(0.9),
+      color: Colors.white.withValues(alpha: 0.9),
     );
 
     if (animation != null) {
@@ -234,8 +234,8 @@ class _VRViewerState extends State<VRViewer> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white.withOpacity(0.1),
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+        color: Colors.white.withValues(alpha: 0.1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
       ),
       child: iconWidget,
     );
@@ -258,7 +258,7 @@ class _VRViewerState extends State<VRViewer> {
           'اضغط وحرك الماوس للتنقل في المعرض',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             fontFamily: 'Tajawal',
           ),
         ),
@@ -267,7 +267,7 @@ class _VRViewerState extends State<VRViewer> {
           'استخدم العجلة للتكبير والتصغير',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             fontFamily: 'Tajawal',
           ),
         ),
@@ -426,10 +426,10 @@ class _VRViewerState extends State<VRViewer> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: isActive
-                ? Colors.white.withOpacity(0.3)
-                : Colors.white.withOpacity(0.1),
+                ? Colors.white.withValues(alpha: 0.3)
+                : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: Colors.white.withOpacity(0.3)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -468,10 +468,10 @@ class _VRViewerState extends State<VRViewer> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: isActive
-                ? Colors.white.withOpacity(0.3)
-                : Colors.white.withOpacity(0.1),
+                ? Colors.white.withValues(alpha: 0.3)
+                : Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -506,7 +506,7 @@ class _VRViewerState extends State<VRViewer> {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: Colors.white, size: 20),
@@ -529,7 +529,7 @@ class _VRViewerState extends State<VRViewer> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -592,3 +592,4 @@ class _VRGridPainter extends CustomPainter {
   bool shouldRepaint(covariant _VRGridPainter oldDelegate) =>
       color != oldDelegate.color;
 }
+

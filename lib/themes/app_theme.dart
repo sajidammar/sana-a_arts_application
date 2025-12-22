@@ -1,33 +1,52 @@
 import 'package:flutter/material.dart';
+import 'app_colors.dart';
 
 class AppTheme {
-  // الوضع النهاري - الألوان الجديدة
+  static ThemeData theme(bool isDark) => isDark ? dark : light;
+
   static final ThemeData light = ThemeData(
-    primaryColor: const Color(0xFFB8860B),
-    scaffoldBackgroundColor: const Color(0xFFFDF6E3),
+    brightness: Brightness.light,
+    primaryColor: AppColors.primaryColor,
+    scaffoldBackgroundColor: AppColors.backgroundMain,
+    fontFamily: 'Tajawal',
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFFFFFFF),
-      elevation: 2,
-      foregroundColor: Color(0xFFB8860B),
+      backgroundColor: Colors.white,
+      elevation: 1,
+      centerTitle: true,
+      foregroundColor: AppColors.primaryColor,
     ),
-    colorScheme: const ColorScheme.light(
-      primary: Color(0xFFB8860B),
-      secondary: Color(0xFF8B6914),
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primaryColor,
+      secondary: AppColors.primaryDark,
+      surface: Colors.white,
+    ),
+    cardTheme: CardThemeData(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     ),
   );
 
-  // الوضع الليلي - الألوان الجديدة
   static final ThemeData dark = ThemeData(
-    primaryColor: const Color(0xFFD4AF37),
+    brightness: Brightness.dark,
+    primaryColor: AppColors.darkPrimary,
     scaffoldBackgroundColor: const Color(0xFF121212),
+    fontFamily: 'Tajawal',
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF1E1E1E),
       elevation: 2,
-      foregroundColor: Color(0xFFD4AF37),
+      centerTitle: true,
+      foregroundColor: AppColors.darkPrimary,
     ),
-    colorScheme: const ColorScheme.dark(
-      primary: Color(0xFFD4AF37),
-      secondary: Color(0xFFB8860B),
+    colorScheme: ColorScheme.dark(
+      primary: AppColors.darkPrimary,
+      secondary: AppColors.primaryColor,
+      surface: const Color(0xFF1E1E1E),
+    ),
+    cardTheme: CardThemeData(
+      color: const Color(0xFF1E1E1E),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     ),
   );
 }

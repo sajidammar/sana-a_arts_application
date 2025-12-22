@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class AddArtworkDialog extends StatefulWidget {
@@ -76,7 +76,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                     Text(
                       'شارك إبداعك مع العالم',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
                         fontFamily: 'Tajawal',
                       ),
@@ -99,7 +99,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                         height: 150,
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFB8860B).withOpacity(0.05),
+                          color: const Color(0xFFB8860B).withValues(alpha: 0.05),
                           border: Border.all(
                             color: primaryColor,
                             style:
@@ -128,7 +128,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
                               Text(
                                 'يدعم: JPG, PNG, GIF (الحد الأقصى: 10 ميجابايت)',
                                 style: TextStyle(
-                                  color: textColor.withOpacity(0.6),
+                                  color: textColor.withValues(alpha: 0.6),
                                   fontSize: 12,
                                 ),
                               ),
@@ -331,7 +331,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
           fontSize: 14,
         ),
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
@@ -367,7 +367,7 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isDark ? Colors.grey[800]! : const Color(0xFFF5E6D3),
@@ -404,3 +404,4 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     );
   }
 }
+

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../models/store/cart_model.dart';
 import '../../../providers/store/order_provider.dart';
 import '../../../providers/theme_provider.dart';
-import '../../../themes/academy/colors.dart';
+import '../../../themes/app_colors.dart';
 
 class OrderHistoryPage extends StatelessWidget {
   const OrderHistoryPage({super.key});

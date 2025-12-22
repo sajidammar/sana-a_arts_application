@@ -36,7 +36,7 @@ class OpenExhibitionPage extends StatelessWidget {
                         child: Icon(
                           exhibition.type.icon,
                           size: 80,
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                         ),
                       ),
                     ),
@@ -51,7 +51,7 @@ class OpenExhibitionPage extends StatelessWidget {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundColor: exhibition.type.color.withOpacity(0.1),
+                        backgroundColor: exhibition.type.color.withValues(alpha: 0.1),
                         child: Icon(Icons.person, color: exhibition.type.color),
                       ),
                       const SizedBox(width: 8),
@@ -134,7 +134,7 @@ class OpenExhibitionPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -206,3 +206,4 @@ class OpenExhibitionPage extends StatelessWidget {
     );
   }
 }
+

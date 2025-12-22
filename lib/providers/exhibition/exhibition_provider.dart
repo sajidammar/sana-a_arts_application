@@ -13,7 +13,7 @@ class ExhibitionProvider with ChangeNotifier {
   String _error = '';
   String _searchQuery = '';
   // ... (Keep existing properties)
-  Set<ExhibitionType> _ownedExhibitionTypes = {};
+  final Set<ExhibitionType> _ownedExhibitionTypes = {};
 
   List<Exhibition> get exhibitions => _exhibitions;
   List<Artwork> get artworks => _artworks;
@@ -26,7 +26,6 @@ class ExhibitionProvider with ChangeNotifier {
       _ownedExhibitionTypes.contains(type);
 
   // بيانات تجريبية للمعارض (تم تفريغها لاستخدام التوليد الديناميكي)
-  final List<Exhibition> _demoExhibitions = [];
 
   // بيانات تجريبية للأعمال الفنية
   final List<Artwork> _demoArtworks = [
@@ -262,14 +261,14 @@ class ExhibitionProvider with ChangeNotifier {
       int curatorIndex = (random + i * 2) % curators.length;
       int imgIndex = (random + i * 3) % images.length;
       int typeIndex = (random + i) % 3; // 0, 1, 2
-
       ExhibitionType type;
-      if (typeIndex == 0)
+      if (typeIndex == 0) {
         type = ExhibitionType.virtual;
-      else if (typeIndex == 1)
+      } else if (typeIndex == 1) {
         type = ExhibitionType.personal; // Replaced reality with personal
-      else
+      } else {
         type = ExhibitionType.open;
+      }
 
       generated.add(
         Exhibition(

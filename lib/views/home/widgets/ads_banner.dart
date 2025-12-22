@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../themes/academy/colors.dart';
+import '../../../themes/app_colors.dart';
 
 class AdsBanner extends StatefulWidget {
   const AdsBanner({super.key});

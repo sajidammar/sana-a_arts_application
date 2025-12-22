@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'dart:ui';
 import 'package:sanaa_artl/views/exhibitions/requests/request_virtual_page.dart';
 import 'package:sanaa_artl/views/exhibitions/requests/request_personal_page.dart';
 import 'package:sanaa_artl/views/exhibitions/requests/request_group_page.dart';
@@ -228,7 +227,10 @@ class _ExhibitionMenuContent extends StatelessWidget {
             color: AppColors.getPrimaryColor(isDark).withValues(alpha: 0.2),
           ),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 4,
+            ),
           ],
         ),
         textStyle: TextStyle(
@@ -245,7 +247,7 @@ class _ExhibitionMenuContent extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 blurRadius: 8,
-                color: type.color.withOpacity(0.4),
+                color: type.color.withValues(alpha: 0.4),
                 offset: const Offset(0, 4),
               ),
             ],

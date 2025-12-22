@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 
@@ -317,7 +317,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                           decoration: BoxDecoration(
                             color: Theme.of(
                               context,
-                            ).primaryColor.withOpacity(0.1),
+                            ).primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -668,3 +668,4 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
     }
   }
 }
+

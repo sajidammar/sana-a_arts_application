@@ -5,7 +5,7 @@ import '../../models/store/product_model.dart';
 import '../../providers/store/cart_provider.dart';
 import '../../providers/store/product_provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../themes/academy/colors.dart';
+import '../../themes/app_colors.dart';
 import '../../utils/store/app_constants.dart';
 import 'cart/cart_page.dart';
 import '../../providers/wishlist_provider.dart';
@@ -13,8 +13,7 @@ import '../../providers/wishlist_provider.dart';
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
 
-  @override
-  _StorePageState createState() => _StorePageState();
+  @override State<StorePage> createState() => _StorePageState();
 }
 
 class _StorePageState extends State<StorePage> {
@@ -601,3 +600,4 @@ class _StorePageState extends State<StorePage> {
     );
   }
 }
+

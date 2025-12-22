@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import '../../../providers/theme_provider.dart';
-import '../../../themes/academy/colors.dart';
+import '../../../themes/app_colors.dart';
 import 'exhibition_card.dart';
 
 class FeaturedExhibitions extends StatelessWidget {

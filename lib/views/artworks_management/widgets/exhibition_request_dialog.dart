@@ -36,7 +36,7 @@ class _ExhibitionRequestDialogState extends State<ExhibitionRequestDialog> {
       backgroundColor: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: 800,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -86,7 +86,7 @@ class _ExhibitionRequestDialogState extends State<ExhibitionRequestDialog> {
                     Text(
                       'أنشئ معرضك الخاص لعرض أعمالك',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 14,
                         fontFamily: 'Tajawal',
                       ),
@@ -247,7 +247,7 @@ class _ExhibitionRequestDialogState extends State<ExhibitionRequestDialog> {
         labelText: hint,
         labelStyle: TextStyle(color: isDark ? Colors.grey : Colors.grey[600]),
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         suffixIcon: icon != null ? Icon(icon, color: Colors.grey) : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

@@ -1,6 +1,6 @@
 // views/components/category_card.dart
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/academy/animations.dart';
 
 class CategoryCard extends StatefulWidget {
@@ -23,7 +23,8 @@ class CategoryCard extends StatefulWidget {
   State<CategoryCard> createState() => _CategoryCardState();
 }
 
-class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderStateMixin {
+class _CategoryCardState extends State<CategoryCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
@@ -36,13 +37,15 @@ class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderSt
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.02,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 0.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 0.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -72,7 +75,12 @@ class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderSt
             builder: (context, child) {
               return Transform(
                 transform: Matrix4.identity()
-                  ..scale(_scaleAnimation.value)
+                  ..scaleByDouble(
+                    _scaleAnimation.value,
+                    _scaleAnimation.value,
+                    1.0,
+                    1.0,
+                  )
                   ..rotateY(_rotationAnimation.value),
                 alignment: Alignment.center,
                 child: child,
@@ -86,13 +94,10 @@ class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderSt
                   colors: [AppColors.backgroundSecondary, Colors.white],
                 ),
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                  color: Colors.transparent,
-                  width: 2,
-                ),
+                border: Border.all(color: Colors.transparent, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryColor.withOpacity(0.1),
+                    color: AppColors.primaryColor.withValues(alpha: 0.1),
                     blurRadius: 15,
                     offset: const Offset(0, 10),
                   ),
@@ -116,10 +121,7 @@ class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderSt
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          widget.icon,
-                          style: const TextStyle(fontSize: 48),
-                        ),
+                        Text(widget.icon, style: const TextStyle(fontSize: 48)),
                         const SizedBox(height: 16),
                         Text(
                           widget.title,
@@ -141,13 +143,18 @@ class _CategoryCardState extends State<CategoryCard> with SingleTickerProviderSt
                         ),
                         const SizedBox(height: 16),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             gradient: AppColors.goldGradient,
                             borderRadius: BorderRadius.circular(25),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryColor.withOpacity(0.3),
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.3,
+                                ),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),
@@ -183,22 +190,28 @@ class _CategoryCardPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..shader = AppColors.goldGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..shader = AppColors.goldGradient.createShader(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+      )
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
     final path = Path()
-      ..addRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        const Radius.circular(15),
-      ));
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          const Radius.circular(15),
+        ),
+      );
 
     canvas.drawPath(path, paint);
 
     // Animated border effect
     if (controller.value > 0) {
       final animatedPaint = Paint()
-        ..shader = AppColors.goldGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+        ..shader = AppColors.goldGradient.createShader(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+        )
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
         ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10);

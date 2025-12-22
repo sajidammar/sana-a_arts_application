@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../themes/academy/colors.dart';
+import '../../themes/app_colors.dart';
 import 'widgets/certificates_stats_grid.dart';
 import 'widgets/achievements_section.dart';
 import 'widgets/certificate_card.dart';

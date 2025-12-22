@@ -10,7 +10,7 @@ import 'package:sanaa_artl/views/home/shared/bottom_navigation_bar.dart';
 import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
 import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../providers/user_provider.dart';
@@ -27,14 +27,13 @@ import '../artworks_management/artworks_management_view.dart';
 import '../my_exhibitions/my_exhibitions_view.dart';
 import '../my_certificates/my_certificates_view.dart';
 
-class Home_Page extends StatefulWidget {
-  const Home_Page({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  @override
-  _Home_PageState createState() => _Home_PageState();
+  @override State<HomePage> createState() => _HomePageState();
 }
 
-class _Home_PageState extends State<Home_Page> {
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
@@ -351,3 +350,4 @@ class _HomeContent extends StatelessWidget {
     );
   }
 }
+

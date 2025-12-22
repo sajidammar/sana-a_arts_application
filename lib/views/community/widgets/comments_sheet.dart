@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class CommentsSheet extends StatefulWidget {
   final String postId;
@@ -105,7 +105,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
                             radius: 18,
                             backgroundColor: Theme.of(
                               context,
-                            ).primaryColor.withOpacity(0.2),
+                            ).primaryColor.withValues(alpha: 0.2),
                             backgroundImage:
                                 comment.author.profileImage.isNotEmpty
                                 ? AssetImage(comment.author.profileImage)
@@ -173,7 +173,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
             decoration: BoxDecoration(
               color: AppColors.getCardColor(isDark),
               border: Border(
-                top: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                top: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
               ),
             ),
             child: Row(
@@ -211,3 +211,4 @@ class _CommentsSheetState extends State<CommentsSheet> {
     );
   }
 }
+

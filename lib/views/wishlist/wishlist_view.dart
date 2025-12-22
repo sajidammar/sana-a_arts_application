@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/wishlist_provider.dart';
-import '../../themes/academy/colors.dart';
+import '../../themes/app_colors.dart';
 
 class WishlistPage extends StatelessWidget {
   const WishlistPage({super.key});

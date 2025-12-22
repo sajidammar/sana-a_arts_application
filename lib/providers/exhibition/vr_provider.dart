@@ -19,8 +19,8 @@ class VRProvider with ChangeNotifier {
   double _rotationY = 0.0;
   List<ArtworkComment> _comments = [];
   String _newComment = '';
-  List<Map<String, dynamic>> _cartItems = [];
-  Map<String, dynamic> _currentArtist = {
+  final List<Map<String, dynamic>> _cartItems = [];
+  final Map<String, dynamic> _currentArtist = {
     'name': 'أحمد الصنعاني',
     'specialty': 'فنان تشكيلي معاصر',
     'bio':

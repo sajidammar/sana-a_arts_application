@@ -4,7 +4,7 @@ import '../../../controllers/store/product_controller.dart';
 import '../../../models/store/product_model.dart';
 import '../../../providers/store/cart_provider.dart';
 import '../../../providers/theme_provider.dart';
-import '../../../themes/academy/colors.dart';
+import '../../../themes/app_colors.dart';
 
 import '../../../providers/wishlist_provider.dart';
 
@@ -13,8 +13,7 @@ class ProductDetailsPage extends StatefulWidget {
 
   const ProductDetailsPage({super.key, required this.product});
 
-  @override
-  _ProductDetailsPageState createState() => _ProductDetailsPageState();
+  @override State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
@@ -812,3 +811,4 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 }
+

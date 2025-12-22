@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/views/academies/components/instructor_card.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 import '../../providers/theme_provider.dart';

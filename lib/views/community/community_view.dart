@@ -5,7 +5,7 @@ import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/views/community/widgets/artist_card.dart';
 import 'package:sanaa_artl/views/community/widgets/post_card.dart';
 import 'package:sanaa_artl/views/community/add_post_page.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});

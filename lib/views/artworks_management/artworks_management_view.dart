@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/database/dao/artwork_dao.dart';
 import 'package:sanaa_artl/utils/database/dao/artist_dao.dart';
 import 'package:sanaa_artl/views/auth/login_page.dart';

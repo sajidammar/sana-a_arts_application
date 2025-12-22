@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 
 class HeroSection extends StatefulWidget {
@@ -160,7 +160,7 @@ class _HeroSectionState extends State<HeroSection> {
                         fontSize: _getResponsiveFontSize(context, 24, 18),
                         fontWeight: FontWeight.w500,
                         color: isDark
-                            ? Colors.white.withOpacity(0.95)
+                            ? Colors.white.withValues(alpha: 0.95)
                             : Colors.white,
                         fontFamily: 'Tajawal',
                         shadows: const [
@@ -288,3 +288,4 @@ class _ExhibitionPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

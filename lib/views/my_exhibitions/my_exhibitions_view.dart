@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../themes/academy/colors.dart';
+import '../../themes/app_colors.dart';
 import 'widgets/quick_action_card.dart';
 import 'widgets/stats_overview.dart';
 import 'widgets/my_exhibition_card.dart';

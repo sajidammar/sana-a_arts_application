@@ -1,6 +1,6 @@
 // views/components/categories_section.dart
 import 'package:flutter/material.dart';
-import 'package:sanaa_artl/themes/academy/colors.dart';
+import 'package:sanaa_artl/themes/app_colors.dart';
 import 'package:sanaa_artl/views/academies/category_details_view.dart';
 import 'package:sanaa_artl/views/academies/components/section_title.dart';
 

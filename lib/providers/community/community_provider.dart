@@ -19,7 +19,7 @@ class CommunityProvider with ChangeNotifier {
   List<User> _artists = [];
   bool _isLoading = false;
   String _searchQuery = '';
-  String _currentUserId = 'current_user';
+  final String _currentUserId = 'current_user';
   Set<String> _likedPostIds = {};
 
   List<Post> get posts {
