@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class ManagementArtworkCard extends StatefulWidget {
@@ -42,9 +43,9 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
 
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
-    final textSecondary = isDark ? Colors.grey[400] : const Color(0xFF5D4E37);
+    final surfaceColor = AppColors.getCardColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
+    final textSecondary = AppColors.getSubtextColor(isDark);
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -61,8 +62,8 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
           boxShadow: [
             BoxShadow(
               color: _isHovered
-                  ? const Color(0xFF8B4513).withOpacity(0.2)
-                  : const Color(0xFF8B4513).withOpacity(0.1),
+                  ? AppColors.secondaryColor.withOpacity(0.2)
+                  : AppColors.secondaryColor.withOpacity(0.1),
               blurRadius: _isHovered ? 35 : 15,
               offset: _isHovered ? const Offset(0, 15) : const Offset(0, 5),
             ),
@@ -81,7 +82,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
                     widget.image,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: const Color(0xFFF5E6D3),
+                      color: AppColors.backgroundSecondary,
                       child: const Center(
                         child: Icon(
                           Icons.image_not_supported,
@@ -221,7 +222,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
         shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(icon, color: const Color(0xFFB8860B), size: 20),
+        icon: Icon(icon, color: AppColors.primaryColor, size: 20),
         onPressed: onTap,
       ),
     );
@@ -230,7 +231,7 @@ class _ManagementArtworkCardState extends State<ManagementArtworkCard> {
   Widget _buildStat(IconData icon, String value, Color? color) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: const Color(0xFFB8860B)),
+        Icon(icon, size: 16, color: AppColors.primaryColor),
         const SizedBox(width: 4),
         Text(
           value,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 import '../../../providers/theme_provider.dart';
 
 class AddArtworkDialog extends StatefulWidget {
@@ -23,9 +24,9 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
     final isDark = themeProvider.isDarkMode;
 
     // Colors
-    final backgroundColor = isDark ? const Color(0xFF2C2C2C) : Colors.white;
-    final primaryColor = const Color(0xFFB8860B);
-    final textColor = isDark ? Colors.white : const Color(0xFF2C1810);
+    final backgroundColor = AppColors.getCardColor(isDark);
+    final primaryColor = AppColors.primaryColor;
+    final textColor = AppColors.getTextColor(isDark);
 
     return Dialog(
       backgroundColor: backgroundColor,
@@ -41,17 +42,9 @@ class _AddArtworkDialogState extends State<AddArtworkDialog> {
               // Header
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF8B4513),
-                      Color(0xFFD2691E),
-                      Color(0xFFDEB887),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  gradient: AppColors.sunsetGradient,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                   ),
