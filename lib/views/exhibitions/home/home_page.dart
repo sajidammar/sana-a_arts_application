@@ -4,6 +4,8 @@ import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 
 import 'widgets/hero_section.dart';
 import 'widgets/current_exhibitions_section.dart';
+import 'widgets/popular_exhibitions_section.dart';
+import 'widgets/most_visited_section.dart';
 import 'widgets/exhibition_fab_menu.dart';
 import 'package:sanaa_artl/providers/user_provider.dart';
 
@@ -62,7 +64,19 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
             ),
           ),
 
-          // Exhibition Types Section Removed as per request (moved to FAB)
+          // المعارض المشهورة
+          SliverToBoxAdapter(
+            child: PopularExhibitionsSection(
+              animationController: _animationController,
+            ),
+          ),
+
+          // المعارض الأكثر زيارة
+          SliverToBoxAdapter(
+            child: MostVisitedSection(
+              animationController: _animationController,
+            ),
+          ),
 
           // المعارض الحالية
           SliverToBoxAdapter(

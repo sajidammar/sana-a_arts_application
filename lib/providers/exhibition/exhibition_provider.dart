@@ -148,7 +148,26 @@ class ExhibitionProvider with ChangeNotifier {
     try {
       final data = await _dao.getAllExhibitions();
       if (data.isNotEmpty) {
-        _exhibitions = data.map((e) => Exhibition.fromJson(e)).toList();
+        // Check if exhibitions have images and featured items
+        final hasImages = data.any(
+          (e) =>
+              e['image_url'] != null && (e['image_url'] as String).isNotEmpty,
+        );
+
+        final hasFeatured = data.any(
+          (e) => e['is_featured'] == 1 || e['is_featured'] == true,
+        );
+
+        if (!hasImages || !hasFeatured) {
+          // Old data without images or featured - regenerate
+          await _dao.deleteAllExhibitions();
+          _exhibitions = _generateDynamicExhibitions();
+          for (var ex in _exhibitions) {
+            await _dao.insertExhibition(ex.toJson());
+          }
+        } else {
+          _exhibitions = data.map((e) => Exhibition.fromJson(e)).toList();
+        }
       } else {
         // If empty, generate demo data and save to DB
         _exhibitions = _generateDynamicExhibitions();
@@ -231,6 +250,8 @@ class ExhibitionProvider with ChangeNotifier {
       'assets/images/image3.jpg',
       'assets/images/image4.jpg',
       'assets/images/image5.jpg',
+      'assets/images/image6.jpg',
+      'assets/images/image7.jpg',
     ];
 
     List<Exhibition> generated = [];
@@ -344,6 +365,12 @@ class ExhibitionProvider with ChangeNotifier {
     return _exhibitions.where((ex) => ex.isFeatured).toList();
   }
 
+  List<Exhibition> get mostVisitedExhibitions {
+    final sorted = List<Exhibition>.from(_exhibitions);
+    sorted.sort((a, b) => b.visitorsCount.compareTo(a.visitorsCount));
+    return sorted.take(5).toList();
+  }
+
   List<Exhibition> get activeExhibitions {
     return _exhibitions.where((ex) => ex.isActive).toList();
   }
@@ -429,6 +456,28 @@ class ExhibitionProvider with ChangeNotifier {
     }
   }
 
+  Future<void> toggleLike(String id) async {
+    final index = _exhibitions.indexWhere((ex) => ex.id == id);
+    if (index != -1) {
+      final exhibition = _exhibitions[index];
+      final newStatus = !exhibition.isLiked;
+
+      // Optimistic update
+      _exhibitions[index] = exhibition.copyWith(isLiked: newStatus);
+      notifyListeners();
+
+      try {
+        await _dao.updateLikeStatus(id, newStatus);
+      } catch (e) {
+        // Revert on failure
+        _exhibitions[index] = exhibition.copyWith(isLiked: !newStatus);
+        notifyListeners();
+        _error = 'Failed to update like status: $e';
+        debugPrint(_error);
+      }
+    }
+  }
+
   void rateArtwork(String id, double rating) {
     final artwork = getArtworkById(id);
     if (artwork != null) {
@@ -468,6 +517,7 @@ extension ExhibitionCopyWith on Exhibition {
     List<String>? tags,
     double? rating,
     int? ratingCount,
+    bool? isLiked,
   }) {
     return Exhibition(
       id: id ?? this.id,
@@ -488,6 +538,7 @@ extension ExhibitionCopyWith on Exhibition {
       rating: rating ?? this.rating,
       ratingCount: ratingCount ?? this.ratingCount,
       isActive: true,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
 }

@@ -3,6 +3,11 @@ import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/themes/exhibition/app_themes.dart';
 import 'package:sanaa_artl/utils/exhibition/animations.dart';
 import 'package:sanaa_artl/utils/exhibition/constants.dart';
+import 'package:provider/provider.dart';
+import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
+import 'package:sanaa_artl/views/exhibitions/exhibitiontype/vr_exhibition_page.dart';
+import 'package:sanaa_artl/views/exhibitions/exhibitiontype/open_exhibition_page.dart';
+import 'package:sanaa_artl/views/shared/share_dialog.dart';
 
 class ExhibitionCard extends StatelessWidget {
   final Exhibition exhibition;
@@ -116,8 +121,33 @@ class ExhibitionCard extends StatelessWidget {
         // الشارات
         Positioned(top: 12, right: 12, child: _buildBadge(context)),
 
+        Positioned(top: 12, left: 12, child: _buildLikeButton(context)),
+
         Positioned(bottom: 12, left: 12, child: _buildStatusBadge(context)),
       ],
+    );
+  }
+
+  Widget _buildLikeButton(BuildContext context) {
+    return Consumer<ExhibitionProvider>(
+      builder: (context, provider, _) {
+        final isLiked = exhibition.isLiked;
+        return InkWell(
+          onTap: () => provider.toggleLike(exhibition.id),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isLiked ? Icons.favorite : Icons.favorite_border,
+              color: isLiked ? Colors.red : Colors.white,
+              size: 20,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -325,28 +355,44 @@ class ExhibitionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(context) {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: _buildActionButton(
             exhibition.type == ExhibitionType.virtual ? 'دخول' : 'عرض',
             exhibition.type == ExhibitionType.virtual
-                ? Icons.card_membership_sharp
+                ? Icons.login
                 : Icons.visibility,
             true,
             context,
+            onPressed: () {
+              if (exhibition.type == ExhibitionType.virtual) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const VRExhibitionPage()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => OpenExhibitionPage(exhibition: exhibition),
+                  ),
+                );
+              }
+            },
           ),
         ),
         const SizedBox(width: 6),
         Expanded(
           child: _buildActionButton(
-            exhibition.type == ExhibitionType.virtual ? 'مشاركة' : 'إعجاب',
-            exhibition.type == ExhibitionType.virtual
-                ? Icons.share
-                : Icons.thumb_up,
+            'مشاركة',
+            Icons.share,
             false,
-            context!,
+            context,
+            onPressed: () {
+              showDialog(context: context, builder: (_) => const ShareDialog());
+            },
           ),
         ),
       ],
@@ -357,13 +403,14 @@ class ExhibitionCard extends StatelessWidget {
     String text,
     IconData icon,
     bool isPrimary,
-    context,
-  ) {
+    BuildContext context, {
+    required VoidCallback onPressed,
+  }) {
     return ElevatedButton(
-      onPressed: onTap,
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: isPrimary
-            ? Theme.of(context!).primaryColor
+            ? Theme.of(context).primaryColor
             : Colors.transparent,
         foregroundColor: isPrimary
             ? Colors.white

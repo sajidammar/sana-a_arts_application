@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class Exhibition {
@@ -19,6 +20,7 @@ class Exhibition {
   final List<String> tags;
   final double rating;
   final int ratingCount;
+  final bool isLiked;
 
   Exhibition({
     required this.id,
@@ -39,6 +41,7 @@ class Exhibition {
     this.tags = const [],
     this.rating = 0.0,
     this.ratingCount = 0,
+    this.isLiked = false,
   });
 
   bool get isUpcoming => status == 'قريباً';
@@ -92,7 +95,7 @@ class Exhibition {
       'id': id,
       'title': title,
       'curator': curator,
-      'type': type.toString(),
+      'type': type.toString().split('.').last,
       'status': status,
       'description': description,
       'date': date,
@@ -100,12 +103,14 @@ class Exhibition {
       'artworksCount': artworksCount,
       'visitorsCount': visitorsCount,
       'imageUrl': imageUrl,
-      'isFeatured': isFeatured,
+      'isFeatured': isFeatured ? 1 : 0,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
-      'tags': tags,
+      'tags': jsonEncode(tags),
       'rating': rating,
       'ratingCount': ratingCount,
+      'isActive': isActive ? 1 : 0,
+      'isLiked': isLiked ? 1 : 0,
     };
   }
 }
