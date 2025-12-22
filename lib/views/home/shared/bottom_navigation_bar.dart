@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 
-
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTabSelected;
@@ -38,15 +37,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(
-                  icon: Icons.photo_library,
-                  label: 'المعارض',
+                  icon: Icons.school,
+                  label: 'الأكاديمية',
                   index: 1,
                   isSelected: currentIndex == 1,
                   isDarkMode: themeProvider.isDarkMode,
                 ),
                 _buildNavItem(
-                  icon: Icons.school,
-                  label: 'الأكاديمية',
+                  icon: Icons.photo_library,
+                  label: 'المعارض',
                   index: 2,
                   isSelected: currentIndex == 2,
                   isDarkMode: themeProvider.isDarkMode,
@@ -62,10 +61,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
-                colors: [
-                  Color(0xFFB8860B),
-                  Color(0xFF8B4513),
-                ],
+                colors: [Color(0xFFB8860B), Color(0xFF8B4513)],
               ),
               shape: BoxShape.circle,
               boxShadow: [
@@ -77,7 +73,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.home, size: 32, color: Colors.white),
+              icon: const Icon(Icons.people, size: 32, color: Colors.white),
               onPressed: () => onTabSelected(0),
             ),
           ),
@@ -93,8 +89,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
                   isDarkMode: themeProvider.isDarkMode,
                 ),
                 _buildNavItem(
-                  icon: Icons.people,
-                  label: 'المجتمع',
+                  icon: Icons.home,
+                  label: 'الرئيسية',
                   index: 4,
                   isSelected: currentIndex == 4,
                   isDarkMode: themeProvider.isDarkMode,
@@ -123,7 +119,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon,
             size: 24,
             color: isSelected
-                ? (isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B))
+                ? (isDarkMode
+                      ? const Color(0xFFD4AF37)
+                      : const Color(0xFFB8860B))
                 : Colors.grey,
           ),
           const SizedBox(height: 4),
@@ -132,7 +130,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               color: isSelected
-                  ? (isDarkMode ? const Color(0xFFD4AF37) : const Color(0xFFB8860B))
+                  ? (isDarkMode
+                        ? const Color(0xFFD4AF37)
+                        : const Color(0xFFB8860B))
                   : Colors.grey,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),

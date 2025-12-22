@@ -5,6 +5,7 @@ import '../../../models/store/product_model.dart';
 import '../../../providers/store/cart_provider.dart';
 import '../../../themes/store/app_theme.dart';
 import '../../../utils/store/app_constants.dart';
+import '../../../providers/wishlist_provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
@@ -17,7 +18,6 @@ class ProductDetailsPage extends StatefulWidget {
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   final int _selectedImageIndex = 0;
-  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -83,40 +83,37 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   Widget _buildProductImages(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: AppTheme.getGradientDecoration(context),
-            child: Center(
-              child: Icon(Icons.image, color: Colors.white, size: 80),
-            ),
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: AppTheme.getGradientDecoration(context),
+          child: const Center(
+            child: Icon(Icons.image, color: Colors.white, size: 80),
           ),
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                return Container(
-                  width: 8,
-                  height: 8,
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    color: _selectedImageIndex == index
-                        ? Theme.of(context).primaryColor
-                        : Colors.white.withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                );
-              }),
-            ),
+        ),
+        Positioned(
+          bottom: 16,
+          left: 0,
+          right: 0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (index) {
+              return Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: _selectedImageIndex == index
+                      ? Theme.of(context).primaryColor
+                      : Colors.white.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+              );
+            }),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -170,6 +167,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           fontSize: 14,
                           color: AppTheme.getSecondaryTextColor(context),
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -314,11 +313,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              color: AppTheme.getTextColor(context),
-              fontWeight: FontWeight.w500,
+          Flexible(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: AppTheme.getTextColor(context),
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -513,20 +515,41 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   AppConstants.defaultBorderRadius,
                 ),
               ),
-              child: IconButton(
-                icon: Icon(
-                  _isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: _isFavorite
-                      ? Colors.red
-                      : AppTheme.getTextColor(context),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isFavorite = !_isFavorite;
-                  });
+              child: Consumer<WishlistProvider>(
+                builder: (context, wishlistProvider, child) {
+                  final isFavorite = wishlistProvider.isInWishlist(
+                    widget.product.id.toString(),
+                  );
+                  return IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite
+                          ? Colors.red
+                          : AppTheme.getTextColor(context),
+                    ),
+                    onPressed: () {
+                      if (isFavorite) {
+                        wishlistProvider.removeFromWishlist(
+                          widget.product.id.toString(),
+                        );
+                      } else {
+                        wishlistProvider.addToWishlist({
+                          'id': widget.product.id.toString(),
+                          'title': widget.product.title,
+                          'subtitle': widget.product.artist,
+                          'price': widget.product.price,
+                          'image': widget.product.image,
+                          'type': 'product', // To distinguish types if needed
+                        });
+                      }
+                    },
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
+                    ),
+                    padding: EdgeInsets.zero,
+                  );
                 },
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                padding: EdgeInsets.zero,
               ),
             ),
             SizedBox(width: 12),
@@ -573,7 +596,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   children: [
                     Icon(Icons.shopping_cart),
                     SizedBox(width: 8),
-                    Text('إضافة إلى السلة', style: TextStyle(fontSize: 16)),
+                    Flexible(
+                      child: Text(
+                        'إضافة إلى السلة',
+                        style: TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ),

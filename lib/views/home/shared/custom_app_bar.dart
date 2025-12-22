@@ -4,8 +4,6 @@ import '../../../providers/store/cart_provider.dart';
 import '../../../providers/store/product_provider.dart';
 import '../../../providers/theme_provider.dart';
 
-
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onMenuPressed;
   final VoidCallback onSearchPressed;
@@ -36,11 +34,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 2,
       leading: IconButton(
         icon: Icon(
-            Icons.menu,
-            color: themeProvider.isDarkMode
-                ? const Color(0xFFD4AF37)
-                : const Color(0xFFB8860B),
-            size: 28
+          Icons.menu,
+          color: themeProvider.isDarkMode
+              ? const Color(0xFFD4AF37)
+              : const Color(0xFFB8860B),
+          size: 28,
         ),
         onPressed: onMenuPressed,
       ),
@@ -89,24 +87,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: Icon(
-              Icons.notifications_none,
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
-              size: 28
+            Icons.notifications_none,
+            color: themeProvider.isDarkMode
+                ? const Color(0xFFD4AF37)
+                : const Color(0xFFB8860B),
+            size: 28,
           ),
           onPressed: onNotificationsPressed,
         ),
-        IconButton(
-          icon: Icon(
-              Icons.favorite_border,
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
-              size: 28
-          ),
-          onPressed: onWishlistPressed,
-        ),
+
         IconButton(
           icon: Stack(
             children: [
@@ -121,16 +110,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    constraints: BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
+                    constraints: BoxConstraints(minWidth: 16, minHeight: 16),
                     child: Text(
                       '${cartProvider.cartItems.length}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
                   ),

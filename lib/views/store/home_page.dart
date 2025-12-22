@@ -7,6 +7,7 @@ import '../../providers/store/product_provider.dart';
 import '../../themes/store/app_theme.dart';
 import '../../utils/store/app_constants.dart';
 import 'cart/cart_page.dart';
+import '../../providers/wishlist_provider.dart';
 
 class StorePage extends StatefulWidget {
   const StorePage({super.key});
@@ -20,7 +21,15 @@ class _StorePageState extends State<StorePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProductProvider>(context, listen: false).loadProducts();
+      final productProvider = Provider.of<ProductProvider>(
+        context,
+        listen: false,
+      );
+      productProvider.loadProducts();
+      Provider.of<WishlistProvider>(
+        context,
+        listen: false,
+      ).loadWishlist(productProvider.products);
     });
   }
 
@@ -266,7 +275,6 @@ class _StorePageState extends State<StorePage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-
               crossAxisCount: 1,
               crossAxisSpacing: 16,
               mainAxisSpacing: 20,
@@ -302,7 +310,6 @@ class _StorePageState extends State<StorePage> {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor, // Using card theme color
           borderRadius: BorderRadius.circular(20),
-
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
@@ -359,6 +366,60 @@ class _StorePageState extends State<StorePage> {
                           ),
                         ),
                       ),
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Consumer<WishlistProvider>(
+                        builder: (context, wishlistProvider, child) {
+                          final isFavorite = wishlistProvider.isInWishlist(
+                            product.id.toString(),
+                          );
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isFavorite ? Colors.red : Colors.grey,
+                                size: 20,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 32,
+                                minHeight: 32,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                if (isFavorite) {
+                                  wishlistProvider.removeFromWishlist(
+                                    product.id.toString(),
+                                  );
+                                } else {
+                                  wishlistProvider.addToWishlist({
+                                    'id': product.id.toString(),
+                                    'title': product.title,
+                                    'subtitle': product.artist,
+                                    'price': product.price,
+                                    'image': product.image,
+                                    'type': 'product',
+                                  });
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),

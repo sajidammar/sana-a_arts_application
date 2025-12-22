@@ -12,6 +12,8 @@ import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
 import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/wishlist_provider.dart';
+import '../../providers/user_provider.dart';
 import '../about/about_view.dart';
 
 import '../community/community_view.dart';
@@ -41,6 +43,28 @@ class _Home_PageState extends State<Home_Page> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final productProvider = Provider.of<ProductProvider>(
+        context,
+        listen: false,
+      );
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final wishlistProvider = Provider.of<WishlistProvider>(
+        context,
+        listen: false,
+      );
+
+      productProvider.loadProducts();
+      if (userProvider.currentUser != null) {
+        wishlistProvider.setUserId(userProvider.currentUser!.id);
+      }
+      wishlistProvider.loadWishlist(productProvider.products);
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -49,14 +73,14 @@ class _Home_PageState extends State<Home_Page> {
   void _handleSearch(String query) {
     setState(() {}); // Update UI for clear button
 
-    if (_currentIndex == 1) {
-      context.read<ExhibitionProvider>().setSearchQuery(query);
-    } else if (_currentIndex == 2) {
+    if (_currentIndex == 0) {
+      context.read<CommunityProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 1) {
       context.read<WorkshopProvider>().setSearchQuery(query);
+    } else if (_currentIndex == 2) {
+      context.read<ExhibitionProvider>().setSearchQuery(query);
     } else if (_currentIndex == 3) {
       context.read<ProductProvider>().setSearchQuery(query);
-    } else if (_currentIndex == 4) {
-      context.read<CommunityProvider>().setSearchQuery(query);
     }
   }
 
@@ -72,11 +96,11 @@ class _Home_PageState extends State<Home_Page> {
   }
 
   final List<Widget> _pages = [
-    const SizedBox.shrink(), // Home Content handled separately
-    const ExhibitionHomePage(),
-    const AcademyHomeView(),
-    const StorePage(),
     const CommunityPage(),
+    const AcademyHomeView(),
+    const ExhibitionHomePage(),
+    const StorePage(),
+    const _HomeContent(),
   ];
 
   void _openDrawer() {
@@ -193,16 +217,6 @@ class _Home_PageState extends State<Home_Page> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(
-              Icons.favorite_border,
-              color: themeProvider.isDarkMode
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
-              size: 28,
-            ),
-            onPressed: _navigateToWishlist,
-          ),
         ],
       ),
       drawer: SideDrawer(
@@ -294,7 +308,7 @@ class _Home_PageState extends State<Home_Page> {
           );
         },
       ),
-      body: _currentIndex == 0 ? const _HomeContent() : _pages[_currentIndex],
+      body: _pages[_currentIndex],
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
         onTabSelected: (index) {
