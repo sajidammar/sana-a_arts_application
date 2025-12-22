@@ -1,5 +1,6 @@
 // views/components/hero_section.dart
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/themes/academy/colors.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -76,9 +77,7 @@ class _HeroSectionState extends State<HeroSection> {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFF8B4513), Color(0xFFD2691E)],
-                      ),
+                      gradient: AppColors.sunsetGradient,
                     ),
                   );
                 },

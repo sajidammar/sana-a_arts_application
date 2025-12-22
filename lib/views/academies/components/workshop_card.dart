@@ -28,7 +28,7 @@ class WorkshopCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+            color: AppColors.getCardColor(isDark),
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -112,9 +112,7 @@ class WorkshopCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? Colors.white
-                              : const Color(0xFF2C1810),
+                          color: AppColors.getTextColor(isDark),
                           height: 1.3,
                           fontFamily: 'Tajawal',
                         ),
@@ -127,9 +125,7 @@ class WorkshopCard extends StatelessWidget {
                         workshop.description,
                         style: TextStyle(
                           fontSize: 12,
-                          color: isDark
-                              ? Colors.grey[400]
-                              : const Color(0xFF5D4E37),
+                          color: AppColors.getSubtextColor(isDark),
                           height: 1.4,
                           fontFamily: 'Tajawal',
                         ),
@@ -149,9 +145,7 @@ class WorkshopCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: isDark
-                                      ? const Color(0xFFD4AF37)
-                                      : const Color(0xFFB8860B),
+                                  color: AppColors.getPrimaryColor(isDark),
                                   fontFamily: 'Tajawal',
                                 ),
                               ),
@@ -159,7 +153,7 @@ class WorkshopCard extends StatelessWidget {
                                 children: [
                                   const Icon(
                                     Icons.star,
-                                    color: Color(0xFFFFD700),
+                                    color: AppColors.starGold,
                                     size: 16,
                                   ),
                                   const SizedBox(width: 4),
@@ -167,9 +161,7 @@ class WorkshopCard extends StatelessWidget {
                                     workshop.rating.toString(),
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: isDark
-                                          ? Colors.grey[300]
-                                          : const Color(0xFF5D4E37),
+                                      color: AppColors.getSubtextColor(isDark),
                                       fontFamily: 'Tajawal',
                                     ),
                                   ),
@@ -184,17 +176,7 @@ class WorkshopCard extends StatelessWidget {
                             width: double.infinity,
                             height: 36,
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: isDark
-                                    ? [
-                                        const Color(0xFFD4AF37),
-                                        const Color(0xFFB8860B),
-                                      ]
-                                    : [
-                                        const Color(0xFFFFD700),
-                                        const Color(0xFFB8860B),
-                                      ],
-                              ),
+                              gradient: AppColors.goldGradient,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Center(
@@ -223,7 +205,7 @@ class WorkshopCard extends StatelessWidget {
       // ✅ تصميم للعرض العمودي (إذا كنت تحتاجه في أماكن أخرى)
       return Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+          color: AppColors.getCardColor(isDark),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -273,7 +255,7 @@ class WorkshopCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF2C1810),
+                      color: AppColors.getTextColor(isDark),
                       fontFamily: 'Tajawal',
                     ),
                     maxLines: 2,
@@ -288,9 +270,7 @@ class WorkshopCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? const Color(0xFFD4AF37)
-                              : const Color(0xFFB8860B),
+                          color: AppColors.getPrimaryColor(isDark),
                           fontFamily: 'Tajawal',
                         ),
                       ),
@@ -298,7 +278,7 @@ class WorkshopCard extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.star,
-                            color: Color(0xFFFFD700),
+                            color: AppColors.starGold,
                             size: 14,
                           ),
                           const SizedBox(width: 4),
@@ -306,9 +286,7 @@ class WorkshopCard extends StatelessWidget {
                             workshop.rating.toString(),
                             style: TextStyle(
                               fontSize: 12,
-                              color: isDark
-                                  ? Colors.grey[300]
-                                  : const Color(0xFF5D4E37),
+                              color: AppColors.getSubtextColor(isDark),
                               fontFamily: 'Tajawal',
                             ),
                           ),
@@ -332,11 +310,11 @@ class WorkshopCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: isDark ? const Color(0xFF2C2C2C) : Colors.white,
+        backgroundColor: AppColors.getCardColor(isDark),
         title: Text(
           workshop.title,
           style: TextStyle(
-            color: isDark ? Colors.white : Colors.black,
+            color: AppColors.getTextColor(isDark),
             fontFamily: 'Tajawal',
           ),
         ),
@@ -347,7 +325,7 @@ class WorkshopCard extends StatelessWidget {
             Text(
               workshop.description,
               style: TextStyle(
-                color: isDark ? Colors.grey[300] : Colors.black87,
+                color: AppColors.getSubtextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -355,23 +333,21 @@ class WorkshopCard extends StatelessWidget {
             Text(
               'المستوى: ${workshop.level}',
               style: TextStyle(
-                color: isDark ? Colors.white : Colors.black,
+                color: AppColors.getTextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
             Text(
               'السعر: ${workshop.price} ر.س',
               style: TextStyle(
-                color: isDark
-                    ? const Color(0xFFD4AF37)
-                    : const Color(0xFFB8860B),
+                color: AppColors.getPrimaryColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
             Text(
               'التقييم: ${workshop.rating}',
               style: TextStyle(
-                color: isDark ? Colors.white : Colors.black,
+                color: AppColors.getTextColor(isDark),
                 fontFamily: 'Tajawal',
               ),
             ),
@@ -384,10 +360,8 @@ class WorkshopCard extends StatelessWidget {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDark
-                  ? const Color(0xFFD4AF37)
-                  : const Color(0xFFB8860B),
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.getPrimaryColor(isDark),
+              foregroundColor: AppColors.white,
             ),
             onPressed: () {
               Navigator.pop(context);
