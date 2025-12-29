@@ -11,9 +11,9 @@ import 'package:sanaa_artl/views/home/shared/side_drawer.dart';
 import 'package:sanaa_artl/views/home/widgets/ads_banner.dart';
 import 'package:sanaa_artl/views/home/widgets/featured_exhibitions.dart';
 import 'package:sanaa_artl/themes/app_colors.dart';
+import 'package:sanaa_artl/views/profile/user_editing.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/wishlist_provider.dart';
-import '../../providers/user_provider.dart';
 import '../about/about_view.dart';
 import '../community/community_view.dart';
 import '../profile/profile_view.dart';
@@ -46,16 +46,16 @@ class _HomePageState extends State<HomePage> {
         context,
         listen: false,
       );
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      Provider.of<UserProvider1>(context, listen: false);
       final wishlistProvider = Provider.of<WishlistProvider>(
         context,
         listen: false,
       );
 
-      productProvider.loadProducts();
-      if (userProvider.currentUser != null) {
-        wishlistProvider.setUserId(userProvider.currentUser!.id);
-      }
+      // productProvider.loadProducts();
+      // if (userProvider.currentUser != null) {
+      //   wishlistProvider.setUserId(userProvider.currentUser!.id);
+      // }
       wishlistProvider.loadWishlist(productProvider.products);
     });
   }
@@ -104,6 +104,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToWishlist() {
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const WishlistPage()),
@@ -111,6 +112,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToProfile() {
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ProfilePage()),
@@ -125,6 +127,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToContact() {
+    Navigator.pop(context);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AboutPage()),

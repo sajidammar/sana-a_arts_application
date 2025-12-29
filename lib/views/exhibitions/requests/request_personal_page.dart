@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/models/exhibition/exhibition.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'package:sanaa_artl/providers/user_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/themes/app_colors.dart';
+import 'package:sanaa_artl/views/profile/user_editing.dart';
 
 class RequestPersonalPage extends StatefulWidget {
   const RequestPersonalPage({super.key});
@@ -21,7 +21,7 @@ class _RequestPersonalPageState extends State<RequestPersonalPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      final user = context.read<UserProvider>().currentUser;
+      final user = context.read<UserProvider1>().currentUser;
       final provider = context.read<ExhibitionProvider>();
 
       final newExhibition = Exhibition(

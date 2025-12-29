@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/views/profile/profile_bio.dart';
 import '../../providers/theme_provider.dart';
 import '../../themes/app_colors.dart';
 
@@ -13,18 +14,18 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController(text: 'أحمد محمد');
-  final _emailController = TextEditingController(text: 'ahmed@example.com');
   final _phoneController = TextEditingController(text: '+967 777 123 456');
+  final _usernameController = TextEditingController(text: 'ahmed_mahmoud');
   final _cityController = TextEditingController(text: 'صنعاء');
-  final _bioController = TextEditingController(text: 'فنان تشكيلي');
+  // final _bioController = TextEditingController(text: 'فنان تشكيلي');
 
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
+    _usernameController.dispose();
     _phoneController.dispose();
     _cityController.dispose();
-    _bioController.dispose();
+    // _bioController.dispose();
     super.dispose();
   }
 
@@ -118,15 +119,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // البريد الإلكتروني
                     _buildTextField(
-                      controller: _emailController,
-                      label: 'البريد الإلكتروني',
-                      icon: Icons.email_outlined,
+                      controller: _usernameController,
+                      label: 'اسم المستخدم',
+                      icon: Icons.verified_user,
                       isDark: isDark,
                       primaryColor: primaryColor,
-                      keyboardType: TextInputType.emailAddress,
                     ),
+
                     const SizedBox(height: 16),
 
                     // رقم الهاتف
@@ -150,15 +150,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     const SizedBox(height: 16),
 
+                    ProfileBio(bio: ''),
                     // النبذة
-                    _buildTextField(
-                      controller: _bioController,
-                      label: 'النبذة الشخصية',
-                      icon: Icons.description_outlined,
-                      isDark: isDark,
-                      primaryColor: primaryColor,
-                      maxLines: 4,
-                    ),
+                    // _buildTextField(
+                    //   controller: _bioController,
+                    //   label: 'النبذة الشخصية',
+                    //   icon: Icons.description_outlined,
+                    //   isDark: isDark,
+                    //   primaryColor: primaryColor,
+                    //   maxLines: 4,
+                    // ),
                     const SizedBox(height: 40),
 
                     // زر الحفظ
