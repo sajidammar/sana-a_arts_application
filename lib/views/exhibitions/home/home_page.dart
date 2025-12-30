@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/theme_provider.dart';
 import 'package:sanaa_artl/themes/app_colors.dart';
+import 'package:sanaa_artl/views/profile/user_editing.dart';
 
 import 'widgets/hero_section.dart';
 import 'widgets/current_exhibitions_section.dart';
 import 'widgets/popular_exhibitions_section.dart';
 import 'widgets/most_visited_section.dart';
 import 'widgets/exhibition_fab_menu.dart';
-import 'package:sanaa_artl/providers/user_provider.dart';
 
 class ExhibitionHomePage extends StatefulWidget {
   const ExhibitionHomePage({super.key});
@@ -32,7 +32,7 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
-      final userProvider = context.read<UserProvider>();
+      final userProvider = context.read<UserProvider1>();
       final exhibitionProvider = context.read<ExhibitionProvider>();
 
       exhibitionProvider.loadExhibitions();

@@ -1,5 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/views/profile/profile_header.dart';
+
+import 'package:sanaa_artl/views/profile/user_editing.dart';
 import '../../providers/theme_provider.dart';
 import '../../themes/app_colors.dart';
 import 'edit_profile_page.dart';
@@ -7,150 +11,100 @@ import 'change_password_page.dart';
 import '../settings/notifications_page.dart';
 import '../settings/privacy_page.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final nameController = TextEditingController();
+  File? selectedImage;
+
+  String get firstLetter {
+    final text = nameController.text.trim();
+    if (text.isEmpty) return '?';
+    return text.characters.first.toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
-
     final backgroundColor = AppColors.getBackgroundColor(isDark);
     final primaryColor = AppColors.getPrimaryColor(isDark);
     final textColor = AppColors.getTextColor(isDark);
     final subtextColor = AppColors.getSubtextColor(isDark);
     final cardColor = AppColors.getCardColor(isDark);
 
+    final user = context.watch<UserProvider1>().user;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Text(
-              'الملف الشخصي',
-              style: TextStyle(
-                color: textColor,
-                fontFamily: 'Tajawal',
-                fontWeight: FontWeight.bold,
-              ),
+          SliverToBoxAdapter(
+            child: ProfileHeader(
+              name: user.name,
+              imageUrl: user.imageUrl,
+              bio: user.bio,
+              followers: 256,
+              following: 124,
+              posts: 102,
+              isDark: isDark,
+              primaryColor: primaryColor,
+              textColor: textColor,
             ),
-            backgroundColor: isDark ? AppColors.darkCard : Colors.white,
-            foregroundColor: primaryColor,
-            elevation: 0,
-            pinned: true,
-            floating: true,
-            snap: true,
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: primaryColor.withValues(alpha: 0.2),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                      border: Border.all(color: primaryColor, width: 3),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/images/image1.jpg'),
-                        fit: BoxFit.cover,
+              padding: const EdgeInsets.all(9),
+              child: Container(
+                padding: const EdgeInsets.all(13),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.getCardColor(isDark) : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ]
+                ),
+                child: Row(
+                  children: [
+                    Text('تعديل الملف الشخصي',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                        fontFamily: 'Tajawal',
+                    ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: primaryColor,
+                        size: 24,
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'أحمد محمد',
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      fontFamily: 'Tajawal',
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'فنان تشكيلي',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: subtextColor,
-                      fontFamily: 'Tajawal',
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: isDark
-                              ? Colors.black45
-                              : Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildStatItem(
-                          '24',
-                          'عمل فني',
-                          primaryColor,
-                          subtextColor,
-                        ),
-                        Container(
-                          width: 1,
-                          height: 40,
-                          color: subtextColor.withValues(alpha: 0.2),
-                        ),
-                        _buildStatItem(
-                          '5',
-                          'معارض',
-                          primaryColor,
-                          subtextColor,
-                        ),
-                        Container(
-                          width: 1,
-                          height: 40,
-                          color: subtextColor.withValues(alpha: 0.2),
-                        ),
-                        _buildStatItem(
-                          '156',
-                          'متابع',
-                          primaryColor,
-                          subtextColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSectionTitle('معلومات الحساب', textColor),
-                  _buildInfoCard(isDark, cardColor, textColor, subtextColor),
-                  const SizedBox(height: 24),
-                  _buildSectionTitle('الإعدادات', textColor),
-                  _buildSettingsCard(
-                    isDark,
-                    cardColor,
-                    textColor,
-                    primaryColor,
-                    context,
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                  ],
+                ),
               ),
+            )
+            
             ),
-          ),
         ],
       ),
     );
