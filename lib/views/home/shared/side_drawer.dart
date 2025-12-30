@@ -19,6 +19,7 @@ class SideDrawer extends StatelessWidget {
   final VoidCallback onArtworksManagementPressed;
   final VoidCallback onMyExhibitionsPressed;
   final VoidCallback onMyCertificatesPressed;
+  final VoidCallback onAdminPressed;
 
   const SideDrawer({
     super.key,
@@ -36,6 +37,7 @@ class SideDrawer extends StatelessWidget {
     required this.onArtworksManagementPressed,
     required this.onMyExhibitionsPressed,
     required this.onMyCertificatesPressed,
+    required this.onAdminPressed,
   });
 
   @override
@@ -142,6 +144,13 @@ class SideDrawer extends StatelessWidget {
             icon: Icons.star,
             title: 'تقييم التطبيق',
             onTap: () {},
+            isDark: isDark,
+          ),
+          const Divider(),
+          _buildDrawerItem(
+            icon: Icons.admin_panel_settings,
+            title: 'إدارة النظام',
+            onTap: onAdminPressed,
             isDark: isDark,
           ),
           const Divider(),

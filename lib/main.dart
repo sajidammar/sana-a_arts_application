@@ -25,6 +25,7 @@ import 'providers/store/order_provider.dart';
 import 'providers/store/product_provider.dart';
 import 'providers/store/invoice_provider.dart';
 import 'providers/wishlist_provider.dart';
+import 'management/providers/management_provider.dart';
 
 void main() async {
   // ضمان تهيئة Flutter
@@ -51,12 +52,12 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ExhibitionProvider()),
         ChangeNotifierProvider(create: (context) => VRProvider()),
         ChangeNotifierProvider(create: (context) => NavigationProvider()),
-        ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => WorkshopProvider()),
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CommunityProvider()),
         ChangeNotifierProvider(create: (context) => WishlistProvider()),
+        ChangeNotifierProvider(create: (context) => ManagementProvider()),
       ],
       child: const MyApp(),
     ),

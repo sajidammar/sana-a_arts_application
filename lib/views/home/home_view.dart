@@ -26,6 +26,7 @@ import '../notifications/notifications_view.dart';
 import '../artworks_management/artworks_management_view.dart';
 import '../my_exhibitions/my_exhibitions_view.dart';
 import '../my_certificates/my_certificates_view.dart';
+import '../../management/views/dashboard/management_home_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -315,6 +316,14 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const MyCertificatesView()),
+          );
+        },
+        onAdminPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ManagementHomeView(),
+            ),
           );
         },
       ),

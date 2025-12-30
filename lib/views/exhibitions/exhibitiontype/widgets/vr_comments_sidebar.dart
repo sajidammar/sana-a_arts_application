@@ -300,7 +300,7 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
                     Row(
                       children: [
                         Text(
-                          'الالتعليقات',
+                          'التعليقات',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -668,4 +668,3 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
     }
   }
 }
-
