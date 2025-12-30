@@ -9,15 +9,14 @@ import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
 import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
 import 'package:sanaa_artl/providers/community/community_provider.dart';
-import 'package:sanaa_artl/providers/user_provider.dart';
 import 'package:sanaa_artl/themes/app_theme.dart';
 import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
 import 'package:sanaa_artl/views/home/home_view.dart';
+import 'package:sanaa_artl/views/profile/user_editing.dart';
 import 'package:sanaa_artl/views/store/cart/cart_page.dart';
 import 'package:sanaa_artl/views/store/home_page.dart';
 import 'package:sanaa_artl/views/store/invoice/invoice_page.dart';
 import 'package:sanaa_artl/views/store/order/order_history_page.dart';
-
 // Providers
 import 'providers/theme_provider.dart';
 import 'providers/store/cart_provider.dart';
@@ -33,30 +32,20 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        // مزود المستخدم - يجب أن يكون أولاً لتهيئة قاعدة البيانات
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(
-          create: (context) => CartProvider()..loadCartItems(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => OrderProvider()..loadOrders(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => ProductProvider()..loadProducts(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => InvoiceProvider()..loadInvoice('ORD-2024-001'),
-        ),
-        ChangeNotifierProvider(create: (context) => ExhibitionProvider()),
-        ChangeNotifierProvider(create: (context) => VRProvider()),
-        ChangeNotifierProvider(create: (context) => NavigationProvider()),
-        ChangeNotifierProvider(create: (context) => CartProvider()),
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => WorkshopProvider()),
-        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
-        ChangeNotifierProvider(create: (context) => CommunityProvider()),
-        ChangeNotifierProvider(create: (context) => WishlistProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider1()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => InvoiceProvider()),
+        ChangeNotifierProvider(create: (_) => ExhibitionProvider()),
+        ChangeNotifierProvider(create: (_) => VRProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => WorkshopProvider()),
+        ChangeNotifierProvider(create: (_) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (_) => CommunityProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: const MyApp(),
     ),
@@ -76,13 +65,15 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _initializeApp();
+    Future.microtask(() async {
+      await _initializeApp();
+    });
   }
 
   /// تهيئة التطبيق وقاعدة البيانات
   Future<void> _initializeApp() async {
     // الحصول على الـ providers بدون الاستماع للتغييرات
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final _ = Provider.of<UserProvider1>(context, listen: false);
     final communityProvider = Provider.of<CommunityProvider>(
       context,
       listen: false,
@@ -90,7 +81,7 @@ class _MyAppState extends State<MyApp> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     // تهيئة قاعدة البيانات والمستخدم
-    await userProvider.initialize();
+    // await userProvider.initialize();
 
     // تحميل جلسة المستخدم المحفوظة
     await authProvider.loadSavedSession();
