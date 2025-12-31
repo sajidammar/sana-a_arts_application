@@ -39,9 +39,51 @@ class GlobalManagementController {
   }
 
   // --- Reports & Comments Management ---
+  Future<List<Map<String, dynamic>>> getAllReports() async {
+    final db = await _dbHelper.database;
+    return await db.query('admin_reports', orderBy: 'created_at DESC');
+  }
+
+  Future<void> updateReportStatus(String id, String status) async {
+    final db = await _dbHelper.database;
+    await db.update(
+      'admin_reports',
+      {'status': status},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteTargetContent(String targetId, String targetType) async {
+    final db = await _dbHelper.database;
+    if (targetType == 'post') {
+      await db.delete('posts', where: 'id = ?', whereArgs: [targetId]);
+    } else if (targetType == 'comment') {
+      await db.delete('comments', where: 'id = ?', whereArgs: [targetId]);
+    } else if (targetType == 'reel') {
+      await db.delete('reels', where: 'id = ?', whereArgs: [targetId]);
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getAllComments() async {
     final db = await _dbHelper.database;
     return await db.query('comments');
+  }
+
+  // --- Requests Management ---
+  Future<List<Map<String, dynamic>>> getAllRequests() async {
+    final db = await _dbHelper.database;
+    return await db.query('admin_requests', orderBy: 'created_at DESC');
+  }
+
+  Future<void> updateRequestStatus(String id, String status) async {
+    final db = await _dbHelper.database;
+    await db.update(
+      'admin_requests',
+      {'status': status, 'updated_at': DateTime.now().toIso8601String()},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   // --- Community/Posts Management ---
@@ -61,5 +103,3 @@ class GlobalManagementController {
     debugPrint('Sending Notification: $title - $message');
   }
 }
-
-

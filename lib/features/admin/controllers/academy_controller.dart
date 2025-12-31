@@ -1,5 +1,5 @@
 import '../models/management_models.dart';
-import 'package:sanaa_artl/management/utils/database_helper.dart';
+import 'package:sanaa_artl/features/admin/utils/database_helper.dart';
 
 class AcademyController {
   final ManagementDatabaseHelper _dbHelper = ManagementDatabaseHelper();

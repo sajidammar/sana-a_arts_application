@@ -29,7 +29,7 @@ import 'package:sanaa_artl/features/store/controllers/order_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/product_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/invoice_provider.dart';
 import 'package:sanaa_artl/features/wishlist/controllers/wishlist_provider.dart';
-import 'management/providers/management_provider.dart';
+import 'package:sanaa_artl/features/admin/controllers/admin_provider.dart';
 
 void main() async {
   // ضمان تهيئة Flutter
@@ -61,7 +61,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CommunityProvider()),
         ChangeNotifierProvider(create: (context) => ReelProvider()),
         ChangeNotifierProvider(create: (context) => WishlistProvider()),
-        ChangeNotifierProvider(create: (context) => ManagementProvider()),
+        ChangeNotifierProvider(create: (context) => AdminProvider()),
         ChangeNotifierProvider(create: (context) => ChatProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
       ],

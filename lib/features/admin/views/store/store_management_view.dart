@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/management_provider.dart';
-import 'package:sanaa_artl/management/themes/management_colors.dart';
+import '../../controllers/admin_provider.dart';
+import 'package:sanaa_artl/core/themes/app_colors.dart';
+import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 
 class StoreManagementView extends StatelessWidget {
   final bool isDark;
@@ -9,13 +10,18 @@ class StoreManagementView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ManagementProvider>(context);
-    final products = provider.storeProducts;
+    final adminProvider = Provider.of<AdminProvider>(context);
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final products = adminProvider.storeProducts;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: provider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+      body: adminProvider.isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                color: AppColors.getPrimaryColor(isDark),
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -24,18 +30,20 @@ class StoreManagementView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildSmallStat(
+                          context,
                           'إجمالي المنتجات',
                           '${products.length}',
-                          Icons.inventory,
+                          Icons.inventory_2,
                           Colors.blue,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: _buildSmallStat(
+                          context,
                           'المبيعات اليوم',
                           '5',
-                          Icons.sell,
+                          Icons.insights,
                           Colors.orange,
                         ),
                       ),
@@ -43,13 +51,24 @@ class StoreManagementView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Expanded(
-                    child: Card(
-                      color: ManagementColors.getCard(isDark),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.getCardColor(isDark),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.getPrimaryColor(
+                            isDark,
+                          ).withValues(alpha: 0.1),
+                        ),
+                      ),
                       child: products.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Text(
                                 'لا توجد منتجات',
-                                style: TextStyle(fontFamily: 'Tajawal'),
+                                style: TextStyle(
+                                  fontFamily: 'Tajawal',
+                                  color: AppColors.getSubtextColor(isDark),
+                                ),
                               ),
                             )
                           : ListView.separated(
@@ -62,7 +81,8 @@ class StoreManagementView extends StatelessWidget {
                                   title: Text(
                                     product.productName,
                                     style: TextStyle(
-                                      color: ManagementColors.getText(isDark),
+                                      color: AppColors.getTextColor(isDark),
+                                      fontWeight: FontWeight.bold,
                                       fontFamily: 'Tajawal',
                                     ),
                                   ),
@@ -79,7 +99,9 @@ class StoreManagementView extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       if (product.id != null) {
-                                        provider.deleteProduct(product.id!);
+                                        adminProvider.deleteProduct(
+                                          product.id!,
+                                        );
                                       }
                                     },
                                   ),
@@ -93,30 +115,52 @@ class StoreManagementView extends StatelessWidget {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddProductDialog(context),
-        backgroundColor: ManagementColors.getPrimary(isDark),
+        backgroundColor: AppColors.getPrimaryColor(isDark),
+        foregroundColor: isDark ? Colors.black : Colors.white,
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildSmallStat(String title, String val, IconData icon, Color color) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(height: 5),
-            Text(
-              val,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+  Widget _buildSmallStat(
+    BuildContext context,
+    String title,
+    String val,
+    IconData icon,
+    Color color,
+  ) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.getCardColor(isDark),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 8),
+          Text(
+            val,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              color: AppColors.getTextColor(isDark),
+              fontFamily: 'Tajawal',
             ),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 12, fontFamily: 'Tajawal'),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: 'Tajawal',
+              color: AppColors.getSubtextColor(isDark),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -161,7 +205,7 @@ class StoreManagementView extends StatelessWidget {
             onPressed: () {
               final price = double.tryParse(priceController.text) ?? 0.0;
               final stock = int.tryParse(stockController.text) ?? 0;
-              Provider.of<ManagementProvider>(
+              Provider.of<AdminProvider>(
                 context,
                 listen: false,
               ).addStoreProduct(nameController.text, price, stock, 'لوحات');
@@ -174,6 +218,3 @@ class StoreManagementView extends StatelessWidget {
     );
   }
 }
-
-
-

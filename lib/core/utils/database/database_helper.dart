@@ -453,6 +453,34 @@ class DatabaseHelper {
         )
       ''');
     }
+    if (oldVersion < 9) {
+      debugPrint('🆙 Upgrading to version 9 (Adding Admin Requests & Reports)');
+      // جدول الطلبات (Requests)
+      await db.execute('''
+        CREATE TABLE ${DatabaseConstants.tableRequests} (
+          ${DatabaseConstants.colId} TEXT PRIMARY KEY,
+          ${DatabaseConstants.colRequesterId} TEXT NOT NULL,
+          ${DatabaseConstants.colRequestType} TEXT NOT NULL,
+          ${DatabaseConstants.colRequestData} TEXT,
+          ${DatabaseConstants.colStatus} TEXT DEFAULT 'pending',
+          ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
+          ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+        )
+      ''');
+
+      // جدول البلاغات (Reports)
+      await db.execute('''
+        CREATE TABLE ${DatabaseConstants.tableReports} (
+          ${DatabaseConstants.colId} TEXT PRIMARY KEY,
+          ${DatabaseConstants.colReporterId} TEXT NOT NULL,
+          ${DatabaseConstants.colTargetId} TEXT NOT NULL,
+          ${DatabaseConstants.colTargetType} TEXT NOT NULL,
+          ${DatabaseConstants.colReason} TEXT NOT NULL,
+          ${DatabaseConstants.colStatus} TEXT DEFAULT 'pending',
+          ${DatabaseConstants.colCreatedAt} TEXT NOT NULL
+        )
+      ''');
+    }
   }
 
   /// إغلاق قاعدة البيانات

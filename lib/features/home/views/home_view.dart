@@ -25,7 +25,7 @@ import 'package:sanaa_artl/features/notifications/views/notifications_view.dart'
 import 'package:sanaa_artl/features/artworks_management/views/artworks_management_view.dart';
 import 'package:sanaa_artl/features/my_exhibitions/views/my_exhibitions_view.dart';
 import 'package:sanaa_artl/features/my_certificates/views/my_certificates_view.dart';
-import 'package:sanaa_artl/management/views/dashboard/management_home_view.dart';
+import 'package:sanaa_artl/features/admin/views/dashboard/admin_dashboard_view.dart';
 import 'package:sanaa_artl/features/chat/views/chat_hub_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -325,7 +325,7 @@ class _HomePageState extends State<HomePage> {
         onAdminPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ManagementHomeView()),
+            MaterialPageRoute(builder: (context) => const AdminDashboardView()),
           );
         },
       ),

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/management_provider.dart';
-import 'package:sanaa_artl/management/themes/management_colors.dart';
+import '../../controllers/admin_provider.dart';
+import 'package:sanaa_artl/core/themes/app_colors.dart';
+import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 
-class ManagementSideDrawer extends StatelessWidget {
-  const ManagementSideDrawer({super.key});
+class AdminSideDrawer extends StatelessWidget {
+  const AdminSideDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ManagementProvider>(context);
-    final isDark = provider.isDarkMode;
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return Drawer(
-      backgroundColor: ManagementColors.getBackground(isDark),
+      backgroundColor: AppColors.getBackgroundColor(isDark),
       child: Column(
         children: [
           _buildHeader(isDark),
@@ -76,20 +76,12 @@ class ManagementSideDrawer extends StatelessWidget {
                   index: 7,
                   isDark: isDark,
                 ),
-                const Divider(),
-                ListTile(
-                  leading: Icon(
-                    isDark ? Icons.light_mode : Icons.dark_mode,
-                    color: ManagementColors.getPrimary(isDark),
-                  ),
-                  title: Text(
-                    isDark ? 'الوضع النهاري' : 'الوضع الليلي',
-                    style: TextStyle(
-                      fontFamily: 'Tajawal',
-                      color: ManagementColors.getText(isDark),
-                    ),
-                  ),
-                  onTap: () => provider.toggleTheme(),
+                _buildMenuItem(
+                  context,
+                  icon: Icons.assignment_turned_in,
+                  title: 'إدارة الطلبات',
+                  index: 8,
+                  isDark: isDark,
                 ),
                 ListTile(
                   leading: const Icon(Icons.exit_to_app, color: Colors.red),
@@ -111,18 +103,24 @@ class ManagementSideDrawer extends StatelessWidget {
   Widget _buildHeader(bool isDark) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
-      decoration: BoxDecoration(gradient: ManagementColors.adminGradient),
+      padding: const EdgeInsets.only(top: 60, bottom: 30, left: 24, right: 24),
+      decoration: BoxDecoration(
+        gradient: AppColors.virtualGradient,
+        borderRadius: const BorderRadius.only(bottomRight: Radius.circular(30)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-            radius: 35,
-            backgroundColor: Colors.white,
-            child: Icon(
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
               Icons.admin_panel_settings,
-              size: 40,
-              color: Color(0xFF1E3A8A),
+              size: 45,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 15),
@@ -130,7 +128,7 @@ class ManagementSideDrawer extends StatelessWidget {
             'نظام الإدارة',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               fontFamily: 'Tajawal',
             ),
@@ -155,35 +153,36 @@ class ManagementSideDrawer extends StatelessWidget {
     required int index,
     required bool isDark,
   }) {
-    final provider = Provider.of<ManagementProvider>(context, listen: false);
-    final isSelected = provider.currentDashboardIndex == index;
+    final adminProvider = Provider.of<AdminProvider>(context, listen: false);
+    final isSelected = adminProvider.currentDashboardIndex == index;
 
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: isSelected ? ManagementColors.getPrimary(isDark) : Colors.grey,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: isSelected
-              ? ManagementColors.getPrimary(isDark)
-              : ManagementColors.getText(isDark),
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          fontFamily: 'Tajawal',
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        leading: Icon(
+          icon,
+          color: isSelected ? AppColors.getPrimaryColor(isDark) : Colors.grey,
         ),
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isSelected
+                ? AppColors.getPrimaryColor(isDark)
+                : AppColors.getTextColor(isDark),
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontFamily: 'Tajawal',
+          ),
+        ),
+        selected: isSelected,
+        selectedTileColor: AppColors.getPrimaryColor(
+          isDark,
+        ).withValues(alpha: 0.1),
+        onTap: () {
+          adminProvider.setDashboardIndex(index);
+          Navigator.pop(context);
+        },
       ),
-      selected: isSelected,
-      selectedTileColor: ManagementColors.getPrimary(
-        isDark,
-      ).withValues(alpha: 0.1),
-      onTap: () {
-        provider.setDashboardIndex(index);
-        Navigator.pop(context);
-      },
     );
   }
 }
-
-
-

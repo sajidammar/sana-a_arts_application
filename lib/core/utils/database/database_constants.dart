@@ -3,7 +3,7 @@
 class DatabaseConstants {
   // Database Info
   static const String databaseName = 'sanaa_arts.db';
-  static const int databaseVersion = 8;
+  static const int databaseVersion = 9;
   static const String colCvUrl = 'cv_url';
 
   // Table Names
@@ -22,6 +22,8 @@ class DatabaseConstants {
   static const String tableReels = 'reels';
   static const String tableConversations = 'conversations';
   static const String tableMessages = 'messages';
+  static const String tableRequests = 'admin_requests';
+  static const String tableReports = 'admin_reports';
 
   // Common Columns
   static const String colId = 'id';
@@ -119,4 +121,14 @@ class DatabaseConstants {
   static const String colSenderId = 'sender_id';
   static const String colMessageText = 'message_text';
   static const String colIsSeen = 'is_seen';
+
+  // Requests & Reports Columns
+  static const String colRequesterId = 'requester_id';
+  static const String colRequestType =
+      'request_type'; // exhibition, workshop, course
+  static const String colRequestData = 'request_data'; // JSON payload
+  static const String colReporterId = 'reporter_id';
+  static const String colTargetId = 'target_id'; // post_id, comment_id, etc.
+  static const String colTargetType = 'target_type';
+  static const String colReason = 'reason';
 }
