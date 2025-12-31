@@ -2,28 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/providers/academy/registration_provider.dart';
-import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/providers/community/community_provider.dart';
-import 'package:sanaa_artl/themes/app_theme.dart';
-import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
-import 'package:sanaa_artl/views/home/home_view.dart';
-import 'package:sanaa_artl/views/profile/user_editing.dart';
-import 'package:sanaa_artl/views/store/cart/cart_page.dart';
-import 'package:sanaa_artl/views/store/home_page.dart';
-import 'package:sanaa_artl/views/store/invoice/invoice_page.dart';
-import 'package:sanaa_artl/views/store/order/order_history_page.dart';
+import 'package:sanaa_artl/features/academies/controllers/registration_provider.dart';
+import 'package:sanaa_artl/features/academies/controllers/workshop_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/navigation_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/vr_provider.dart';
+import 'package:sanaa_artl/features/community/controllers/community_provider.dart';
+import 'package:sanaa_artl/features/community/controllers/reel_provider.dart';
+import 'package:sanaa_artl/features/chat/controllers/chat_provider.dart';
+import 'package:sanaa_artl/core/localization/app_localizations.dart';
+import 'package:sanaa_artl/core/localization/language_provider.dart';
+// import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
+import 'package:sanaa_artl/core/themes/app_theme.dart';
+import 'package:sanaa_artl/features/exhibitions/views/home/home_page.dart';
+import 'package:sanaa_artl/features/home/views/home_view.dart';
+import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/store/views/cart/cart_page.dart';
+import 'package:sanaa_artl/features/store/views/home_page.dart';
+import 'package:sanaa_artl/features/store/views/invoice/invoice_page.dart';
+import 'package:sanaa_artl/features/store/views/order/order_history_page.dart';
 // Providers
-import 'providers/theme_provider.dart';
-import 'providers/store/cart_provider.dart';
-import 'providers/store/order_provider.dart';
-import 'providers/store/product_provider.dart';
-import 'providers/store/invoice_provider.dart';
-import 'providers/wishlist_provider.dart';
+import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/cart_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/order_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/product_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/invoice_provider.dart';
+import 'package:sanaa_artl/features/wishlist/controllers/wishlist_provider.dart';
+import 'package:sanaa_artl/features/admin/controllers/admin_provider.dart';
 
 void main() async {
   // ضمان تهيئة Flutter
@@ -32,20 +38,32 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider1()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProvider()),
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
-        ChangeNotifierProvider(create: (_) => InvoiceProvider()),
-        ChangeNotifierProvider(create: (_) => ExhibitionProvider()),
-        ChangeNotifierProvider(create: (_) => VRProvider()),
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => WorkshopProvider()),
-        ChangeNotifierProvider(create: (_) => RegistrationProvider()),
-        ChangeNotifierProvider(create: (_) => CommunityProvider()),
-        ChangeNotifierProvider(create: (_) => WishlistProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider1()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (context) => CartProvider()..loadCartItems(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => OrderProvider()..loadOrders(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductProvider()..loadProducts(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => InvoiceProvider()..loadInvoice('ORD-2024-001'),
+        ),
+        ChangeNotifierProvider(create: (context) => ExhibitionProvider()),
+        ChangeNotifierProvider(create: (context) => VRProvider()),
+        ChangeNotifierProvider(create: (context) => NavigationProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => WorkshopProvider()),
+        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
+        ChangeNotifierProvider(create: (context) => CommunityProvider()),
+        ChangeNotifierProvider(create: (context) => ReelProvider()),
+        ChangeNotifierProvider(create: (context) => WishlistProvider()),
+        ChangeNotifierProvider(create: (context) => AdminProvider()),
+        ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ChangeNotifierProvider(create: (context) => LanguageProvider()),
       ],
       child: const MyApp(),
     ),
@@ -79,6 +97,7 @@ class _MyAppState extends State<MyApp> {
       listen: false,
     );
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final reelProvider = Provider.of<ReelProvider>(context, listen: false);
 
     // تهيئة قاعدة البيانات والمستخدم
     // await userProvider.initialize();
@@ -86,8 +105,14 @@ class _MyAppState extends State<MyApp> {
     // تحميل جلسة المستخدم المحفوظة
     await authProvider.loadSavedSession();
 
-    // تهيئة بيانات المجتمع
+    // تهيئة بيانات المجتمع والريلز
+    debugPrint('⏳ Initializing CommunityProvider...');
     await communityProvider.initialize();
+    debugPrint('✅ CommunityProvider Initialized');
+
+    debugPrint('⏳ Initializing ReelProvider...');
+    await reelProvider.initialize();
+    debugPrint('✅ ReelProvider Initialized');
 
     if (mounted) {
       setState(() {
@@ -98,8 +123,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
+    return Consumer2<ThemeProvider, LanguageProvider>(
+      builder: (context, themeProvider, languageProvider, child) {
         return MaterialApp(
           title: 'فنون صنعاء التشكيلية',
           debugShowCheckedModeBanner: false,
@@ -113,13 +138,16 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           localizationsDelegates: const [
+            AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [Locale('ar', 'AE')],
-          locale: const Locale('ar', 'AE'),
-          theme: themeProvider.isDarkMode ? AppTheme.dark : AppTheme.light,
+          supportedLocales: const [Locale('ar', 'AE'), Locale('en', 'US')],
+          locale: languageProvider.locale,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeProvider.themeMode,
           home: _isInitialized ? const HomePage() : const _LoadingScreen(),
           routes: {
             '/exhibition': (context) => ExhibitionHomePage(),
