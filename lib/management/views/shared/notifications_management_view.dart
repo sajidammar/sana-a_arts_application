@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/management_colors.dart';
+import 'package:sanaa_artl/management/themes/management_colors.dart';
 
 class NotificationsManagementView extends StatelessWidget {
   final bool isDark;
@@ -85,3 +85,6 @@ class NotificationsManagementView extends StatelessWidget {
     );
   }
 }
+
+
+

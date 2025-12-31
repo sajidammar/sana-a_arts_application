@@ -1,5 +1,5 @@
 import '../models/management_models.dart';
-import '../utils/database_helper.dart';
+import 'package:sanaa_artl/management/utils/database_helper.dart';
 
 class StoreController {
   final ManagementDatabaseHelper _dbHelper = ManagementDatabaseHelper();
@@ -27,3 +27,6 @@ class StoreController {
     await _dbHelper.deleteProduct(id);
   }
 }
+
+
+

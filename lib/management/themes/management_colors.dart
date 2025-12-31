@@ -34,3 +34,4 @@ class ManagementColors {
   static Color getCard(bool isDark) => isDark ? cardDark : cardLight;
   static Color getText(bool isDark) => isDark ? textDark : textLight;
 }
+

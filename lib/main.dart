@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/providers/academy/registration_provider.dart';
-import 'package:sanaa_artl/providers/academy/workshop_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/auth_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/exhibition_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/navigation_provider.dart';
-import 'package:sanaa_artl/providers/exhibition/vr_provider.dart';
-import 'package:sanaa_artl/providers/community/community_provider.dart';
-import 'package:sanaa_artl/providers/user_provider.dart';
-import 'package:sanaa_artl/themes/app_theme.dart';
-import 'package:sanaa_artl/views/exhibitions/home/home_page.dart';
-import 'package:sanaa_artl/views/home/home_view.dart';
-import 'package:sanaa_artl/views/profile/user_editing.dart';
-import 'package:sanaa_artl/views/store/cart/cart_page.dart';
-import 'package:sanaa_artl/views/store/home_page.dart';
-import 'package:sanaa_artl/views/store/invoice/invoice_page.dart';
-import 'package:sanaa_artl/views/store/order/order_history_page.dart';
+import 'package:sanaa_artl/features/academies/controllers/registration_provider.dart';
+import 'package:sanaa_artl/features/academies/controllers/workshop_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/navigation_provider.dart';
+import 'package:sanaa_artl/features/exhibitions/controllers/vr_provider.dart';
+import 'package:sanaa_artl/features/community/controllers/community_provider.dart';
+// import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
+import 'package:sanaa_artl/core/themes/app_theme.dart';
+import 'package:sanaa_artl/features/exhibitions/views/home/home_page.dart';
+import 'package:sanaa_artl/features/home/views/home_view.dart';
+import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/store/views/cart/cart_page.dart';
+import 'package:sanaa_artl/features/store/views/home_page.dart';
+import 'package:sanaa_artl/features/store/views/invoice/invoice_page.dart';
+import 'package:sanaa_artl/features/store/views/order/order_history_page.dart';
 // Providers
-import 'providers/theme_provider.dart';
-import 'providers/store/cart_provider.dart';
-import 'providers/store/order_provider.dart';
-import 'providers/store/product_provider.dart';
-import 'providers/store/invoice_provider.dart';
-import 'providers/wishlist_provider.dart';
+import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/cart_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/order_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/product_provider.dart';
+import 'package:sanaa_artl/features/store/controllers/invoice_provider.dart';
+import 'package:sanaa_artl/features/wishlist/controllers/wishlist_provider.dart';
 import 'management/providers/management_provider.dart';
 
 void main() async {
@@ -34,9 +34,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-
         // مزود المستخدم - يجب أن يكون أولاً لتهيئة قاعدة البيانات
-        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider1()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(
           create: (context) => CartProvider()..loadCartItems(),
@@ -73,7 +72,6 @@ void main() async {
         ChangeNotifierProvider(create: (_) => RegistrationProvider()),
         ChangeNotifierProvider(create: (_) => CommunityProvider()),
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
-
       ],
       child: const MyApp(),
     ),

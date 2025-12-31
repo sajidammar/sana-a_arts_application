@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../themes/management_colors.dart';
+import 'package:sanaa_artl/management/themes/management_colors.dart';
 
 class ExhibitionManagementView extends StatelessWidget {
   final bool isDark;
@@ -92,3 +92,6 @@ class _StatItem extends StatelessWidget {
     );
   }
 }
+
+
+

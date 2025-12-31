@@ -69,3 +69,4 @@ class ManagementProvider with ChangeNotifier {
     await _refreshData();
   }
 }
+

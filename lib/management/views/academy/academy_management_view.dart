@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/management_provider.dart';
-import '../../themes/management_colors.dart';
+import 'package:sanaa_artl/management/themes/management_colors.dart';
 
 class AcademyManagementView extends StatelessWidget {
   final bool isDark;
@@ -171,3 +171,6 @@ class AcademyManagementView extends StatelessWidget {
     );
   }
 }
+
+
+

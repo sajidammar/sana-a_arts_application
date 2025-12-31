@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/management_provider.dart';
-import '../../themes/management_colors.dart';
+import 'package:sanaa_artl/management/themes/management_colors.dart';
 import '../shared/management_side_drawer.dart';
 import '../academy/academy_management_view.dart';
 import '../store/store_management_view.dart';
@@ -218,3 +218,6 @@ class _DashboardOverview extends StatelessWidget {
     );
   }
 }
+
+
+

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../controllers/global_management_controller.dart';
-import '../../themes/management_colors.dart';
+import 'package:sanaa_artl/management/themes/management_colors.dart';
 
 class CommunityManagementView extends StatefulWidget {
   final bool isDark;
@@ -140,3 +140,6 @@ class _CommunityManagementViewState extends State<CommunityManagementView> {
     );
   }
 }
+
+
+

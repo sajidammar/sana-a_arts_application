@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../utils/database/database_helper.dart';
-import '../../utils/database/dao/user_dao.dart';
-import '../../utils/database/dao/exhibition_dao.dart';
-import '../../utils/database/dao/artwork_dao.dart';
+import 'package:sanaa_artl/core/utils/database/database_helper.dart';
+import 'package:sanaa_artl/core/utils/database/dao/user_dao.dart';
+import 'package:sanaa_artl/core/utils/database/dao/exhibition_dao.dart';
+import 'package:sanaa_artl/core/utils/database/dao/artwork_dao.dart';
 
 class GlobalManagementController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -61,3 +61,5 @@ class GlobalManagementController {
     debugPrint('Sending Notification: $title - $message');
   }
 }
+
+
