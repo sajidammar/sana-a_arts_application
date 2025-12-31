@@ -3,7 +3,8 @@
 class DatabaseConstants {
   // Database Info
   static const String databaseName = 'sanaa_arts.db';
-  static const int databaseVersion = 2;
+  static const int databaseVersion = 8;
+  static const String colCvUrl = 'cv_url';
 
   // Table Names
   static const String tableUsers = 'users';
@@ -18,6 +19,9 @@ class DatabaseConstants {
   static const String tableArtworkLikes = 'artwork_likes';
   static const String tableCartItems = 'cart_items';
   static const String tableWishlist = 'wishlist';
+  static const String tableReels = 'reels';
+  static const String tableConversations = 'conversations';
+  static const String tableMessages = 'messages';
 
   // Common Columns
   static const String colId = 'id';
@@ -97,5 +101,22 @@ class DatabaseConstants {
   // Followers Columns
   static const String colFollowerId = 'follower_id';
   static const String colFollowingId = 'following_id';
-}
 
+  // Reels Columns
+  static const String colAuthorName = 'author_name';
+  static const String colAuthorAvatar = 'author_avatar';
+  static const String colVideoUrl = 'video_url';
+  static const String colThumbnailUrl = 'thumbnail_url';
+  static const String colCommentsCount = 'comments_count';
+
+  // Chat Columns
+  static const String colLastMessage = 'last_message';
+  static const String colLastMessageTime = 'last_message_time';
+  static const String colReceiverId = 'receiver_id';
+  static const String colReceiverName = 'receiver_name';
+  static const String colReceiverImage = 'receiver_image';
+  static const String colConversationId = 'conversation_id';
+  static const String colSenderId = 'sender_id';
+  static const String colMessageText = 'message_text';
+  static const String colIsSeen = 'is_seen';
+}

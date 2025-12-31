@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'database_constants.dart';
@@ -74,6 +75,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colIsPhoneVerified} INTEGER DEFAULT 0,
         ${DatabaseConstants.colPoints} INTEGER DEFAULT 0,
         ${DatabaseConstants.colMembershipLevel} TEXT DEFAULT 'عادي',
+        ${DatabaseConstants.colCvUrl} TEXT,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
         ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
       )
@@ -128,12 +130,11 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE ${DatabaseConstants.tableComments} (
         ${DatabaseConstants.colId} TEXT PRIMARY KEY,
-        ${DatabaseConstants.colPostId} TEXT NOT NULL,
+        ${DatabaseConstants.colPostId} TEXT,
+        reel_id TEXT,
         ${DatabaseConstants.colAuthorId} TEXT NOT NULL,
         ${DatabaseConstants.colContent} TEXT NOT NULL,
-        ${DatabaseConstants.colTimestamp} TEXT NOT NULL,
-        FOREIGN KEY (${DatabaseConstants.colPostId}) REFERENCES ${DatabaseConstants.tablePosts} (${DatabaseConstants.colId}) ON DELETE CASCADE,
-        FOREIGN KEY (${DatabaseConstants.colAuthorId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE
+        ${DatabaseConstants.colTimestamp} TEXT NOT NULL
       )
     ''');
 
@@ -169,6 +170,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colRatingCount} INTEGER DEFAULT 0,
         ${DatabaseConstants.colFollowers} INTEGER DEFAULT 0,
         ${DatabaseConstants.colIsVerified} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colCvUrl} TEXT,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
         ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL,
         FOREIGN KEY (${DatabaseConstants.colUserId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE
@@ -246,9 +248,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colFollowerId} TEXT NOT NULL,
         ${DatabaseConstants.colFollowingId} TEXT NOT NULL,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
-        UNIQUE(${DatabaseConstants.colFollowerId}, ${DatabaseConstants.colFollowingId}),
-        FOREIGN KEY (${DatabaseConstants.colFollowerId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE,
-        FOREIGN KEY (${DatabaseConstants.colFollowingId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE
+        UNIQUE(${DatabaseConstants.colFollowerId}, ${DatabaseConstants.colFollowingId})
       )
     ''');
 
@@ -293,14 +293,165 @@ class DatabaseHelper {
         FOREIGN KEY (${DatabaseConstants.colUserId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE
       )
     ''');
+
+    // جدول الريلز (Reels)
+    await db.execute('''
+      CREATE TABLE ${DatabaseConstants.tableReels} (
+        ${DatabaseConstants.colId} TEXT PRIMARY KEY,
+        ${DatabaseConstants.colAuthorId} TEXT NOT NULL,
+        ${DatabaseConstants.colAuthorName} TEXT NOT NULL,
+        ${DatabaseConstants.colAuthorAvatar} TEXT,
+        ${DatabaseConstants.colVideoUrl} TEXT,
+        ${DatabaseConstants.colThumbnailUrl} TEXT,
+        ${DatabaseConstants.colDescription} TEXT,
+        ${DatabaseConstants.colLikes} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colCommentsCount} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colViews} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colTags} TEXT,
+        ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
+        ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+      )
+    ''');
+
+    // جدول المحادثات
+    await db.execute('''
+      CREATE TABLE ${DatabaseConstants.tableConversations} (
+        ${DatabaseConstants.colId} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${DatabaseConstants.colReceiverId} TEXT NOT NULL,
+        ${DatabaseConstants.colReceiverName} TEXT NOT NULL,
+        ${DatabaseConstants.colReceiverImage} TEXT,
+        ${DatabaseConstants.colLastMessage} TEXT,
+        ${DatabaseConstants.colLastMessageTime} TEXT,
+        ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
+        ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+      )
+    ''');
+
+    // جدول الرسائل
+    await db.execute('''
+      CREATE TABLE ${DatabaseConstants.tableMessages} (
+        ${DatabaseConstants.colId} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${DatabaseConstants.colConversationId} INTEGER NOT NULL,
+        ${DatabaseConstants.colSenderId} TEXT NOT NULL,
+        ${DatabaseConstants.colMessageText} TEXT NOT NULL,
+        ${DatabaseConstants.colIsSeen} INTEGER DEFAULT 0,
+        ${DatabaseConstants.colTimestamp} TEXT NOT NULL,
+        FOREIGN KEY (${DatabaseConstants.colConversationId}) REFERENCES ${DatabaseConstants.tableConversations} (${DatabaseConstants.colId}) ON DELETE CASCADE
+      )
+    ''');
   }
 
   /// ترقية قاعدة البيانات (للإصدارات المستقبلية)
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    debugPrint('🆙 Upgrading database from $oldVersion to $newVersion');
     if (oldVersion < 2) {
+      debugPrint('🆙 Upgrading to version 2 (Exhibitions like column)');
       await db.execute(
         'ALTER TABLE ${DatabaseConstants.tableExhibitions} ADD COLUMN ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0',
       );
+    }
+    if (oldVersion < 3) {
+      debugPrint('🆙 Upgrading to version 3 (Reels table)');
+      // Skip creation here if we are upgrading to 4
+    }
+    if (oldVersion < 4) {
+      debugPrint('🆙 Upgrading to version 4 (Reels table fix - No FK)');
+      // Drop existing reels table if it exists to remove FK constraint
+      await db.execute('DROP TABLE IF EXISTS ${DatabaseConstants.tableReels}');
+      await db.execute('''
+        CREATE TABLE ${DatabaseConstants.tableReels} (
+          ${DatabaseConstants.colId} TEXT PRIMARY KEY,
+          ${DatabaseConstants.colAuthorId} TEXT NOT NULL,
+          ${DatabaseConstants.colAuthorName} TEXT NOT NULL,
+          ${DatabaseConstants.colAuthorAvatar} TEXT,
+          ${DatabaseConstants.colVideoUrl} TEXT,
+          ${DatabaseConstants.colThumbnailUrl} TEXT,
+          ${DatabaseConstants.colDescription} TEXT,
+          ${DatabaseConstants.colLikes} INTEGER DEFAULT 0,
+          ${DatabaseConstants.colCommentsCount} INTEGER DEFAULT 0,
+          ${DatabaseConstants.colViews} INTEGER DEFAULT 0,
+          ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0,
+          ${DatabaseConstants.colTags} TEXT,
+          ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
+          ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+        )
+      ''');
+    }
+    if (oldVersion < 5) {
+      debugPrint('🆙 Upgrading to version 5 (Reels comments support)');
+      await db.execute(
+        'ALTER TABLE ${DatabaseConstants.tableComments} ADD COLUMN reel_id TEXT',
+      );
+    }
+    if (oldVersion < 6) {
+      debugPrint(
+        '🆙 Upgrading to version 6 (Fixing comments and followers schema)',
+      );
+
+      // Fix comments table (ensure post_id is NULLable and remove restrictive FKs for demo data)
+      await db.execute(
+        'CREATE TABLE comments_new (id TEXT PRIMARY KEY, post_id TEXT, reel_id TEXT, author_id TEXT NOT NULL, content TEXT NOT NULL, timestamp TEXT NOT NULL)',
+      );
+      await db.execute(
+        'INSERT INTO comments_new SELECT id, post_id, reel_id, author_id, content, timestamp FROM comments',
+      );
+      await db.execute('DROP TABLE comments');
+      await db.execute('ALTER TABLE comments_new RENAME TO comments');
+
+      // Fix followers table (remove FKs to allow following demo artists like "artist_1")
+      await db.execute(
+        'CREATE TABLE followers_new (id TEXT PRIMARY KEY, follower_id TEXT NOT NULL, following_id TEXT NOT NULL, created_at TEXT NOT NULL, UNIQUE(follower_id, following_id))',
+      );
+      try {
+        await db.execute(
+          'INSERT INTO followers_new SELECT id, follower_id, following_id, created_at FROM followers',
+        );
+      } catch (e) {
+        debugPrint(
+          'Note: No previous followers data found or error during migration: $e',
+        );
+      }
+      await db.execute('DROP TABLE IF EXISTS followers');
+      await db.execute('ALTER TABLE followers_new RENAME TO followers');
+    }
+    if (oldVersion < 7) {
+      debugPrint('🆙 Upgrading to version 7 (Adding CV support)');
+      await db.execute(
+        'ALTER TABLE ${DatabaseConstants.tableUsers} ADD COLUMN ${DatabaseConstants.colCvUrl} TEXT',
+      );
+      await db.execute(
+        'ALTER TABLE ${DatabaseConstants.tableArtists} ADD COLUMN ${DatabaseConstants.colCvUrl} TEXT',
+      );
+    }
+    if (oldVersion < 8) {
+      debugPrint('🆙 Upgrading to version 8 (Adding Chat support)');
+      // جدول المحادثات
+      await db.execute('''
+        CREATE TABLE ${DatabaseConstants.tableConversations} (
+          ${DatabaseConstants.colId} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${DatabaseConstants.colReceiverId} TEXT NOT NULL,
+          ${DatabaseConstants.colReceiverName} TEXT NOT NULL,
+          ${DatabaseConstants.colReceiverImage} TEXT,
+          ${DatabaseConstants.colLastMessage} TEXT,
+          ${DatabaseConstants.colLastMessageTime} TEXT,
+          ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
+          ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+        )
+      ''');
+
+      // جدول الرسائل
+      await db.execute('''
+        CREATE TABLE ${DatabaseConstants.tableMessages} (
+          ${DatabaseConstants.colId} INTEGER PRIMARY KEY AUTOINCREMENT,
+          ${DatabaseConstants.colConversationId} INTEGER NOT NULL,
+          ${DatabaseConstants.colSenderId} TEXT NOT NULL,
+          ${DatabaseConstants.colMessageText} TEXT NOT NULL,
+          ${DatabaseConstants.colIsSeen} INTEGER DEFAULT 0,
+          ${DatabaseConstants.colTimestamp} TEXT NOT NULL,
+          FOREIGN KEY (${DatabaseConstants.colConversationId}) REFERENCES ${DatabaseConstants.tableConversations} (${DatabaseConstants.colId}) ON DELETE CASCADE
+        )
+      ''');
     }
   }
 

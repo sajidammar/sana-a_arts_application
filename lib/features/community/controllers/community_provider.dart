@@ -16,7 +16,6 @@ class CommunityProvider with ChangeNotifier {
   final UserDao _userDao = UserDao();
 
   List<Post> _posts = [];
-  List<User> _artists = [];
   bool _isLoading = false;
   String _searchQuery = '';
   final String _currentUserId = 'current_user';
@@ -30,13 +29,6 @@ class CommunityProvider with ChangeNotifier {
               p.content.toLowerCase().contains(_searchQuery.toLowerCase()) ||
               p.author.name.toLowerCase().contains(_searchQuery.toLowerCase()),
         )
-        .toList();
-  }
-
-  List<User> get artists {
-    if (_searchQuery.isEmpty) return _artists;
-    return _artists
-        .where((u) => u.name.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
   }
 
@@ -55,7 +47,6 @@ class CommunityProvider with ChangeNotifier {
 
     try {
       await loadPosts();
-      await loadArtists();
       await _loadLikedPosts();
     } catch (e) {
       debugPrint('خطأ في تهيئة CommunityProvider: $e');
@@ -83,17 +74,6 @@ class CommunityProvider with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('خطأ في تحميل المنشورات: $e');
-    }
-  }
-
-  /// تحميل الفنانين من قاعدة البيانات
-  Future<void> loadArtists() async {
-    try {
-      final artistMaps = await _userDao.getUsersByRole('artist');
-      _artists = artistMaps.map((map) => User.fromMap(map)).toList();
-      notifyListeners();
-    } catch (e) {
-      debugPrint('خطأ في تحميل الفنانين: $e');
     }
   }
 
@@ -294,9 +274,6 @@ class CommunityProvider with ChangeNotifier {
   /// تحديث بيانات المنشورات
   Future<void> refresh() async {
     await loadPosts();
-    await loadArtists();
     await _loadLikedPosts();
   }
 }
-
-

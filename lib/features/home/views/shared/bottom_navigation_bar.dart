@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/core/localization/app_localizations.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 
@@ -37,14 +38,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
               children: [
                 _buildNavItem(
                   icon: Icons.school,
-                  label: 'الأكاديمية',
+                  label: context.tr('academy'),
                   index: 1,
                   isSelected: currentIndex == 1,
                   isDark: isDark,
                 ),
                 _buildNavItem(
                   icon: Icons.photo_library,
-                  label: 'المعارض',
+                  label: context.tr('exhibitions'),
                   index: 2,
                   isSelected: currentIndex == 2,
                   isDark: isDark,
@@ -80,14 +81,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
               children: [
                 _buildNavItem(
                   icon: Icons.shopping_cart,
-                  label: 'المتجر',
+                  label: context.tr('store'),
                   index: 3,
                   isSelected: currentIndex == 3,
                   isDark: isDark,
                 ),
                 _buildNavItem(
-                  icon: Icons.home,
-                  label: 'الرئيسية',
+                  icon: Icons.message_outlined,
+                  label: context.tr('messages'),
                   index: 4,
                   isSelected: currentIndex == 4,
                   isDark: isDark,
@@ -136,7 +137,3 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 }
-
-
-
-

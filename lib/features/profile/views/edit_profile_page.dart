@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/features/profile/views/profile_bio.dart';
+import 'package:sanaa_artl/features/profile/views/user_editing.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -13,20 +17,78 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController(text: 'أحمد محمد');
-  final _phoneController = TextEditingController(text: '+967 777 123 456');
-  final _usernameController = TextEditingController(text: 'ahmed_mahmoud');
-  final _cityController = TextEditingController(text: 'صنعاء');
-  // final _bioController = TextEditingController(text: 'فنان تشكيلي');
+  late TextEditingController _nameController;
+  late TextEditingController _bioController;
+  late String? _cvPath;
+  late String? _imagePath;
+  final ImagePicker _picker = ImagePicker();
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final user = Provider.of<UserProvider1>(context).user;
+      _nameController = TextEditingController(text: user.name);
+      _bioController = TextEditingController(text: user.bio);
+      _cvPath = user.cvUrl;
+      _imagePath = user.imageUrl;
+      _isInitialized = true;
+    }
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _usernameController.dispose();
-    _phoneController.dispose();
-    _cityController.dispose();
-    // _bioController.dispose();
+    _bioController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickCv() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
+    );
+
+    if (result != null) {
+      setState(() {
+        _cvPath = result.files.single.path;
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _imagePath = image.path;
+      });
+    }
+  }
+
+  ImageProvider _getImageProvider(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return const AssetImage('assets/images/image1.jpg'); // Fallback
+    }
+
+    if (imagePath.startsWith('assets/')) {
+      return AssetImage(imagePath);
+    }
+
+    if (imagePath.startsWith('/') ||
+        imagePath.contains(':\\') ||
+        imagePath.contains(':/')) {
+      return FileImage(File(imagePath));
+    }
+
+    try {
+      final uri = Uri.parse(imagePath);
+      if (uri.hasScheme) {
+        return NetworkImage(imagePath);
+      }
+    } catch (_) {}
+
+    return const AssetImage('assets/images/image1.jpg');
   }
 
   @override
@@ -36,6 +98,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     final primaryColor = AppColors.getPrimaryColor(isDark);
     final backgroundColor = AppColors.getBackgroundColor(isDark);
+    final textColor = AppColors.getTextColor(isDark);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -77,8 +140,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                             ],
                             border: Border.all(color: primaryColor, width: 3),
-                            image: const DecorationImage(
-                              image: AssetImage('assets/images/image1.jpg'),
+                            image: DecorationImage(
+                              image: _getImageProvider(_imagePath),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -86,22 +149,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         Positioned(
                           bottom: 5,
                           right: 5,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white,
-                              size: 22,
+                          child: GestureDetector(
+                            onTap: _pickImage,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
+                                size: 22,
+                              ),
                             ),
                           ),
                         ),
@@ -119,47 +185,113 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     const SizedBox(height: 16),
 
-                    _buildTextField(
-                      controller: _usernameController,
-                      label: 'اسم المستخدم',
-                      icon: Icons.verified_user,
-                      isDark: isDark,
-                      primaryColor: primaryColor,
-                    ),
-
                     const SizedBox(height: 16),
 
-                    // رقم الهاتف
-                    _buildTextField(
-                      controller: _phoneController,
-                      label: 'رقم الهاتف',
-                      icon: Icons.phone_android_outlined,
-                      isDark: isDark,
-                      primaryColor: primaryColor,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // المدينة
-                    _buildTextField(
-                      controller: _cityController,
-                      label: 'المدينة',
-                      icon: Icons.location_on_outlined,
-                      isDark: isDark,
-                      primaryColor: primaryColor,
-                    ),
-                    const SizedBox(height: 16),
-
-                    ProfileBio(bio: ''),
                     // النبذة
-                    // _buildTextField(
-                    //   controller: _bioController,
-                    //   label: 'النبذة الشخصية',
-                    //   icon: Icons.description_outlined,
-                    //   isDark: isDark,
-                    //   primaryColor: primaryColor,
-                    //   maxLines: 4,
-                    // ),
+                    _buildTextField(
+                      controller: _bioController,
+                      label: 'النبذة الشخصية',
+                      icon: Icons.description_outlined,
+                      isDark: isDark,
+                      primaryColor: primaryColor,
+                      maxLines: 3,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // CV Section
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.darkCard : Colors.grey[100],
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: primaryColor.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.assignment_outlined,
+                                color: primaryColor,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'السيرة الذاتية (CV)',
+                                style: TextStyle(
+                                  color: textColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Tajawal',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          if (_cvPath != null)
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              margin: const EdgeInsets.only(bottom: 12),
+                              decoration: BoxDecoration(
+                                color: primaryColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.file_present, size: 16),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      _cvPath!.split('/').last.split('\\').last,
+                                      style: const TextStyle(fontSize: 12),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () =>
+                                        setState(() => _cvPath = null),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          OutlinedButton.icon(
+                            onPressed: _pickCv,
+                            icon: const Icon(Icons.upload_file, size: 18),
+                            label: Text(
+                              _cvPath == null ? 'إرفاق ملف CV' : 'تغيير الملف',
+                              style: const TextStyle(fontFamily: 'Tajawal'),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: primaryColor),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              minimumSize: const Size(double.infinity, 45),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'يدعم ملفات PDF, DOC, DOCX',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.getSubtextColor(isDark),
+                              fontFamily: 'Tajawal',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 40),
 
                     // زر الحفظ
@@ -169,6 +301,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
+                            final userProvider = Provider.of<UserProvider1>(
+                              context,
+                              listen: false,
+                            );
+                            userProvider.updateName(_nameController.text);
+                            userProvider.user.bio = _bioController.text;
+                            if (_imagePath != null) {
+                              userProvider.updateImage(_imagePath!);
+                            }
+                            if (_cvPath != null) {
+                              userProvider.updateCvUrl(_cvPath!);
+                            }
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: const Text(
@@ -272,8 +417,3 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 }
-
-
-
-
-

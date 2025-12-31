@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Artwork {
   final String id;
   final String title;
@@ -71,26 +73,28 @@ class Artwork {
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       artist: json['artist'] ?? '',
-      artistId: json['artistId'] ?? '',
+      artistId: json['artist_id'] ?? '',
       year: json['year'] ?? 2024,
       technique: json['technique'] ?? '',
       dimensions: json['dimensions'] ?? '',
       description: json['description'] ?? '',
       rating: (json['rating'] ?? 0.0).toDouble(),
-      ratingCount: json['ratingCount'] ?? 0,
+      ratingCount: json['rating_count'] ?? 0,
       price: (json['price'] ?? 0.0).toDouble(),
       currency: json['currency'] ?? '\$',
       category: json['category'] ?? '',
-      tags: List<String>.from(json['tags'] ?? []),
-      imageUrl: json['imageUrl'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      isFeatured: json['isFeatured'] ?? false,
-      isForSale: json['isForSale'] ?? true,
+      tags: json['tags'] is String
+          ? jsonDecode(json['tags'])
+          : List<String>.from(json['tags'] ?? []),
+      imageUrl: json['image_url'] ?? '',
+      createdAt: DateTime.parse(
+        json['created_at'] ?? DateTime.now().toIso8601String(),
+      ),
+      isFeatured: json['is_featured'] == 1 || json['is_featured'] == true,
+      isForSale: json['is_for_sale'] == 1 || json['is_for_sale'] == true,
       views: json['views'] ?? 0,
       likes: json['likes'] ?? 0,
-      comments: List<Map<String, dynamic>>.from(json['comments'] ?? [])
-          .map((comment) => ArtworkComment.fromJson(comment))
-          .toList(),
+      comments: [], // Comments usually handled separately or via another DAO
     );
   }
 
@@ -99,24 +103,23 @@ class Artwork {
       'id': id,
       'title': title,
       'artist': artist,
-      'artistId': artistId,
+      'artist_id': artistId,
       'year': year,
       'technique': technique,
       'dimensions': dimensions,
       'description': description,
       'rating': rating,
-      'ratingCount': ratingCount,
+      'rating_count': ratingCount,
       'price': price,
       'currency': currency,
       'category': category,
-      'tags': tags,
-      'imageUrl': imageUrl,
-      'createdAt': createdAt.toIso8601String(),
-      'isFeatured': isFeatured,
-      'isForSale': isForSale,
+      'tags': jsonEncode(tags),
+      'image_url': imageUrl,
+      'created_at': createdAt.toIso8601String(),
+      'is_featured': isFeatured ? 1 : 0,
+      'is_for_sale': isForSale ? 1 : 0,
       'views': views,
       'likes': likes,
-      'comments': comments.map((comment) => comment.toJson()).toList(),
     };
   }
 }
@@ -146,11 +149,13 @@ class ArtworkComment {
       userId: json['userId'] ?? '',
       userName: json['userName'] ?? '',
       comment: json['comment'] ?? '',
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
       likes: json['likes'] ?? 0,
-      replies: List<Map<String, dynamic>>.from(json['replies'] ?? [])
-          .map((reply) => ArtworkComment.fromJson(reply))
-          .toList(),
+      replies: List<Map<String, dynamic>>.from(
+        json['replies'] ?? [],
+      ).map((reply) => ArtworkComment.fromJson(reply)).toList(),
     );
   }
 
@@ -166,4 +171,3 @@ class ArtworkComment {
     };
   }
 }
-

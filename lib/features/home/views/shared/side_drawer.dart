@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/core/localization/app_localizations.dart';
+import 'package:sanaa_artl/core/localization/language_provider.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 
@@ -51,112 +53,114 @@ class SideDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           _buildDrawerHeader(isDark),
-          _buildSectionHeader('الحساب', isDark),
+          _buildSectionHeader(context.tr('account'), isDark),
           _buildDrawerItem(
             icon: Icons.person,
-            title: 'الملف الشخصي',
+            title: context.tr('profile'),
             onTap: onProfilePressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.shopping_bag,
-            title: 'طلباتي',
+            title: context.tr('order_history'),
             onTap: onOrdersPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.palette,
-            title: 'إدارة الأعمال الفنية',
+            title: context.tr('artworks_management'),
             onTap: onArtworksManagementPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.filter_frames,
-            title: 'معارضي',
+            title: context.tr('my_exhibitions'),
             onTap: onMyExhibitionsPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.workspace_premium,
-            title: 'الشهادات والإنجازات',
+            title: context.tr('certificates'),
             onTap: onMyCertificatesPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.favorite,
-            title: 'المفضلة',
+            title: context.tr('favorites'),
             onTap: onWishlistPressed,
             isDark: isDark,
           ),
-          _buildSectionHeader('الإعدادات', isDark),
-          _buildDrawerItemWithSwitch(
-            icon: Icons.dark_mode,
-            title: 'الوضع الليلي',
-            value: isDark,
-            onChanged: (value) => onThemeChanged(),
+          _buildSectionHeader(context.tr('settings'), isDark),
+          _buildDrawerItemWithTrailing(
+            icon: Icons.brightness_6_outlined,
+            title: context.tr('theme'),
+            trailing: _getThemeModeName(
+              context.watch<ThemeProvider>().themeMode,
+            ),
+            onTap: () => _showThemeDialog(context),
             isDark: isDark,
           ),
           _buildDrawerItemWithTrailing(
             icon: Icons.language,
-            title: 'اللغة',
-            trailing: 'العربية',
-            onTap: onLanguageChanged,
+            title: context.tr('language'),
+            trailing: context.watch<LanguageProvider>().languageName,
+            onTap: () => _showLanguageDialog(context),
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.notifications,
-            title: 'الإشعارات',
+            title: context.tr('notifications'),
             onTap: () {},
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.security,
-            title: 'الخصوصية',
+            title: context.tr('privacy'),
             onTap: onSettingsPressed,
             isDark: isDark,
           ),
-          _buildSectionHeader('التطبيق', isDark),
+          _buildSectionHeader(context.tr('app'), isDark),
           _buildDrawerItem(
             icon: Icons.info,
-            title: 'من نحن',
+            title: context.tr('about_us'),
             onTap: onAboutPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.contact_mail,
-            title: 'اتصل بنا',
+            title: context.tr('contact_us'),
             onTap: onContactPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.share,
-            title: 'مشاركة التطبيق',
+            title: context.tr('share_app'),
             onTap: onShareApp,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.help,
-            title: 'المساعدة والدعم',
+            title: context.tr('help_support'),
             onTap: onHelpPressed,
             isDark: isDark,
           ),
           _buildDrawerItem(
             icon: Icons.star,
-            title: 'تقييم التطبيق',
+            title: context.tr('rate_app'),
             onTap: () {},
             isDark: isDark,
           ),
           const Divider(),
           _buildDrawerItem(
             icon: Icons.admin_panel_settings,
-            title: 'إدارة النظام',
+            title: context.tr('admin_panel'),
             onTap: onAdminPressed,
             isDark: isDark,
           ),
           const Divider(),
           _buildDrawerItem(
             icon: Icons.exit_to_app,
-            title: 'تسجيل الخروج',
+            title: context.tr('logout'),
             color: Colors.red,
             onTap: onLogoutPressed,
             isDark: isDark,
@@ -324,33 +328,176 @@ class SideDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItemWithSwitch({
-    required IconData icon,
-    required String title,
-    required bool value,
-    required Function(bool) onChanged,
-    required bool isDark,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.getPrimaryColor(isDark), size: 22),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Tajawal',
-          color: AppColors.getTextColor(isDark),
+  String _getThemeModeName(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return 'تلقائي (النظام)';
+      case ThemeMode.light:
+        return 'نهاري';
+      case ThemeMode.dark:
+        return 'ليلي';
+    }
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final isDark = themeProvider.isDarkMode;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.getCardColor(isDark),
+        title: Text(
+          'اختر مظهر التطبيق',
+          style: TextStyle(
+            color: AppColors.getTextColor(isDark),
+            fontFamily: 'Tajawal',
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.right,
         ),
-      ),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeThumbColor: AppColors.getPrimaryColor(isDark),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildThemeOption(
+              context,
+              'تلقائي (حسب النظام)',
+              ThemeMode.system,
+              themeProvider.themeMode == ThemeMode.system,
+              isDark,
+            ),
+            _buildThemeOption(
+              context,
+              'الوضع النهاري',
+              ThemeMode.light,
+              themeProvider.themeMode == ThemeMode.light,
+              isDark,
+            ),
+            _buildThemeOption(
+              context,
+              'الوضع الليلي',
+              ThemeMode.dark,
+              themeProvider.themeMode == ThemeMode.dark,
+              isDark,
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    String title,
+    ThemeMode mode,
+    bool isSelected,
+    bool isDark,
+  ) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: AppColors.getTextColor(isDark),
+          fontFamily: 'Tajawal',
+        ),
+        textAlign: TextAlign.right,
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check_circle, color: AppColors.getPrimaryColor(isDark))
+          : null,
+      onTap: () {
+        Provider.of<ThemeProvider>(context, listen: false).setThemeMode(mode);
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
+    final isDark = Provider.of<ThemeProvider>(
+      context,
+      listen: false,
+    ).isDarkMode;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.getCardColor(isDark),
+        title: Text(
+          context.tr('language'),
+          style: TextStyle(
+            color: AppColors.getTextColor(isDark),
+            fontFamily: 'Tajawal',
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.right,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLanguageOption(
+              context,
+              'تلقائي (حسب النظام)',
+              'system',
+              languageProvider.locale == null,
+              isDark,
+            ),
+            _buildLanguageOption(
+              context,
+              'العربية',
+              'ar',
+              languageProvider.locale?.languageCode == 'ar',
+              isDark,
+            ),
+            _buildLanguageOption(
+              context,
+              'English',
+              'en',
+              languageProvider.locale?.languageCode == 'en',
+              isDark,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(
+    BuildContext context,
+    String title,
+    String langCode,
+    bool isSelected,
+    bool isDark,
+  ) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: AppColors.getTextColor(isDark),
+          fontFamily: 'Tajawal',
+        ),
+        textAlign: langCode == 'en' ? TextAlign.left : TextAlign.right,
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check_circle, color: AppColors.getPrimaryColor(isDark))
+          : null,
+      onTap: () {
+        if (langCode == 'system') {
+          Provider.of<LanguageProvider>(
+            context,
+            listen: false,
+          ).useSystemLanguage();
+        } else {
+          Provider.of<LanguageProvider>(
+            context,
+            listen: false,
+          ).setLanguage(langCode);
+        }
+        Navigator.pop(context);
+      },
+    );
+  }
 }
-
-
-
-

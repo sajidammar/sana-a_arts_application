@@ -8,11 +8,19 @@ import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'edit_profile_page.dart';
 // import 'change_password_page.dart';
+import 'package:sanaa_artl/features/community/controllers/reel_provider.dart';
+import 'package:sanaa_artl/features/chat/controllers/chat_provider.dart';
+import 'package:sanaa_artl/features/chat/models/chat_model.dart';
+import 'package:sanaa_artl/features/chat/views/chat_page.dart';
 // import '../settings/notifications_page.dart';
 // import '../settings/privacy_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final String? userId;
+  final String? username;
+  final String? avatarUrl;
+
+  const ProfilePage({super.key, this.userId, this.username, this.avatarUrl});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -40,337 +48,338 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final user = context.watch<UserProvider1>().user;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: ProfileHeader(
-              name: user.name,
-              imageUrl: user.imageUrl,
-              bio: user.bio,
-              followers: 256,
-              following: 124,
-              posts: 102,
-              isDark: isDark,
-              primaryColor: primaryColor,
-              textColor: textColor,
+    // إذا تم تمرير بيانات مؤلف، نستخدمها، وإلا نستخدم بيانات المستخدم الحالي
+    final displayName = widget.username ?? user.name;
+    final displayImage = widget.avatarUrl ?? user.imageUrl;
+    final isOwnProfile =
+        widget.userId == null ||
+        widget.userId == user.id ||
+        widget.userId == '';
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 0,
+              floating: true,
+              pinned: true,
+              backgroundColor: backgroundColor,
+              elevation: 0,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: textColor, size: 20),
+                onPressed: () => Navigator.pop(context),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.share, color: textColor),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('تم نسخ رابط الملف الشخصي')),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.more_vert, color: textColor),
+                  onPressed: () {},
+                ),
+              ],
+              title: Text(
+                displayName,
+                style: TextStyle(
+                  color: textColor,
+                  fontFamily: 'Tajawal',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              centerTitle: false,
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(9),
-              child: Container(
-                padding: const EdgeInsets.all(13),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.getCardColor(isDark) : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+            SliverToBoxAdapter(
+              child: ProfileHeader(
+                name: displayName,
+                imageUrl: displayImage,
+                bio: isOwnProfile
+                    ? user.bio
+                    : 'فنان يمني مبدع يشارك أعماله على منصة صنعاء للفنون.',
+                followers: isOwnProfile ? 256 : 120,
+                following: isOwnProfile ? 124 : 45,
+                posts: isOwnProfile ? 102 : 12,
+                isDark: isDark,
+                primaryColor: primaryColor,
+                textColor: textColor,
+              ),
+            ),
+
+            // Action Buttons (Instagram Style)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      'تعديل الملف الشخصي',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                        fontFamily: 'Tajawal',
+                    if (isOwnProfile)
+                      Expanded(
+                        child: _buildActionButton(
+                          'تعديل الملف الشخصي',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfilePage(),
+                              ),
+                            );
+                          },
+                          isDark: isDark,
+                          textColor: textColor,
+                        ),
+                      )
+                    else ...[
+                      Consumer<ReelProvider>(
+                        builder: (context, reelProvider, child) {
+                          final isFollowing = widget.userId != null
+                              ? reelProvider.isFollowing(widget.userId!)
+                              : false;
+
+                          return Expanded(
+                            child: _buildActionButton(
+                              isFollowing ? 'متابَع' : 'متابعة',
+                              onPressed: () async {
+                                if (widget.userId != null) {
+                                  await reelProvider.toggleFollow(
+                                    widget.userId!,
+                                  );
+                                }
+                              },
+                              isDark: isDark,
+                              textColor: isFollowing ? textColor : Colors.white,
+                              backgroundColor: isFollowing
+                                  ? null
+                                  : primaryColor,
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.edit, color: primaryColor, size: 24),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfilePage(),
-                          ),
-                        );
-                      },
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildActionButton(
+                          'رسالة',
+                          onPressed: () async {
+                            if (widget.userId == null) return;
+
+                            final chatProvider = context.read<ChatProvider>();
+                            // Try to find existing conversation
+                            Conversation? conversation;
+                            try {
+                              conversation = chatProvider.conversations
+                                  .firstWhere(
+                                    (c) => c.receiverId == widget.userId,
+                                  );
+                            } catch (_) {
+                              // If not found, create a temporary one
+                              conversation = Conversation(
+                                id: null, // New conversation
+                                receiverId: widget.userId!,
+                                receiverName: widget.username ?? 'فنان مجهول',
+                                receiverImage: widget.avatarUrl,
+                                createdAt: DateTime.now(),
+                                updatedAt: DateTime.now(),
+                              );
+                            }
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatPage(conversation: conversation!),
+                              ),
+                            );
+                          },
+                          isDark: isDark,
+                          textColor: textColor,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(width: 8),
+                    _buildIconActionButton(
+                      Icons.person_add_outlined,
+                      isDark: isDark,
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-        ],
+
+            const SliverToBoxAdapter(child: SizedBox(height: 12)),
+
+            // Tabs (Instagram Style Sticky)
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                TabBar(
+                  indicatorColor: textColor,
+                  indicatorWeight: 1,
+                  tabs: [
+                    Tab(icon: Icon(Icons.grid_on_outlined, color: textColor)),
+                    Tab(icon: Icon(Icons.movie_outlined, color: textColor)),
+                  ],
+                ),
+                backgroundColor: backgroundColor,
+              ),
+            ),
+
+            // Tab Content
+            SliverFillRemaining(
+              child: TabBarView(
+                children: [
+                  _buildPostsGrid(isDark, primaryColor),
+                  _buildReelsGrid(isDark, primaryColor),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /*
-  Widget _buildSectionTitle(String title, Color textColor) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12, right: 4),
-      child: Align(
-        alignment: Alignment.centerRight,
+  Widget _buildActionButton(
+    String label, {
+    required VoidCallback onPressed,
+    required bool isDark,
+    required Color textColor,
+    Color? backgroundColor,
+  }) {
+    return SizedBox(
+      height: 35,
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          backgroundColor:
+              backgroundColor ?? (isDark ? Colors.grey[900] : Colors.grey[200]),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: EdgeInsets.zero,
+        ),
         child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: textColor,
-            fontFamily: 'Tajawal',
-          ),
-        ),
-      ),
-    );
-  }
-*/
-
-  /*
-  Widget _buildStatItem(
-    String number,
-    String label,
-    Color primaryColor,
-    Color subtextColor,
-  ) {
-    return Column(
-      children: [
-        Text(
-          number,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: primaryColor,
-            fontFamily: 'Tajawal',
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
           label,
           style: TextStyle(
-            color: subtextColor,
-            fontFamily: 'Tajawal',
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-*/
-
-  /*
-  Widget _buildInfoCard(
-    bool isDark,
-    Color cardColor,
-    Color textColor,
-    Color subtextColor,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black45
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildInfoRow(
-            'البريد الإلكتروني',
-            'ahmed@example.com',
-            textColor,
-            subtextColor,
-            Icons.email_outlined,
-          ),
-          const Divider(height: 24),
-          _buildInfoRow(
-            'رقم الهاتف',
-            '+967 123 456 789',
-            textColor,
-            subtextColor,
-            Icons.phone_android_outlined,
-          ),
-          const Divider(height: 24),
-          _buildInfoRow(
-            'المدينة',
-            'صنعاء',
-            textColor,
-            subtextColor,
-            Icons.location_on_outlined,
-          ),
-          const Divider(height: 24),
-          _buildInfoRow(
-            'تاريخ الانضمام',
-            'يناير 2024',
-            textColor,
-            subtextColor,
-            Icons.calendar_today_outlined,
-          ),
-        ],
-      ),
-    );
-  }
-*/
-
-  /*
-  Widget _buildInfoRow(
-    String title,
-    String value,
-    Color textColor,
-    Color subtextColor,
-    IconData icon,
-  ) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: subtextColor.withValues(alpha: 0.7)),
-        const SizedBox(width: 12),
-        Text(
-          '$title: ',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
             color: textColor,
             fontFamily: 'Tajawal',
             fontSize: 14,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        const Spacer(),
-        Text(
-          value,
-          style: TextStyle(
-            color: subtextColor,
-            fontFamily: 'Tajawal',
-            fontSize: 14,
-          ),
-        ),
-      ],
+      ),
     );
   }
-*/
 
-  /*
-  Widget _buildSettingsCard(
-    bool isDark,
-    Color cardColor,
-    Color textColor,
-    Color primaryColor,
-    BuildContext context,
-  ) {
+  Widget _buildIconActionButton(IconData icon, {required bool isDark}) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      width: 35,
+      height: 35,
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black45
-                : Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: isDark ? Colors.grey[900] : Colors.grey[200],
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Column(
-        children: [
-          _buildSettingItem(
-            'تعديل الملف الشخصي',
-            Icons.edit_outlined,
-            isDark,
-            primaryColor,
-            textColor,
-            context,
-          ),
-          _buildSettingItem(
-            'تغيير كلمة المرور',
-            Icons.lock_outline,
-            isDark,
-            primaryColor,
-            textColor,
-            context,
-          ),
-          _buildSettingItem(
-            'الإشعارات',
-            Icons.notifications_none_outlined,
-            isDark,
-            primaryColor,
-            textColor,
-            context,
-          ),
-          _buildSettingItem(
-            'الخصوصية',
-            Icons.security_outlined,
-            isDark,
-            primaryColor,
-            textColor,
-            context,
-          ),
-        ],
-      ),
+      child: Icon(icon, size: 20),
     );
   }
 
-  Widget _buildSettingItem(
-    String title,
-    IconData icon,
-    bool isDark,
-    Color primaryColor,
-    Color textColor,
-    BuildContext context,
-  ) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
+  Widget _buildPostsGrid(bool isDark, Color primaryColor) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 2),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
+      ),
+      itemCount: 15,
+      itemBuilder: (context, index) {
+        return Container(
           color: primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(icon, color: primaryColor, size: 20),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: textColor,
-          fontFamily: 'Tajawal',
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
-      ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        color: AppColors.getSubtextColor(isDark).withValues(alpha: 0.3),
-        size: 14,
-      ),
-      onTap: () {
-        if (title == 'تعديل الملف الشخصي') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const EditProfilePage()),
-          );
-        } else if (title == 'تغيير كلمة المرور') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
-          );
-        } else if (title == 'الإشعارات') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const NotificationsPage()),
-          );
-        } else if (title == 'الخصوصية') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PrivacyPage()),
-          );
-        }
+          child: Icon(
+            Icons.image_outlined,
+            color: primaryColor.withValues(alpha: 0.3),
+          ),
+        );
       },
     );
   }
-*/
+
+  Widget _buildReelsGrid(bool isDark, Color primaryColor) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 2),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
+        childAspectRatio: 0.6,
+      ),
+      itemCount: 8,
+      itemBuilder: (context, index) {
+        return Container(
+          color: primaryColor.withValues(alpha: 0.1),
+          child: Stack(
+            children: [
+              Center(
+                child: Icon(
+                  Icons.play_arrow_outlined,
+                  color: primaryColor.withValues(alpha: 0.3),
+                ),
+              ),
+              const Positioned(
+                bottom: 8,
+                left: 8,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.play_arrow_outlined,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                    Text(
+                      '1.2K',
+                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar, {required this.backgroundColor});
+
+  final TabBar _tabBar;
+  final Color backgroundColor;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(color: backgroundColor, child: _tabBar);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
 }

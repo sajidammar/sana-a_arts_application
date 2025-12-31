@@ -57,20 +57,21 @@ class Exhibition {
       description: json['description'] ?? '',
       date: json['date'] ?? '',
       location: json['location'] ?? '',
-      artworksCount: json['artworksCount'] ?? 0,
-      visitorsCount: json['visitorsCount'] ?? 0,
-      imageUrl: json['imageUrl'] ?? '',
-      isFeatured: json['isFeatured'] ?? false,
+      artworksCount: json['artworks_count'] ?? 0,
+      visitorsCount: json['visitors_count'] ?? 0,
+      imageUrl: json['image_url'] ?? '',
+      isFeatured: json['is_featured'] == 1 || json['is_featured'] == true,
       startDate: DateTime.parse(
-        json['startDate'] ?? DateTime.now().toIso8601String(),
+        json['start_date'] ?? DateTime.now().toIso8601String(),
       ),
       endDate: DateTime.parse(
-        json['endDate'] ?? DateTime.now().toIso8601String(),
+        json['end_date'] ?? DateTime.now().toIso8601String(),
       ),
       tags: List<String>.from(json['tags'] ?? []),
       rating: (json['rating'] ?? 0.0).toDouble(),
-      ratingCount: json['ratingCount'] ?? 0,
-      isActive: true,
+      ratingCount: json['rating_count'] ?? 0,
+      isActive: json['is_active'] == 1 || json['is_active'] == true,
+      isLiked: json['is_liked'] == 1 || json['is_liked'] == true,
     );
   }
 
@@ -100,17 +101,17 @@ class Exhibition {
       'description': description,
       'date': date,
       'location': location,
-      'artworksCount': artworksCount,
-      'visitorsCount': visitorsCount,
-      'imageUrl': imageUrl,
-      'isFeatured': isFeatured ? 1 : 0,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
+      'artworks_count': artworksCount,
+      'visitors_count': visitorsCount,
+      'image_url': imageUrl,
+      'is_featured': isFeatured ? 1 : 0,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate.toIso8601String(),
       'tags': jsonEncode(tags),
       'rating': rating,
-      'ratingCount': ratingCount,
-      'isActive': isActive ? 1 : 0,
-      'isLiked': isLiked ? 1 : 0,
+      'rating_count': ratingCount,
+      'is_active': isActive ? 1 : 0,
+      'is_liked': isLiked ? 1 : 0,
     };
   }
 }
@@ -199,4 +200,3 @@ extension ExhibitionTypeExtension on ExhibitionType {
     }
   }
 }
-

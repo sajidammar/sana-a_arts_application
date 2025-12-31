@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/core/localization/app_localizations.dart';
 import 'package:sanaa_artl/features/academies/views/home_view.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/academies/controllers/workshop_provider.dart';
@@ -8,8 +9,6 @@ import 'package:sanaa_artl/features/community/controllers/community_provider.dar
 import 'package:sanaa_artl/features/exhibitions/views/home/home_page.dart';
 import 'package:sanaa_artl/features/home/views/shared/bottom_navigation_bar.dart';
 import 'package:sanaa_artl/features/home/views/shared/side_drawer.dart';
-import 'package:sanaa_artl/features/home/views/widgets/ads_banner.dart';
-import 'package:sanaa_artl/features/home/views/widgets/featured_exhibitions.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:sanaa_artl/features/profile/views/user_editing.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
@@ -27,6 +26,7 @@ import 'package:sanaa_artl/features/artworks_management/views/artworks_managemen
 import 'package:sanaa_artl/features/my_exhibitions/views/my_exhibitions_view.dart';
 import 'package:sanaa_artl/features/my_certificates/views/my_certificates_view.dart';
 import 'package:sanaa_artl/management/views/dashboard/management_home_view.dart';
+import 'package:sanaa_artl/features/chat/views/chat_hub_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
     const AcademyHomeView(),
     const ExhibitionHomePage(),
     const StorePage(),
-    const _HomeContent(),
+    const ChatHubView(),
   ];
 
   void _openDrawer() {
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
             onChanged: _handleSearch,
             style: TextStyle(color: AppColors.getTextColor(isDark)),
             decoration: InputDecoration(
-              hintText: 'ابحث...',
+              hintText: context.tr('search'),
               hintStyle: TextStyle(
                 color: AppColors.getSubtextColor(isDark),
                 fontFamily: 'Tajawal',
@@ -339,25 +339,6 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-    );
-  }
-}
-
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate([
-            const AdsBanner(),
-            const FeaturedExhibitions(),
-            const SizedBox(height: 20),
-          ]),
-        ),
-      ],
     );
   }
 }

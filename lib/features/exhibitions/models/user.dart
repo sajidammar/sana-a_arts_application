@@ -16,6 +16,7 @@ class User {
   final bool isPhoneVerified;
   final int points;
   final String membershipLevel;
+  final String? cvUrl;
 
   User({
     required this.id,
@@ -35,6 +36,7 @@ class User {
     this.isPhoneVerified = false,
     this.points = 0,
     this.membershipLevel = 'عادي',
+    this.cvUrl,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -62,6 +64,7 @@ class User {
       isPhoneVerified: json['isPhoneVerified'] ?? false,
       points: json['points'] ?? 0,
       membershipLevel: json['membershipLevel'] ?? 'عادي',
+      cvUrl: json['cvUrl'],
     );
   }
 
@@ -97,6 +100,7 @@ class User {
       isPhoneVerified: (map['is_phone_verified'] ?? 0) == 1,
       points: map['points'] ?? 0,
       membershipLevel: map['membership_level'] ?? 'عادي',
+      cvUrl: map['cv_url'],
     );
   }
 
@@ -121,6 +125,7 @@ class User {
       'isPhoneVerified': isPhoneVerified,
       'points': points,
       'membershipLevel': membershipLevel,
+      'cvUrl': cvUrl,
     };
   }
 
@@ -234,4 +239,3 @@ class PurchaseHistory {
     };
   }
 }
-
