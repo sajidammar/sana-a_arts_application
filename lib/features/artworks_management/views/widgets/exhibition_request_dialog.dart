@@ -14,12 +14,20 @@ class _ExhibitionRequestDialogState extends State<ExhibitionRequestDialog> {
   // Mock artworks selection
   final List<String> _selectedArtworks = [];
   final List<Map<String, dynamic>> _availableArtworks = [
-    {'id': '1', 'title': 'غروب صنعاء', 'image': 'assets/images/image1.jpg'},
-    {'id': '2', 'title': 'تراث يمني', 'image': 'assets/images/image2.jpg'},
+    {
+      'id': '1',
+      'title': 'غروب صنعاء',
+      'image': 'assets/images/sanaa_img_01.jpg',
+    },
+    {
+      'id': '2',
+      'title': 'تراث يمني',
+      'image': 'assets/images/sanaa_img_02.jpg',
+    },
     {
       'id': '4',
       'title': 'طبيعة حضرموت',
-      'image': 'assets/images/image.jpg',
+      'image': 'assets/images/sanaa_img_03.jpg',
     }, // Using placeholder names
   ];
 
@@ -265,6 +273,3 @@ class _ExhibitionRequestDialogState extends State<ExhibitionRequestDialog> {
     );
   }
 }
-
-
-

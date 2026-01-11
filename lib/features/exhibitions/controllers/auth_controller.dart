@@ -1,9 +1,9 @@
-import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 
 /// AuthController - وحدة تحكم المصادقة (Controller في MVC)
-/// تعمل كواجهة للـ AuthProvider
+/// تعمل كواجهة للـ UserProvider
 class AuthController {
-  final AuthProvider _authProvider;
+  final UserProvider _authProvider;
 
   AuthController(this._authProvider);
 
@@ -34,7 +34,7 @@ class AuthController {
 
   /// تحديث الملف الشخصي
   Future<bool> updateProfile(Map<String, dynamic> userData) async {
-    return await _authProvider.updateProfile(userData);
+    return await _authProvider.updateCurrentUser(userData);
   }
 
   /// مسح الخطأ
@@ -44,14 +44,12 @@ class AuthController {
 
   /// تحميل الجلسة المحفوظة
   Future<void> loadSavedSession() async {
-    await _authProvider.loadSavedSession();
+    await _authProvider.initialize();
   }
 
   // Getters
   bool get isAuthenticated => _authProvider.isAuthenticated;
   bool get isLoading => _authProvider.isLoading;
-  String get error => _authProvider.error;
+  String get error => _authProvider.error ?? '';
   String get currentUserId => _authProvider.currentUserId;
 }
-
-

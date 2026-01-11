@@ -3,11 +3,14 @@ import 'package:sanaa_artl/features/exhibitions/models/user.dart';
 import 'package:sanaa_artl/core/utils/database/dao/user_dao.dart';
 import 'package:sanaa_artl/core/utils/database/database_helper.dart';
 import 'package:sanaa_artl/core/utils/database/dao/seed_data.dart';
+import 'package:sanaa_artl/features/auth/data/auth_repository.dart';
+import 'package:sanaa_artl/features/auth/data/auth_repository_impl.dart';
 
 /// UserProvider - مزود بيانات المستخدم (Controller في MVC)
 /// يدير المستخدم الحالي والعمليات المتعلقة بالمستخدمين
 class UserProvider with ChangeNotifier {
   final UserDao _userDao = UserDao();
+  final AuthRepository _authRepository = AuthRepositoryImpl();
   User? _currentUser;
   bool _isLoading = false;
   bool _isInitialized = false;
@@ -18,6 +21,8 @@ class UserProvider with ChangeNotifier {
   bool get isInitialized => _isInitialized;
   String? get error => _error;
   bool get isLoggedIn => _currentUser != null;
+  bool get isAuthenticated => _currentUser != null;
+  String get currentUserId => _currentUser?.id ?? 'guest';
 
   /// تهيئة قاعدة البيانات والمستخدم
   Future<void> initialize() async {
@@ -34,8 +39,7 @@ class UserProvider with ChangeNotifier {
       final seedData = SeedData();
       await seedData.seedAll();
 
-      // تحميل المستخدم الحالي (محلياً)
-      await _loadCurrentUser();
+      _currentUser = await _loadCurrentUser();
 
       _isInitialized = true;
       _error = null;
@@ -49,15 +53,16 @@ class UserProvider with ChangeNotifier {
   }
 
   /// تحميل المستخدم الحالي
-  Future<void> _loadCurrentUser() async {
+  Future<User?> _loadCurrentUser() async {
     try {
       final userMap = await _userDao.getUserWithPreferences('current_user');
       if (userMap != null) {
-        _currentUser = User.fromMap(userMap);
+        return User.fromMap(userMap);
       }
     } catch (e) {
       debugPrint('خطأ في تحميل المستخدم: $e');
     }
+    return null;
   }
 
   /// الحصول على مستخدم بالمعرف
@@ -68,7 +73,7 @@ class UserProvider with ChangeNotifier {
         return User.fromMap(userMap);
       }
     } catch (e) {
-      debugPrint('خطأ في جلب المستخدم: $e');
+      return null;
     }
     return null;
   }
@@ -79,7 +84,6 @@ class UserProvider with ChangeNotifier {
       final artistMaps = await _userDao.getUsersByRole('artist');
       return artistMaps.map((map) => User.fromMap(map)).toList();
     } catch (e) {
-      debugPrint('خطأ في جلب الفنانين: $e');
       return [];
     }
   }
@@ -90,7 +94,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       await _userDao.updateUser(_currentUser!.id, updates);
-      await _loadCurrentUser();
+      _currentUser = await _loadCurrentUser();
       notifyListeners();
       return true;
     } catch (e) {
@@ -106,7 +110,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       await _userDao.upsertUserPreferences(_currentUser!.id, preferences);
-      await _loadCurrentUser();
+      _currentUser = await _loadCurrentUser();
       notifyListeners();
       return true;
     } catch (e) {
@@ -122,7 +126,6 @@ class UserProvider with ChangeNotifier {
       final userMaps = await _userDao.searchUsers(query);
       return userMaps.map((map) => User.fromMap(map)).toList();
     } catch (e) {
-      debugPrint('خطأ في البحث: $e');
       return [];
     }
   }
@@ -138,6 +141,136 @@ class UserProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  /// تسجيل الخروج
+  Future<void> logout() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _authRepository.logout();
+      // مسح البيانات المحلية أيضاً
+      await _userDao.deleteUser('current_user');
+      _currentUser = null;
+    } catch (e) {
+      debugPrint('Logout error: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// تسجيل الدخول (يدعم الربط مع المستودع)
+  Future<bool> login(String email, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    final result = await _authRepository.login(email, password);
+
+    return result.fold(
+      (failure) {
+        _error = failure.message;
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      },
+      (user) async {
+        _currentUser = user;
+        // حفظ في قاعدة البيانات المحلية بتنسيق الجدول
+        final dbMap = {
+          'id': user.id,
+          'name': user.name,
+          'email': user.email,
+          'phone': user.phone,
+          'profile_image': user.profileImage,
+          'role': user.role.index == 3
+              ? 'admin'
+              : user.role.index == 1
+              ? 'artist'
+              : 'user',
+          'bio': user.bio,
+          'cv_url': user.cvUrl,
+        };
+        await _userDao.insertUser(dbMap);
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
+  // إضافة حقل مستعار للتوافق مع بعض الأكواد القديمة
+  User get user =>
+      _currentUser ??
+      User(
+        id: 'guest',
+        name: 'زائر',
+        email: '',
+        phone: '',
+        profileImage: 'assets/images/sanaa_img_01.jpg',
+        role: UserRole.user,
+        joinDate: DateTime.now(),
+        preferences: UserPreferences(),
+        bio: 'فنان يمني مبدع يشارك أعماله على منصة صنعاء للفنون.',
+      );
+
+  /// تسجيل مستخدم جديد
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    final result = await _authRepository.register({
+      'name': name,
+      'email': email,
+      'password': password,
+      'phone': phone,
+    });
+
+    return result.fold(
+      (failure) {
+        _error = failure.message;
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      },
+      (user) async {
+        _currentUser = user;
+        // حفظ في قاعدة البيانات المحلية بتنسيق الجدول
+        final dbMap = {
+          'id': user.id,
+          'name': user.name,
+          'email': user.email,
+          'phone': user.phone,
+          'profile_image': user.profileImage,
+          'role': user.role.index == 3
+              ? 'admin'
+              : user.role.index == 1
+              ? 'artist'
+              : 'user',
+          'bio': user.bio,
+          'cv_url': user.cvUrl,
+        };
+        await _userDao.insertUser(dbMap);
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
+  /// التحقق من تسجيل الدخول (للعمليات التي تتطلب مصادقة)
+  bool requireAuth(Function onNotAuthenticated) {
+    if (!isAuthenticated) {
+      onNotAuthenticated();
+      return false;
+    }
+    return true;
+  }
 }
-
-

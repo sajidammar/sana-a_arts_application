@@ -206,7 +206,7 @@ class SideDrawer extends StatelessWidget {
                       ),
                     ],
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/image1.jpg'),
+                      image: AssetImage('assets/images/sanaa_img_01.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),

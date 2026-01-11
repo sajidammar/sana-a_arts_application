@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/core/localization/app_localizations.dart';
-import 'package:sanaa_artl/features/academies/views/home_view.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/academies/controllers/workshop_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/product_provider.dart';
@@ -10,23 +9,21 @@ import 'package:sanaa_artl/features/exhibitions/views/home/home_page.dart';
 import 'package:sanaa_artl/features/home/views/shared/bottom_navigation_bar.dart';
 import 'package:sanaa_artl/features/home/views/shared/side_drawer.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
+import 'package:sanaa_artl/core/services/notification_service.dart';
 import 'package:sanaa_artl/features/wishlist/controllers/wishlist_provider.dart';
+import 'package:sanaa_artl/features/wishlist/views/wishlist_view.dart';
+import 'package:sanaa_artl/features/notifications/views/notifications_view.dart';
 import 'package:sanaa_artl/features/about/views/about_view.dart';
 import 'package:sanaa_artl/features/community/views/community_view.dart';
 import 'package:sanaa_artl/features/profile/views/profile_view.dart';
-import 'package:sanaa_artl/features/store/views/home_page.dart';
-import 'package:sanaa_artl/features/wishlist/views/wishlist_view.dart';
-import 'package:sanaa_artl/features/help/views/help_page.dart';
-import 'package:sanaa_artl/features/settings/views/privacy_page.dart';
-import 'package:sanaa_artl/features/store/views/order/order_history_page.dart';
-import 'package:sanaa_artl/features/notifications/views/notifications_view.dart';
-import 'package:sanaa_artl/features/artworks_management/views/artworks_management_view.dart';
-import 'package:sanaa_artl/features/my_exhibitions/views/my_exhibitions_view.dart';
-import 'package:sanaa_artl/features/my_certificates/views/my_certificates_view.dart';
-import 'package:sanaa_artl/features/admin/views/dashboard/admin_dashboard_view.dart';
 import 'package:sanaa_artl/features/chat/views/chat_hub_view.dart';
+import 'package:sanaa_artl/features/settings/views/privacy_page.dart';
+import 'package:sanaa_artl/features/help/views/help_page.dart';
+import 'package:sanaa_artl/features/admin/views/dashboard/admin_dashboard_view.dart';
+import 'package:sanaa_artl/core/widgets/coming_soon_page.dart';
+import 'package:sanaa_artl/core/widgets/coming_soon_page_with_back.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -48,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         context,
         listen: false,
       );
-      Provider.of<UserProvider1>(context, listen: false);
+      Provider.of<UserProvider>(context, listen: false);
       final wishlistProvider = Provider.of<WishlistProvider>(
         context,
         listen: false,
@@ -59,6 +56,13 @@ class _HomePageState extends State<HomePage> {
       //   wishlistProvider.setUserId(userProvider.currentUser!.id);
       // }
       wishlistProvider.loadWishlist(productProvider.products);
+
+      // اختبار الإشعارات عند الدخول
+      NotificationService().showNotification(
+        id: 0,
+        title: 'مرحباً بك في سناء للفنون ✨',
+        body: 'تم تفعيل نظام الإشعارات والمزامنة الذكي بنجاح.',
+      );
     });
   }
 
@@ -95,9 +99,19 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const CommunityPage(),
-    const AcademyHomeView(),
+    const ComingSoonPage(
+      featureName: 'الأكاديمية',
+      description:
+          'أكاديمية الفنون قيد التطوير\nسيتم إطلاقها قريباً مع دورات ومحاضرات فنية متنوعة',
+      icon: Icons.school_rounded,
+    ),
     const ExhibitionHomePage(),
-    const StorePage(),
+    const ComingSoonPage(
+      featureName: 'المتجر',
+      description:
+          'متجر الأعمال الفنية قيد التطوير\nسيتم إطلاقه قريباً مع مجموعة رائعة من اللوحات والمنتجات الفنية',
+      icon: Icons.store_rounded,
+    ),
     const ChatHubView(),
   ];
 
@@ -298,7 +312,14 @@ class _HomePageState extends State<HomePage> {
         onOrdersPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const OrderHistoryPage()),
+            MaterialPageRoute(
+              builder: (context) => const ComingSoonPageWithBack(
+                featureName: 'طلباتي',
+                description:
+                    'صفحة طلباتك قيد التطوير\nستتمكن قريباً من متابعة جميع طلباتك ومشترياتك',
+                icon: Icons.shopping_bag_outlined,
+              ),
+            ),
           );
         },
         onWishlistPressed: _navigateToWishlist,
@@ -306,20 +327,39 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ArtworksManagementView(),
+              builder: (context) => const ComingSoonPageWithBack(
+                featureName: 'إدارة الأعمال الفنية',
+                description:
+                    'صفحة إدارة أعمالك الفنية قيد التطوير\nستتمكن قريباً من إضافة وتعديل وحذف أعمالك الفنية',
+                icon: Icons.palette_outlined,
+              ),
             ),
           );
         },
         onMyExhibitionsPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MyExhibitionsView()),
+            MaterialPageRoute(
+              builder: (context) => const ComingSoonPageWithBack(
+                featureName: 'معارضي',
+                description:
+                    'صفحة معارضك الفنية قيد التطوير\nستتمكن قريباً من إدارة ومتابعة جميع معارضك',
+                icon: Icons.museum_outlined,
+              ),
+            ),
           );
         },
         onMyCertificatesPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MyCertificatesView()),
+            MaterialPageRoute(
+              builder: (context) => const ComingSoonPageWithBack(
+                featureName: 'الشهادات والإنجازات',
+                description:
+                    'صفحة شهاداتك وإنجازاتك قيد التطوير\nستتمكن قريباً من عرض جميع شهاداتك الفنية',
+                icon: Icons.workspace_premium_outlined,
+              ),
+            ),
           );
         },
         onAdminPressed: () {

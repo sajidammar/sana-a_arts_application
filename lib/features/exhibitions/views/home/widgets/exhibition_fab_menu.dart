@@ -295,7 +295,10 @@ class _ExhibitionMenuContent extends StatelessWidget {
     if (type == ExhibitionType.virtual) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const VRExhibitionPage()),
+        MaterialPageRoute(
+          builder: (_) =>
+              const VRExhibitionPage(exhibitionTitle: 'معرضي الافتراضي'),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -304,5 +307,3 @@ class _ExhibitionMenuContent extends StatelessWidget {
     }
   }
 }
-
-

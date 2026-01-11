@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/features/exhibitions/models/exhibition.dart';
+import 'package:sanaa_artl/features/exhibitions/models/artwork.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/vr_provider.dart';
 
@@ -169,24 +170,69 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
 
   void _handleExhibitionTap(BuildContext context, Exhibition exhibition) {
     if (exhibition.type == ExhibitionType.virtual) {
-      _openVirtualExhibition(context);
+      _openVirtualExhibition(context, exhibition);
     } else {
       _viewOpenExhibition(context, exhibition);
     }
   }
 
-  void _openVirtualExhibition(BuildContext context) {
+  Future<void> _openVirtualExhibition(
+    BuildContext context,
+    Exhibition exhibition,
+  ) async {
     final exhibitionProvider = Provider.of<ExhibitionProvider>(
       context,
       listen: false,
     );
     final vrProvider = Provider.of<VRProvider>(context, listen: false);
 
-    vrProvider.loadArtworks(exhibitionProvider.artworks);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const VRExhibitionPage()),
+    // Load artworks from database if not already loaded
+    if (exhibitionProvider.artworks.isEmpty) {
+      await exhibitionProvider.loadArtworks();
+    }
+
+    // Get artworks specific to this exhibition
+    final exhibitionArtworks = exhibitionProvider.getArtworksByExhibition(
+      exhibition.id,
     );
+
+    // Create cover artwork from exhibition
+    final coverArtwork = Artwork(
+      id: 'cover_${exhibition.id}',
+      title: exhibition.title,
+      artist: exhibition.curator,
+      artistId: 'curator',
+      year: DateTime.now().year,
+      technique: 'واجهة المعرض',
+      dimensions: '',
+      description: exhibition.description,
+      rating: exhibition.rating,
+      ratingCount: exhibition.ratingCount,
+      price: 0,
+      currency: 'YER',
+      category: 'Exhibition Cover',
+      tags: exhibition.tags,
+      imageUrl: exhibition.imageUrl,
+      createdAt: DateTime.now(),
+      isFeatured: true,
+      isForSale: false,
+    );
+
+    // Combine cover with other artworks
+    final allArtworks = [coverArtwork, ...exhibitionArtworks];
+    vrProvider.loadArtworks(allArtworks);
+
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VRExhibitionPage(
+            exhibitionTitle: exhibition.title,
+            exhibitionImageUrl: exhibition.imageUrl,
+          ),
+        ),
+      );
+    }
   }
 
   void _viewOpenExhibition(BuildContext context, Exhibition exhibition) {
@@ -208,5 +254,3 @@ class _ExhibitionsPageState extends State<ExhibitionsPage>
     return 1;
   }
 }
-
-

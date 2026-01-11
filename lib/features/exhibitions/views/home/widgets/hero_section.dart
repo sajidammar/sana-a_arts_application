@@ -22,9 +22,9 @@ class _HeroSectionState extends State<HeroSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final List<String> _heroImages = [
-    'assets/images/image1.jpg',
-    'assets/images/image2.jpg',
-    'assets/images/image3.jpg',
+    'assets/images/sanaa_img_01.jpg',
+    'assets/images/sanaa_img_02.jpg',
+    'assets/images/sanaa_img_03.jpg',
   ];
 
   @override
@@ -288,6 +288,3 @@ class _ExhibitionPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
-
-

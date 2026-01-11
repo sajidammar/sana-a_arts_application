@@ -267,7 +267,10 @@ class ExhibitionTypesSection extends StatelessWidget {
     vrProvider.loadArtworks(exhibitionProvider.artworks);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const VRExhibitionPage()),
+      MaterialPageRoute(
+        builder: (context) =>
+            const VRExhibitionPage(exhibitionTitle: 'معرض افتراضي تجريبي'),
+      ),
     );
   }
 
@@ -287,5 +290,3 @@ class ExhibitionTypesSection extends StatelessWidget {
     return 1;
   }
 }
-
-

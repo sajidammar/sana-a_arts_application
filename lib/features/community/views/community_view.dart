@@ -46,26 +46,30 @@ class _CommunityPageState extends State<CommunityPage>
 
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(isDark),
+      appBar: null,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
-            SliverAppBar(
-              toolbarHeight: 0,
-              backgroundColor: AppColors.getCardColor(isDark),
-              elevation: 1,
-              pinned: true,
-              floating: true,
-              snap: true,
-              forceElevated: innerBoxIsScrolled,
-              bottom: TabBar(
-                controller: _tabController,
-                labelColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: AppColors.getSubtextColor(isDark),
-                indicatorColor: Theme.of(context).primaryColor,
-                tabs: const [
-                  Tab(text: 'المنشورات'),
-                  Tab(text: 'الريلز'),
-                ],
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                toolbarHeight: 0,
+                backgroundColor: AppColors.getCardColor(isDark),
+                elevation: 1,
+                pinned: true,
+                floating: true,
+                snap: true,
+                forceElevated: innerBoxIsScrolled,
+                bottom: TabBar(
+                  controller: _tabController,
+                  labelColor: Theme.of(context).primaryColor,
+                  unselectedLabelColor: AppColors.getSubtextColor(isDark),
+                  indicatorColor: Theme.of(context).primaryColor,
+                  tabs: const [
+                    Tab(text: 'المنشورات'),
+                    Tab(text: 'الريلز'),
+                  ],
+                ),
               ),
             ),
           ];
@@ -106,12 +110,21 @@ class _CommunityPageState extends State<CommunityPage>
           return const Center(child: Text('لا توجد منشورات حتى الآن'));
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: provider.posts.length,
-          itemBuilder: (context, index) {
-            return PostCard(post: provider.posts[index]);
-          },
+        return CustomScrollView(
+          key: PageStorageKey<String>('posts'),
+          slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return PostCard(post: provider.posts[index]);
+                }, childCount: provider.posts.length),
+              ),
+            ),
+          ],
         );
       },
     );
@@ -134,55 +147,64 @@ class _CommunityPageState extends State<CommunityPage>
     }
 
     if (provider.reels.isEmpty) {
-      return Center(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.movie_filter_outlined,
-                size: 80,
-                color: Colors.grey,
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.movie_filter_outlined,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'لا توجد ريلز حالياً',
+                    style: TextStyle(fontFamily: 'Tajawal', fontSize: 18),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => provider.initialize(),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text(
+                      'تنشيط البيانات',
+                      style: TextStyle(fontFamily: 'Tajawal'),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'لا توجد ريلز حالياً',
-                style: TextStyle(fontFamily: 'Tajawal', fontSize: 18),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: () => provider.initialize(),
-                icon: const Icon(Icons.refresh),
-                label: const Text(
-                  'تنشيط البيانات',
-                  style: TextStyle(fontFamily: 'Tajawal'),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'الريلز المميزة',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Tajawal',
+    return CustomScrollView(
+      key: PageStorageKey<String>('reels'),
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Text(
+              'الريلز المميزة',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+              ),
             ),
           ),
-          const SizedBox(height: 20),
-          // القائمة الأفقية (Story style)
-          SizedBox(
-            height: 120,
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 120 + 20.0, // adjusted height
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               scrollDirection: Axis.horizontal,
               itemCount: provider.reels.length,
               itemBuilder: (context, index) {
@@ -203,27 +225,29 @@ class _CommunityPageState extends State<CommunityPage>
               },
             ),
           ),
-          const SizedBox(height: 32),
-          Text(
-            'اكتشف المزيد',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Tajawal',
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Text(
+              'اكتشف المزيد',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Tajawal',
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          // Grid for all reels
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.7,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),
-            itemCount: provider.reels.length,
-            itemBuilder: (context, index) {
+            delegate: SliverChildBuilderDelegate((context, index) {
               return ReelGridItem(
                 reel: provider.reels[index],
                 onTap: () {
@@ -238,10 +262,11 @@ class _CommunityPageState extends State<CommunityPage>
                   );
                 },
               );
-            },
+            }, childCount: provider.reels.length),
           ),
-        ],
-      ),
+        ),
+        const SliverPadding(padding: EdgeInsets.only(bottom: 20)),
+      ],
     );
   }
 }

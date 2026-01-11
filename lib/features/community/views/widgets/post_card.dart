@@ -41,7 +41,7 @@ class PostCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: Theme.of(context).primaryColor,
                   backgroundImage: post.author.profileImage.isNotEmpty
-                      ? NetworkImage(post.author.profileImage)
+                      ? _getImageProvider(post.author.profileImage)
                       : null,
                   child: post.author.profileImage.isEmpty
                       ? const Icon(Icons.person, color: Colors.white)
@@ -143,16 +143,19 @@ class PostCard extends StatelessWidget {
 
           // Image
           if (post.imageUrl != null && post.imageUrl!.isNotEmpty)
-            Container(
-              height: 250,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: _getImageProvider(post.imageUrl!),
-                  fit: BoxFit.cover,
+            if (post.imageUrl != null && post.imageUrl!.isNotEmpty)
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: _getImageProvider(post.imageUrl!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
-            ),
 
           // Actions
           Padding(
@@ -241,8 +244,11 @@ class PostCard extends StatelessWidget {
     return 'الآن';
   }
 
-  /// Helper to get the correct ImageProvider based on image path
   ImageProvider _getImageProvider(String imageUrl) {
+    // Local assets
+    if (imageUrl.startsWith('assets/')) {
+      return AssetImage(imageUrl);
+    }
     // Network image
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return NetworkImage(imageUrl);
@@ -257,10 +263,7 @@ class PostCard extends StatelessWidget {
         return FileImage(file);
       }
     }
-    // Asset image (fallback)
+    // Fallback
     return AssetImage(imageUrl);
   }
 }
-
-
-

@@ -17,6 +17,7 @@ class User {
   final int points;
   final String membershipLevel;
   final String? cvUrl;
+  final String bio;
 
   User({
     required this.id,
@@ -37,6 +38,7 @@ class User {
     this.points = 0,
     this.membershipLevel = 'عادي',
     this.cvUrl,
+    this.bio = 'فنان يمني مبدع يشارك أعماله على منصة صنعاء للفنون.',
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -65,6 +67,7 @@ class User {
       points: json['points'] ?? 0,
       membershipLevel: json['membershipLevel'] ?? 'عادي',
       cvUrl: json['cvUrl'],
+      bio: json['bio'] ?? 'فنان يمني مبدع يشارك أعماله على منصة صنعاء للفنون.',
     );
   }
 
@@ -101,6 +104,7 @@ class User {
       points: map['points'] ?? 0,
       membershipLevel: map['membership_level'] ?? 'عادي',
       cvUrl: map['cv_url'],
+      bio: map['bio'] ?? 'فنان يمني مبدع يشارك أعماله على منصة صنعاء للفنون.',
     );
   }
 
@@ -126,6 +130,7 @@ class User {
       'points': points,
       'membershipLevel': membershipLevel,
       'cvUrl': cvUrl,
+      'bio': bio,
     };
   }
 
@@ -141,6 +146,50 @@ class User {
       default:
         return UserRole.user;
     }
+  }
+
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? profileImage,
+    UserRole? role,
+    DateTime? joinDate,
+    DateTime? lastLogin,
+    List<String>? favoriteArtworks,
+    List<String>? favoriteArtists,
+    List<String>? favoriteExhibitions,
+    List<PurchaseHistory>? purchaseHistory,
+    UserPreferences? preferences,
+    bool? isEmailVerified,
+    bool? isPhoneVerified,
+    int? points,
+    String? membershipLevel,
+    String? cvUrl,
+    String? bio,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      profileImage: profileImage ?? this.profileImage,
+      role: role ?? this.role,
+      joinDate: joinDate ?? this.joinDate,
+      lastLogin: lastLogin ?? this.lastLogin,
+      favoriteArtworks: favoriteArtworks ?? this.favoriteArtworks,
+      favoriteArtists: favoriteArtists ?? this.favoriteArtists,
+      favoriteExhibitions: favoriteExhibitions ?? this.favoriteExhibitions,
+      purchaseHistory: purchaseHistory ?? this.purchaseHistory,
+      preferences: preferences ?? this.preferences,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
+      points: points ?? this.points,
+      membershipLevel: membershipLevel ?? this.membershipLevel,
+      cvUrl: cvUrl ?? this.cvUrl,
+      bio: bio ?? this.bio,
+    );
   }
 }
 

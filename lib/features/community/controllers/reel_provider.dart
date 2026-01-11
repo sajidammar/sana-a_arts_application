@@ -3,6 +3,8 @@ import 'package:sanaa_artl/features/community/models/reel.dart';
 import 'package:sanaa_artl/core/utils/database/dao/reel_dao.dart';
 import 'package:sanaa_artl/core/utils/database/dao/reel_comment_dao.dart';
 import 'package:sanaa_artl/core/utils/database/dao/follow_dao.dart';
+import 'package:sanaa_artl/core/services/connectivity_service.dart';
+import 'package:sanaa_artl/core/services/notification_service.dart';
 
 /// ReelProvider - مزود بيانات الريلز (Reels)
 /// يدير مقاطع الفيديو القصيرة وحالة التفاعل معها
@@ -21,21 +23,26 @@ class ReelProvider with ChangeNotifier {
 
   /// تهيئة البيانات
   Future<void> initialize() async {
-    debugPrint('🎬 Initializing ReelProvider...');
     _isLoading = true;
     notifyListeners();
 
     try {
       await loadReels();
-      debugPrint('🎬 Reels loaded: ${_reels.length}');
       if (_reels.isEmpty) {
-        debugPrint('🎬 No reels found, generating demo reels...');
         await _generateDemoReels();
-        debugPrint('🎬 Reels after demo generation: ${_reels.length}');
+      }
+
+      // إضافة الفيديو الجديد يدوياً إذا لم يكن موجوداً
+      await _ensureUserVideoExists();
+
+      // إعداد مستمع الاتصال
+      _setupConnectivityListener();
+
+      // مزامنة العناصر العالقة إذا كنا متصلين
+      if (ConnectivityService().isConnected.value) {
+        syncPendingReels();
       }
     } catch (e) {
-      debugPrint('❌ Error initializing ReelProvider: $e');
-    } finally {
       _isLoading = false;
       notifyListeners();
     }
@@ -48,7 +55,7 @@ class ReelProvider with ChangeNotifier {
       _reels = reelMaps.map((map) => Reel.fromJson(map)).toList();
       notifyListeners();
     } catch (e) {
-      debugPrint('Error loading reels: $e');
+      // Error loading reels
     }
   }
 
@@ -68,7 +75,7 @@ class ReelProvider with ChangeNotifier {
       );
       notifyListeners();
     } catch (e) {
-      debugPrint('Error toggling like on reel: $e');
+      // Error toggling like
     }
   }
 
@@ -82,7 +89,7 @@ class ReelProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Error incrementing views on reel: $e');
+      // Error incrementing views
     }
   }
 
@@ -101,7 +108,7 @@ class ReelProvider with ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      debugPrint('Error toggling follow: $e');
+      // Error toggling follow
     }
   }
 
@@ -135,7 +142,7 @@ class ReelProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Error adding comment: $e');
+      // Error adding comment
     }
   }
 
@@ -145,8 +152,69 @@ class ReelProvider with ChangeNotifier {
       await _reelDao.insertReel(reel.toJson());
       _reels.insert(0, reel);
       notifyListeners();
+
+      // إذا كان العنصر تمت إضافته وأنت أونلاين، نقوم "بمحاكاة" المزامنة فوراً
+      if (reel.syncStatus == 'pending' &&
+          ConnectivityService().isConnected.value) {
+        syncPendingReels();
+      }
     } catch (e) {
-      debugPrint('Error adding reel: $e');
+      // Error adding reel
+    }
+  }
+
+  /// إعداد مستمع حالة الاتصال
+  void _setupConnectivityListener() {
+    ConnectivityService().isConnected.addListener(() {
+      if (ConnectivityService().isConnected.value) {
+        syncPendingReels();
+      }
+    });
+  }
+
+  /// مزامنة الريلز المعلقة (pending)
+  Future<void> syncPendingReels() async {
+    final pendingReels = _reels
+        .where((r) => r.syncStatus == 'pending')
+        .toList();
+    if (pendingReels.isEmpty) return;
+
+    for (var reel in pendingReels) {
+      try {
+        // Syncing pending reel: ${reel.id}
+
+        // محاكاة تأخير الشبكة
+        await Future.delayed(const Duration(seconds: 3));
+
+        final updatedReel = reel.copyWith(syncStatus: 'synced');
+        await _reelDao.insertReel(
+          updatedReel.toJson(),
+        ); // تحديث في قاعدة البيانات
+
+        final index = _reels.indexWhere((r) => r.id == reel.id);
+        if (index != -1) {
+          _reels[index] = updatedReel;
+          notifyListeners();
+        }
+
+        // إشعار بالنجاح بنمط الانستجرام والواتساب
+        await NotificationService().showNotification(
+          id: reel.id.hashCode,
+          title: 'تم النشر بنجاح ✨',
+          body: 'تم مزامنة الريلز الخاص بك: "${reel.description}"',
+        );
+
+        // إخفاء إشعار الانتظار
+        await NotificationService().cancelNotification(1);
+      } catch (e) {
+        // Error syncing reel
+        // إشعار بالفشل
+        await NotificationService().showNotification(
+          id: reel.id.hashCode,
+          title: 'فشل النشر ⚠️',
+          body: 'حدث خطأ أثناء محاولة نشر الريلز. سيتم المحاولة لاحقاً.',
+        );
+      }
     }
   }
 
@@ -157,7 +225,7 @@ class ReelProvider with ChangeNotifier {
         id: 'reel_1',
         authorId: 'artist_1',
         authorName: 'أحمد المقطري',
-        authorAvatar: 'assets/images/image1.jpg',
+        authorAvatar: 'assets/images/sanaa_img_01.jpg',
         videoUrl:
             'https://assets.mixkit.co/videos/preview/mixkit-girl-in-a-field-of-yellow-flowers-157-large.mp4',
         description: 'رسم بورتريه لصنعاء القديمة 🎨 #فن #يمن',
@@ -172,7 +240,7 @@ class ReelProvider with ChangeNotifier {
         id: 'reel_2',
         authorId: 'artist_2',
         authorName: 'فاطمة الحمادي',
-        authorAvatar: 'assets/images/image2.jpg',
+        authorAvatar: 'assets/images/sanaa_img_02.jpg',
         videoUrl:
             'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4',
         description: 'جمال العمارة اليمنية في تفاصيل صغيرة 🏠 #عمارة #تراث',
@@ -187,7 +255,7 @@ class ReelProvider with ChangeNotifier {
         id: 'reel_3',
         authorId: 'artist_3',
         authorName: 'محمد الشامي',
-        authorAvatar: 'assets/images/image3.jpg',
+        authorAvatar: 'assets/images/sanaa_img_03.jpg',
         videoUrl:
             'https://assets.mixkit.co/videos/preview/mixkit-very-close-shot-of-a-painting-brush-4309-large.mp4',
         description: 'تجربة فن الشارع في صنعاء ✨ #شوارع_صنعاء #إبداع',
@@ -205,8 +273,43 @@ class ReelProvider with ChangeNotifier {
     }
   }
 
+  /// التأكد من وجود فيديو المستخدم في قاعدة البيانات
+  Future<void> _ensureUserVideoExists() async {
+    const userVideoId = 'user_custom_video';
+
+    final userReel = Reel(
+      id: userVideoId,
+      authorId: 'current_user',
+      authorName: 'أحمد محمد',
+      authorAvatar: 'assets/images/sanaa_img_01.jpg',
+      videoUrl: 'assets/vedioes/VID_20260105_043950_729.mp4',
+      thumbnailUrl: 'assets/images/sanaa_img_05.jpg',
+      description: 'تجربة عرض الفيديو الجديد في الريلز ✨ #إبداع #يمن',
+      likes: 1500,
+      commentsCount: 45,
+      views: 12500,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      tags: ['تجربة', 'فيديو_جديد', 'فن'],
+    );
+
+    try {
+      // تحديث أو إدراج في قاعدة البيانات
+      await _reelDao.insertReel(userReel.toJson());
+
+      // تحديث القائمة المحلية
+      _reels.removeWhere((r) => r.id == userVideoId);
+      _reels.insert(0, userReel);
+
+      notifyListeners();
+    } catch (e) {
+      // Error ensuring user video
+    }
+  }
+
   /// تنشيط البيانات
   Future<void> refresh() async {
     await loadReels();
+    await _ensureUserVideoExists();
   }
 }

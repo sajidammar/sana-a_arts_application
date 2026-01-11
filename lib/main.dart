@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/features/academies/controllers/registration_provider.dart';
 import 'package:sanaa_artl/features/academies/controllers/workshop_provider.dart';
-import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/navigation_provider.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/vr_provider.dart';
@@ -13,16 +12,18 @@ import 'package:sanaa_artl/features/community/controllers/reel_provider.dart';
 import 'package:sanaa_artl/features/chat/controllers/chat_provider.dart';
 import 'package:sanaa_artl/core/localization/app_localizations.dart';
 import 'package:sanaa_artl/core/localization/language_provider.dart';
-// import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
+import 'package:sanaa_artl/features/auth/controllers/provider.dart';
 import 'package:sanaa_artl/core/themes/app_theme.dart';
 import 'package:sanaa_artl/features/exhibitions/views/home/home_page.dart';
 import 'package:sanaa_artl/features/home/views/home_view.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
 import 'package:sanaa_artl/features/store/views/cart/cart_page.dart';
-import 'package:sanaa_artl/features/store/views/home_page.dart';
 import 'package:sanaa_artl/features/store/views/invoice/invoice_page.dart';
 import 'package:sanaa_artl/features/store/views/order/order_history_page.dart';
 // Providers
+import 'package:sanaa_artl/core/services/storage_service.dart';
+import 'package:sanaa_artl/core/services/connectivity_service.dart';
+import 'package:sanaa_artl/core/services/notification_service.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/cart_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/order_provider.dart';
@@ -30,6 +31,9 @@ import 'package:sanaa_artl/features/store/controllers/product_provider.dart';
 import 'package:sanaa_artl/features/store/controllers/invoice_provider.dart';
 import 'package:sanaa_artl/features/wishlist/controllers/wishlist_provider.dart';
 import 'package:sanaa_artl/features/admin/controllers/admin_provider.dart';
+import 'package:sanaa_artl/core/controllers/app_status_provider.dart';
+import 'package:sanaa_artl/core/widgets/global_status_banner.dart';
+import 'package:sanaa_artl/core/widgets/coming_soon_page.dart';
 
 void main() async {
   // ضمان تهيئة Flutter
@@ -38,7 +42,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider1()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(
           create: (context) => CartProvider()..loadCartItems(),
@@ -55,7 +59,6 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ExhibitionProvider()),
         ChangeNotifierProvider(create: (context) => VRProvider()),
         ChangeNotifierProvider(create: (context) => NavigationProvider()),
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => WorkshopProvider()),
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CommunityProvider()),
@@ -63,7 +66,9 @@ void main() async {
         ChangeNotifierProvider(create: (context) => WishlistProvider()),
         ChangeNotifierProvider(create: (context) => AdminProvider()),
         ChangeNotifierProvider(create: (context) => ChatProvider()),
+        ChangeNotifierProvider(create: (context) => AppStatusProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
+        ChangeNotifierProvider(create: (context) => CheckboxProvider()),
       ],
       child: const MyApp(),
     ),
@@ -91,28 +96,37 @@ class _MyAppState extends State<MyApp> {
   /// تهيئة التطبيق وقاعدة البيانات
   Future<void> _initializeApp() async {
     // الحصول على الـ providers بدون الاستماع للتغييرات
-    final _ = Provider.of<UserProvider1>(context, listen: false);
+    final statusProvider = Provider.of<AppStatusProvider>(
+      context,
+      listen: false,
+    );
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final communityProvider = Provider.of<CommunityProvider>(
       context,
       listen: false,
     );
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // تهيئة نظام التخزين والمجلدات
+    final storageService = StorageService();
+    await storageService.initialize(statusProvider);
+
+    // تهيئة خدمات الاتصال والإشعارات
+    final connectivityService = ConnectivityService();
+    await connectivityService.initialize(statusProvider);
+
+    final notificationService = NotificationService();
+    await notificationService.initialize(statusProvider);
+
+    // تهيئة ReelProvider
+    if (!mounted) return;
     final reelProvider = Provider.of<ReelProvider>(context, listen: false);
 
     // تهيئة قاعدة البيانات والمستخدم
-    // await userProvider.initialize();
-
-    // تحميل جلسة المستخدم المحفوظة
-    await authProvider.loadSavedSession();
+    await userProvider.initialize();
 
     // تهيئة بيانات المجتمع والريلز
-    debugPrint('⏳ Initializing CommunityProvider...');
-    await communityProvider.initialize();
-    debugPrint('✅ CommunityProvider Initialized');
-
-    debugPrint('⏳ Initializing ReelProvider...');
-    await reelProvider.initialize();
-    debugPrint('✅ ReelProvider Initialized');
+    reelProvider.initialize();
+    communityProvider.initialize();
 
     if (mounted) {
       setState(() {
@@ -129,7 +143,12 @@ class _MyAppState extends State<MyApp> {
           title: 'فنون صنعاء التشكيلية',
           debugShowCheckedModeBanner: false,
           builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
+            child: Column(
+              children: [
+                const GlobalStatusBanner(),
+                Expanded(child: child!),
+              ],
+            ),
             breakpoints: [
               const Breakpoint(start: 0, end: 450, name: MOBILE),
               const Breakpoint(start: 451, end: 800, name: TABLET),
@@ -151,7 +170,12 @@ class _MyAppState extends State<MyApp> {
           home: _isInitialized ? const HomePage() : const _LoadingScreen(),
           routes: {
             '/exhibition': (context) => ExhibitionHomePage(),
-            '/home': (context) => StorePage(),
+            '/home': (context) => const ComingSoonPage(
+              featureName: 'المتجر',
+              description:
+                  'متجر الأعمال الفنية قيد التطوير\nسيتم إطلاقه قريباً مع مجموعة رائعة من اللوحات والمنتجات الفنية',
+              icon: Icons.store_rounded,
+            ),
             '/cart': (context) => CartPage(),
             '/order-history': (context) => OrderHistoryPage(),
             '/invoice': (context) => InvoicePage(),

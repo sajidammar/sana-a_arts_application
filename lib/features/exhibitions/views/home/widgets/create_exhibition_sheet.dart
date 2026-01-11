@@ -19,13 +19,13 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
   final _curatorController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  String _selectedImage = 'assets/images/image1.jpg';
+  String _selectedImage = 'assets/images/sanaa_img_01.jpg';
   final List<String> _availableImages = [
-    'assets/images/image1.jpg',
-    'assets/images/image2.jpg',
-    'assets/images/image3.jpg',
-    'assets/images/image4.jpg',
-    'assets/images/image5.jpg',
+    'assets/images/sanaa_img_01.jpg',
+    'assets/images/sanaa_img_02.jpg',
+    'assets/images/sanaa_img_03.jpg',
+    'assets/images/sanaa_img_04.jpg',
+    'assets/images/sanaa_img_05.jpg',
   ];
 
   @override
@@ -222,5 +222,3 @@ class _CreateExhibitionSheetState extends State<CreateExhibitionSheet> {
     );
   }
 }
-
-

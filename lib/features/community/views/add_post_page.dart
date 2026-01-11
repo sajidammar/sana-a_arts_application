@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/features/auth/views/login_view.dart';
 import 'package:sanaa_artl/features/community/controllers/community_provider.dart';
-import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
-import 'package:sanaa_artl/features/auth/views/login_page.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 
 /// صفحة إضافة منشور جديد
@@ -87,8 +87,8 @@ class _AddPostPageState extends State<AddPostPage> {
     }
 
     // التحقق من تسجيل الدخول
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    if (!authProvider.isAuthenticated) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (!userProvider.isAuthenticated) {
       _showLoginRequired();
       return;
     }
@@ -159,7 +159,7 @@ class _AddPostPageState extends State<AddPostPage> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = themeProvider.isDarkMode;
-    final authProvider = Provider.of<AuthProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(isDark),
@@ -206,12 +206,12 @@ class _AddPostPageState extends State<AddPostPage> {
                           context,
                         ).primaryColor.withValues(alpha: 0.1),
                         backgroundImage:
-                            authProvider.currentUser?.profileImage.isNotEmpty ==
+                            userProvider.currentUser?.profileImage.isNotEmpty ==
                                 true
-                            ? AssetImage(authProvider.currentUser!.profileImage)
+                            ? AssetImage(userProvider.currentUser!.profileImage)
                             : null,
                         child:
-                            authProvider.currentUser?.profileImage.isEmpty !=
+                            userProvider.currentUser?.profileImage.isEmpty !=
                                 false
                             ? Icon(
                                 Icons.person,
@@ -225,7 +225,7 @@ class _AddPostPageState extends State<AddPostPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              authProvider.currentUser?.name ?? 'مستخدم',
+                              userProvider.currentUser?.name ?? 'مستخدم',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.getTextColor(isDark),
@@ -354,5 +354,3 @@ class _MediaButton extends StatelessWidget {
     );
   }
 }
-
-

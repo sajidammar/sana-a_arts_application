@@ -37,7 +37,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'معرض التراث اليمني',
                 description: 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',
-                imageUrl: "assets/images/image1.jpg",
+                imageUrl: "assets/images/sanaa_img_11.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -51,7 +51,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: "assets/images/image1.jpg",
+                  imageUrl: "assets/images/sanaa_img_11.jpg",
                   isActive: true,
                 ),
                 animationDelay: const Duration(),
@@ -61,7 +61,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'فنون معاصرة',
                 description: 'أعمال فنية معاصرة تجمع بين الأصالة والحداثة',
-                imageUrl: "assets/images/image2.jpg",
+                imageUrl: "assets/images/sanaa_img_12.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -85,7 +85,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'مناظر طبيعية',
                 description: 'استكشف جمال الطبيعة اليمنية عبر ريشة الفنانين',
-                imageUrl: "assets/images/image3.jpg",
+                imageUrl: "assets/images/sanaa_img_13.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -109,7 +109,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'بورتريهات',
                 description: 'صور شخصية تعبر عن هوية المجتمع اليمني',
-                imageUrl: "assets/images/image4.jpg",
+                imageUrl: "assets/images/sanaa_img_14.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -123,7 +123,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: "assets/images/image5.jpg",
+                  imageUrl: "assets/images/sanaa_img_15.jpg",
                   isActive: true,
                 ),
                 animationDelay: const Duration(),
@@ -155,7 +155,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'معرض التراث اليمني',
                 description: 'أجمل اللوحات المستوحاة من التراث اليمني الأصيل',
-                imageUrl: "assets/images/image5.jpg",
+                imageUrl: "assets/images/sanaa_img_15.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -179,7 +179,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'فنون معاصرة',
                 description: 'أعمال فنية معاصرة تجمع بين الأصالة والحداثة',
-                imageUrl: "assets/images/image6.jpg",
+                imageUrl: "assets/images/sanaa_img_16.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -203,7 +203,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'مناظر طبيعية',
                 description: 'استكشف جمال الطبيعة اليمنية عبر ريشة الفنانين',
-                imageUrl: "assets/images/image1.jpg",
+                imageUrl: "assets/images/sanaa_img_11.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -227,7 +227,7 @@ class FeaturedExhibitions extends StatelessWidget {
               ExhibitionCard(
                 title: 'بورتريهات',
                 description: 'صور شخصية تعبر عن هوية المجتمع اليمني',
-                imageUrl: "assets/images/image5.jpg",
+                imageUrl: "assets/images/sanaa_img_15.jpg",
                 exhibition: Exhibition(
                   id: '2',
                   title: 'title',
@@ -241,7 +241,7 @@ class FeaturedExhibitions extends StatelessWidget {
                   visitorsCount: 122,
                   startDate: DateTime(22),
                   endDate: DateTime(12),
-                  imageUrl: "assets/images/image5.jpg",
+                  imageUrl: "assets/images/sanaa_img_15.jpg",
                   isActive: true,
                 ),
                 animationDelay: const Duration(),
@@ -254,8 +254,3 @@ class FeaturedExhibitions extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

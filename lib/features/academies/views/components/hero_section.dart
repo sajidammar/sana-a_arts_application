@@ -13,9 +13,9 @@ class _HeroSectionState extends State<HeroSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final List<String> _heroImages = [
-    'assets/images/image1.jpg',
-    'assets/images/image2.jpg',
-    'assets/images/image3.jpg',
+    'assets/images/sanaa_img_18.jpg',
+    'assets/images/sanaa_img_19.jpg',
+    'assets/images/sanaa_img_20.jpg',
   ];
 
   @override
@@ -166,5 +166,3 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 }
-
-

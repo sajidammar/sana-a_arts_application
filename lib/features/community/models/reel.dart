@@ -16,6 +16,7 @@ class Reel {
   final DateTime updatedAt;
   final bool isLiked;
   final List<String> tags;
+  final String syncStatus; // synced, pending, failed
 
   Reel({
     required this.id,
@@ -32,28 +33,51 @@ class Reel {
     required this.updatedAt,
     this.isLiked = false,
     this.tags = const [],
+    this.syncStatus = 'synced',
   });
 
   factory Reel.fromJson(Map<String, dynamic> json) {
     return Reel(
-      id: json[DatabaseConstants.colId].toString(),
-      authorId: json[DatabaseConstants.colAuthorId],
-      authorName: json[DatabaseConstants.colAuthorName],
-      authorAvatar: json[DatabaseConstants.colAuthorAvatar],
-      videoUrl: json[DatabaseConstants.colVideoUrl],
-      thumbnailUrl: json[DatabaseConstants.colThumbnailUrl],
-      description: json[DatabaseConstants.colDescription],
-      likes: json[DatabaseConstants.colLikes] ?? 0,
-      commentsCount: json[DatabaseConstants.colCommentsCount] ?? 0,
-      views: json[DatabaseConstants.colViews] ?? 0,
-      createdAt: DateTime.parse(json[DatabaseConstants.colCreatedAt]),
-      updatedAt: DateTime.parse(json[DatabaseConstants.colUpdatedAt]),
-      isLiked: (json[DatabaseConstants.colIsLiked] ?? 0) == 1,
+      id:
+          json[DatabaseConstants.colId]?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      authorId: json[DatabaseConstants.colAuthorId]?.toString() ?? '',
+      authorName:
+          json[DatabaseConstants.colAuthorName]?.toString() ?? 'Unknown',
+      authorAvatar: json[DatabaseConstants.colAuthorAvatar]?.toString(),
+      videoUrl: json[DatabaseConstants.colVideoUrl]?.toString(),
+      thumbnailUrl: json[DatabaseConstants.colThumbnailUrl]?.toString(),
+      description: json[DatabaseConstants.colDescription]?.toString(),
+      likes:
+          int.tryParse(json[DatabaseConstants.colLikes]?.toString() ?? '0') ??
+          0,
+      commentsCount:
+          int.tryParse(
+            json[DatabaseConstants.colCommentsCount]?.toString() ?? '0',
+          ) ??
+          0,
+      views:
+          int.tryParse(json[DatabaseConstants.colViews]?.toString() ?? '0') ??
+          0,
+      createdAt: json[DatabaseConstants.colCreatedAt] != null
+          ? DateTime.tryParse(
+                  json[DatabaseConstants.colCreatedAt].toString(),
+                ) ??
+                DateTime.now()
+          : DateTime.now(),
+      updatedAt: json[DatabaseConstants.colUpdatedAt] != null
+          ? DateTime.tryParse(
+                  json[DatabaseConstants.colUpdatedAt].toString(),
+                ) ??
+                DateTime.now()
+          : DateTime.now(),
+      isLiked: (json[DatabaseConstants.colIsLiked] ?? 0).toString() == '1',
       tags: json[DatabaseConstants.colTags] != null
           ? (json[DatabaseConstants.colTags] is String
                 ? List<String>.from(jsonDecode(json[DatabaseConstants.colTags]))
                 : List<String>.from(json[DatabaseConstants.colTags]))
           : [],
+      syncStatus: json[DatabaseConstants.colSyncStatus]?.toString() ?? 'synced',
     );
   }
 
@@ -73,6 +97,7 @@ class Reel {
       DatabaseConstants.colUpdatedAt: updatedAt.toIso8601String(),
       DatabaseConstants.colIsLiked: isLiked ? 1 : 0,
       DatabaseConstants.colTags: jsonEncode(tags),
+      DatabaseConstants.colSyncStatus: syncStatus,
     };
   }
 
@@ -91,6 +116,7 @@ class Reel {
     DateTime? updatedAt,
     bool? isLiked,
     List<String>? tags,
+    String? syncStatus,
   }) {
     return Reel(
       id: id ?? this.id,
@@ -107,6 +133,7 @@ class Reel {
       updatedAt: updatedAt ?? this.updatedAt,
       isLiked: isLiked ?? this.isLiked,
       tags: tags ?? this.tags,
+      syncStatus: syncStatus ?? this.syncStatus,
     );
   }
 }
