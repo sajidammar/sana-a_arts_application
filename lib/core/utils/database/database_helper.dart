@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sanaa_artl/core/services/storage_service.dart';
 import 'database_constants.dart';
 
 /// DatabaseHelper - Singleton لإدارة قاعدة البيانات
@@ -41,8 +42,12 @@ class DatabaseHelper {
   /// تهيئة قاعدة البيانات
   Future<Database> _initDatabase() async {
     _initializeDatabaseFactory();
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, DatabaseConstants.databaseName);
+    // استخدام المجلد المخصص من StorageService
+    final storageService = StorageService();
+    final dbDirPath = await storageService.getFolderPath(
+      StorageService.databasesFolder,
+    );
+    final path = join(dbDirPath, DatabaseConstants.databaseName);
 
     return await openDatabase(
       path,
@@ -112,6 +117,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colTimestamp} TEXT NOT NULL,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
         ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL,
+        ${DatabaseConstants.colSyncStatus} TEXT DEFAULT 'synced',
         FOREIGN KEY (${DatabaseConstants.colAuthorId}) REFERENCES ${DatabaseConstants.tableUsers} (${DatabaseConstants.colId}) ON DELETE CASCADE
       )
     ''');
@@ -310,7 +316,8 @@ class DatabaseHelper {
         ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0,
         ${DatabaseConstants.colTags} TEXT,
         ${DatabaseConstants.colCreatedAt} TEXT NOT NULL,
-        ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL
+        ${DatabaseConstants.colUpdatedAt} TEXT NOT NULL,
+        ${DatabaseConstants.colSyncStatus} TEXT DEFAULT 'synced'
       )
     ''');
 
@@ -337,6 +344,7 @@ class DatabaseHelper {
         ${DatabaseConstants.colMessageText} TEXT NOT NULL,
         ${DatabaseConstants.colIsSeen} INTEGER DEFAULT 0,
         ${DatabaseConstants.colTimestamp} TEXT NOT NULL,
+        ${DatabaseConstants.colSyncStatus} TEXT DEFAULT 'synced',
         FOREIGN KEY (${DatabaseConstants.colConversationId}) REFERENCES ${DatabaseConstants.tableConversations} (${DatabaseConstants.colId}) ON DELETE CASCADE
       )
     ''');
@@ -344,19 +352,15 @@ class DatabaseHelper {
 
   /// ترقية قاعدة البيانات (للإصدارات المستقبلية)
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    debugPrint('🆙 Upgrading database from $oldVersion to $newVersion');
     if (oldVersion < 2) {
-      debugPrint('🆙 Upgrading to version 2 (Exhibitions like column)');
       await db.execute(
         'ALTER TABLE ${DatabaseConstants.tableExhibitions} ADD COLUMN ${DatabaseConstants.colIsLiked} INTEGER DEFAULT 0',
       );
     }
     if (oldVersion < 3) {
-      debugPrint('🆙 Upgrading to version 3 (Reels table)');
       // Skip creation here if we are upgrading to 4
     }
     if (oldVersion < 4) {
-      debugPrint('🆙 Upgrading to version 4 (Reels table fix - No FK)');
       // Drop existing reels table if it exists to remove FK constraint
       await db.execute('DROP TABLE IF EXISTS ${DatabaseConstants.tableReels}');
       await db.execute('''
@@ -407,16 +411,11 @@ class DatabaseHelper {
         await db.execute(
           'INSERT INTO followers_new SELECT id, follower_id, following_id, created_at FROM followers',
         );
-      } catch (e) {
-        debugPrint(
-          'Note: No previous followers data found or error during migration: $e',
-        );
-      }
+      } catch (e) {}
       await db.execute('DROP TABLE IF EXISTS followers');
       await db.execute('ALTER TABLE followers_new RENAME TO followers');
     }
     if (oldVersion < 7) {
-      debugPrint('🆙 Upgrading to version 7 (Adding CV support)');
       await db.execute(
         'ALTER TABLE ${DatabaseConstants.tableUsers} ADD COLUMN ${DatabaseConstants.colCvUrl} TEXT',
       );
@@ -425,7 +424,6 @@ class DatabaseHelper {
       );
     }
     if (oldVersion < 8) {
-      debugPrint('🆙 Upgrading to version 8 (Adding Chat support)');
       // جدول المحادثات
       await db.execute('''
         CREATE TABLE ${DatabaseConstants.tableConversations} (
@@ -454,7 +452,6 @@ class DatabaseHelper {
       ''');
     }
     if (oldVersion < 9) {
-      debugPrint('🆙 Upgrading to version 9 (Adding Admin Requests & Reports)');
       // جدول الطلبات (Requests)
       await db.execute('''
         CREATE TABLE ${DatabaseConstants.tableRequests} (
@@ -480,6 +477,122 @@ class DatabaseHelper {
           ${DatabaseConstants.colCreatedAt} TEXT NOT NULL
         )
       ''');
+    }
+
+    if (oldVersion < 10) {
+      // Update Users
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image1.jpg', 'assets/images/sanaa_img_01.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image2.jpg', 'assets/images/sanaa_img_02.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image3.jpg', 'assets/images/sanaa_img_03.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image4.jpg', 'assets/images/sanaa_img_04.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image5.jpg', 'assets/images/sanaa_img_05.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image6.jpg', 'assets/images/sanaa_img_06.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableUsers} SET ${DatabaseConstants.colProfileImage} = REPLACE(${DatabaseConstants.colProfileImage}, 'assets/images/image7.jpg', 'assets/images/sanaa_img_07.jpg')",
+      );
+
+      // Update Posts
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tablePosts} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image1.jpg', 'assets/images/sanaa_img_01.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tablePosts} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image2.jpg', 'assets/images/sanaa_img_02.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tablePosts} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image3.jpg', 'assets/images/sanaa_img_03.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tablePosts} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image4.jpg', 'assets/images/sanaa_img_04.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tablePosts} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image5.jpg', 'assets/images/sanaa_img_05.jpg')",
+      );
+
+      // Update Artworks
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableArtworks} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image1.jpg', 'assets/images/sanaa_img_01.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableArtworks} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image2.jpg', 'assets/images/sanaa_img_02.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableArtworks} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image3.jpg', 'assets/images/sanaa_img_03.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableArtworks} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image4.jpg', 'assets/images/sanaa_img_04.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableArtworks} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image5.jpg', 'assets/images/sanaa_img_05.jpg')",
+      );
+
+      // Update Exhibitions
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableExhibitions} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image1.jpg', 'assets/images/sanaa_img_01.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableExhibitions} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image2.jpg', 'assets/images/sanaa_img_02.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableExhibitions} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image3.jpg', 'assets/images/sanaa_img_03.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableExhibitions} SET ${DatabaseConstants.colImageUrl} = REPLACE(${DatabaseConstants.colImageUrl}, 'assets/images/image4.jpg', 'assets/images/sanaa_img_04.jpg')",
+      );
+
+      // Update Reels
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableReels} SET ${DatabaseConstants.colAuthorAvatar} = REPLACE(${DatabaseConstants.colAuthorAvatar}, 'assets/images/image1.jpg', 'assets/images/sanaa_img_01.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableReels} SET ${DatabaseConstants.colAuthorAvatar} = REPLACE(${DatabaseConstants.colAuthorAvatar}, 'assets/images/image2.jpg', 'assets/images/sanaa_img_02.jpg')",
+      );
+      await db.rawUpdate(
+        "UPDATE ${DatabaseConstants.tableReels} SET ${DatabaseConstants.colAuthorAvatar} = REPLACE(${DatabaseConstants.colAuthorAvatar}, 'assets/images/image3.jpg', 'assets/images/sanaa_img_03.jpg')",
+      );
+    }
+
+    if (oldVersion < 11) {
+      try {
+        await db.execute(
+          'ALTER TABLE ${DatabaseConstants.tableReels} ADD COLUMN ${DatabaseConstants.colSyncStatus} TEXT DEFAULT "synced"',
+        );
+      } catch (e) {
+        debugPrint(
+          'Note: Could not add sync_status to reels (might already exist): $e',
+        );
+      }
+
+      try {
+        await db.execute(
+          'ALTER TABLE ${DatabaseConstants.tablePosts} ADD COLUMN ${DatabaseConstants.colSyncStatus} TEXT DEFAULT "synced"',
+        );
+      } catch (e) {
+        debugPrint(
+          'Note: Could not add sync_status to posts (might already exist): $e',
+        );
+      }
+
+      try {
+        await db.execute(
+          'ALTER TABLE ${DatabaseConstants.tableMessages} ADD COLUMN ${DatabaseConstants.colSyncStatus} TEXT DEFAULT "synced"',
+        );
+      } catch (e) {
+        debugPrint(
+          'Note: Could not add sync_status to messages (might already exist): $e',
+        );
+      }
     }
   }
 

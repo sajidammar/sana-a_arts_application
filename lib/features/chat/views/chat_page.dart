@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:sanaa_artl/core/localization/app_localizations.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
 import '../models/chat_model.dart';
 import '../controllers/chat_provider.dart';
 import 'dart:io';
@@ -47,7 +47,7 @@ class _ChatPageState extends State<ChatPage> {
     final primaryColor = AppColors.getPrimaryColor(isDark);
     final backgroundColor = AppColors.getBackgroundColor(isDark);
     final textColor = AppColors.getTextColor(isDark);
-    final user = context.watch<UserProvider1>().user;
+    final user = context.watch<UserProvider>().user;
 
     return Scaffold(
       backgroundColor: backgroundColor,

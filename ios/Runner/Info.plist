@@ -45,5 +45,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج للوصول إلى مكتبة الصور لاختيار الفيديوهات والصور لمشاركتها في التطبيق.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج للوصول إلى الكاميرا لالتقاط الصور والفيديوهات مباشرة.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>نحتاج للوصول إلى الميكروفون لتسجيل الصوت مع الفيديوهات.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>نحتاج لصلاحية حفظ الصور والفيديوهات في مكتبة الصور الخاصة بك.</string>
 </dict>
 </plist>

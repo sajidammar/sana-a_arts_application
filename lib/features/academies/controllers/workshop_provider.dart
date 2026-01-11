@@ -84,7 +84,7 @@ class WorkshopProvider with ChangeNotifier {
         tags: ["رسم", "أساسيات", "فن تشكيلي"],
         requirements: ["لا يتطلب خبرة سابقة"],
         learningOutcomes: ["إتقان أساسيات الرسم والخطوط"],
-        image: 'assets/images/image4.jpg',
+        image: 'assets/images/sanaa_img_22.jpg',
       ),
     ];
 
@@ -104,7 +104,7 @@ class WorkshopProvider with ChangeNotifier {
         bio: "فنان تشكيلي محترف بخبرة تزيد عن 15 عاماً",
         education: ["دبلوم الفنون الجميلة - جامعة صنعاء"],
         achievements: ["مشارك في 20+ معرض محلي وإقليمي"],
-        imageUrl: 'assets/images/image2.jpg',
+        imageUrl: 'assets/images/sanaa_img_04.jpg',
       ),
     ];
 
@@ -114,5 +114,3 @@ class WorkshopProvider with ChangeNotifier {
 
   Future<void> registerForWorkshop(int i, Map<String, String> map) async {}
 }
-
-

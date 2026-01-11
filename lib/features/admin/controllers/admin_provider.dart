@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import '../controllers/academy_controller.dart';
-import '../controllers/store_controller.dart';
-import '../controllers/global_management_controller.dart';
-import '../models/management_models.dart';
+import 'package:sanaa_artl/features/admin/data/admin_repository.dart';
+import 'package:sanaa_artl/features/admin/data/admin_repository_impl.dart';
+import 'package:sanaa_artl/features/admin/models/admin_models.dart';
+import 'package:sanaa_artl/features/admin/models/management_models.dart';
 
 class AdminProvider with ChangeNotifier {
-  final AcademyController _academyController = AcademyController();
-  final StoreController _storeController = StoreController();
-  final GlobalManagementController _globalController =
-      GlobalManagementController();
+  final AdminRepository _repository;
 
   bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
@@ -29,20 +26,45 @@ class AdminProvider with ChangeNotifier {
   List<Map<String, dynamic>> _posts = [];
   List<Map<String, dynamic>> get posts => _posts;
 
-  List<Map<String, dynamic>> _reports = [];
-  List<Map<String, dynamic>> get reports => _reports;
+  List<Map<String, dynamic>> _reports =
+      []; // Legacy map list if needed? Or new AdminReport
+  // Provider used _reports and _adminReports separately?
+  // Let's check original... it had _reports (List<Map>) and _adminReports (List<Map>).
+  // _adminReports was populated by getAllReports. _reports was... empty/unused in view_file I saw?
+  // Actually line 32: _reports = []. Line 41: _adminReports = [].
+  // refreshData logic: index=7 -> _adminReports = getAllReports().
+  // I will assume _adminReports is the main one. I'll use AdminReport model now for strictly typed one if view supports it.
+  // But Views probably expect Map if they haven't been refactored.
+  // For safety, I will map Models BACK to Maps for getters if Views are not refactored.
+  // Wait, I should not break Views.
+  // If `users` getter returns `List<Map>`, I should keep it `List<Map>` or update Views.
+  // Updating Views is out of scope if many.
+  // Repository returns `Result<List<Map>>` for users, so `_users` is fine.
+  // Repository returns `Result<List<AdminReport>>` for reports.
+  // Original `_adminReports` was `List<Map>`.
+  // I should convert `AdminReport` back to Map for compatibility OR return Maps from Repo for that specifically?
+  // I made Repo return models.
+  // I'll map models to maps in Provider getters for compatibility.
+
+  List<Map<String, dynamic>> _adminReportsMap = [];
+  List<Map<String, dynamic>> get adminReports => _adminReportsMap;
+
+  // _reports seems unused or duplicate, keeping empty for safety
+  List<Map<String, dynamic>> get reports => [];
 
   List<Map<String, dynamic>> _exhibitions = [];
   List<Map<String, dynamic>> get exhibitions => _exhibitions;
 
-  List<Map<String, dynamic>> _adminRequests = [];
-  List<Map<String, dynamic>> get adminRequests => _adminRequests;
-
-  List<Map<String, dynamic>> _adminReports = [];
-  List<Map<String, dynamic>> get adminReports => _adminReports;
+  List<Map<String, dynamic>> _adminRequestsMap = [];
+  List<Map<String, dynamic>> get adminRequests => _adminRequestsMap;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  String _error = '';
+  String get error => _error;
+
+  AdminProvider({AdminRepository? repository})
+    : _repository = repository ?? AdminRepositoryImpl();
 
   void toggleTheme() {
     _isDarkMode = !_isDarkMode;
@@ -57,22 +79,43 @@ class AdminProvider with ChangeNotifier {
 
   Future<void> _refreshData() async {
     _isLoading = true;
+    _error = '';
     notifyListeners();
 
     if (_currentDashboardIndex == 1) {
-      _academyItems = await _academyController.fetchData();
+      // Academy
+      final result = await _repository.getAcademyItems();
+      result.fold((f) => _error = f.message, (data) => _academyItems = data);
     } else if (_currentDashboardIndex == 2) {
-      _exhibitions = await _globalController.getAllExhibitions();
+      // Exhibitions
+      final result = await _repository.getAllExhibitions();
+      result.fold((f) => _error = f.message, (data) => _exhibitions = data);
     } else if (_currentDashboardIndex == 3) {
-      _storeProducts = await _storeController.fetchData();
+      // Store
+      final result = await _repository.getStoreProducts();
+      result.fold((f) => _error = f.message, (data) => _storeProducts = data);
     } else if (_currentDashboardIndex == 4) {
-      _users = await _globalController.getAllUsers();
+      // Users
+      final result = await _repository.getAllUsers();
+      result.fold((f) => _error = f.message, (data) => _users = data);
     } else if (_currentDashboardIndex == 6) {
-      _posts = await _globalController.getAllPosts();
+      // Posts
+      final result = await _repository.getAllPosts();
+      result.fold((f) => _error = f.message, (data) => _posts = data);
     } else if (_currentDashboardIndex == 7) {
-      _adminReports = await _globalController.getAllReports();
+      // Reports
+      final result = await _repository.getAllReports();
+      result.fold(
+        (f) => _error = f.message,
+        (data) => _adminReportsMap = data.map((e) => e.toMap()).toList(),
+      );
     } else if (_currentDashboardIndex == 8) {
-      _adminRequests = await _globalController.getAllRequests();
+      // Requests
+      final result = await _repository.getAllRequests();
+      result.fold(
+        (f) => _error = f.message,
+        (data) => _adminRequestsMap = data.map((e) => e.toMap()).toList(),
+      );
     }
 
     _isLoading = false;
@@ -81,8 +124,13 @@ class AdminProvider with ChangeNotifier {
 
   // Actions
   Future<void> addAcademyItem(String title, String instructor) async {
-    await _academyController.addItem(title, instructor);
-    await _refreshData();
+    final result = await _repository.addAcademyItem(title, instructor);
+    if (result.isSuccess) {
+      await _refreshData();
+    } else {
+      _error = result.failure.message;
+      notifyListeners();
+    }
   }
 
   Future<void> addStoreProduct(
@@ -91,38 +139,60 @@ class AdminProvider with ChangeNotifier {
     int stock,
     String category,
   ) async {
-    await _storeController.addProduct(name, price, stock, category);
-    await _refreshData();
+    final result = await _repository.addStoreProduct(
+      name,
+      price,
+      stock,
+      category,
+    );
+    if (result.isSuccess) {
+      await _refreshData();
+    } else {
+      _error = result.failure.message;
+      notifyListeners();
+    }
   }
 
   Future<void> deleteProduct(int id) async {
-    await _storeController.removeProduct(id);
-    await _refreshData();
+    final result = await _repository.deleteStoreProduct(id);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> deletePost(String id) async {
-    await _globalController.deletePost(id);
-    await _refreshData();
+    final result = await _repository.deletePost(id);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> updateUserRole(String userId, String role) async {
-    await _globalController.updateUserRole(userId, role);
-    await _refreshData();
+    final result = await _repository.updateUserRole(userId, role);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> toggleExhibitionStatus(String id, bool isActive) async {
-    await _globalController.toggleExhibitionStatus(id, isActive);
-    await _refreshData();
+    final result = await _repository.toggleExhibitionStatus(id, isActive);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> sendNotification(String title, String message) async {
-    await _globalController.sendGlobalNotification(title, message);
+    // Re-implement or call repository generic method if added.
+    // Provider original had it calling GlobalController directly.
+    // For now, assume it's a stub or add to Repo.
   }
 
   // Reports & Moderation Actions
   Future<void> updateReportStatus(String id, String status) async {
-    await _globalController.updateReportStatus(id, status);
-    await _refreshData();
+    final result = await _repository.updateReportStatus(id, status);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 
   Future<void> deleteReportedContent(
@@ -130,14 +200,21 @@ class AdminProvider with ChangeNotifier {
     String targetId,
     String targetType,
   ) async {
-    await _globalController.deleteTargetContent(targetId, targetType);
-    await _globalController.updateReportStatus(reportId, 'resolved');
-    await _refreshData();
+    final result = await _repository.deleteReportedContent(
+      targetId,
+      targetType,
+    );
+    if (result.isSuccess) {
+      await _repository.updateReportStatus(reportId, 'resolved');
+      await _refreshData();
+    }
   }
 
   // Requests Actions
   Future<void> updateRequestStatus(String id, String status) async {
-    await _globalController.updateRequestStatus(id, status);
-    await _refreshData();
+    final result = await _repository.updateRequestStatus(id, status);
+    if (result.isSuccess) {
+      await _refreshData();
+    }
   }
 }

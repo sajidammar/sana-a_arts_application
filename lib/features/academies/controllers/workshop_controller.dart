@@ -105,7 +105,7 @@ class WorkshopController with ChangeNotifier {
           "رسم الأشكال الهندسية البسيطة",
           "رسم الطبيعة الصامتة",
         ],
-        image: 'assets/images/image4.jpg',
+        image: 'assets/images/sanaa_img_22.jpg',
       ),
       // Add other workshops similarly...
     ];
@@ -143,5 +143,3 @@ class WorkshopController with ChangeNotifier {
     notifyListeners();
   }
 }
-
-

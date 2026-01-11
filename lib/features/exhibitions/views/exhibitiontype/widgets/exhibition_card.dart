@@ -373,7 +373,12 @@ class ExhibitionCard extends StatelessWidget {
               if (exhibition.type == ExhibitionType.virtual) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const VRExhibitionPage()),
+                  MaterialPageRoute(
+                    builder: (_) => VRExhibitionPage(
+                      exhibitionTitle: exhibition.title,
+                      exhibitionImageUrl: exhibition.imageUrl,
+                    ),
+                  ),
                 );
               } else {
                 Navigator.push(
@@ -453,6 +458,3 @@ class ExhibitionCard extends StatelessWidget {
     );
   }
 }
-
-
-

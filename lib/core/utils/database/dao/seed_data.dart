@@ -40,7 +40,7 @@ class SeedData {
         DatabaseConstants.colName: 'أحمد المقطري',
         DatabaseConstants.colEmail: 'ahmed@art.com',
         DatabaseConstants.colPhone: '+967771234567',
-        DatabaseConstants.colProfileImage: 'assets/images/image5.jpg',
+        DatabaseConstants.colProfileImage: 'assets/images/sanaa_img_05.jpg',
         DatabaseConstants.colRole: 'artist',
         DatabaseConstants.colJoinDate: DateTime(2023, 1, 15).toIso8601String(),
         DatabaseConstants.colIsEmailVerified: 1,
@@ -52,7 +52,7 @@ class SeedData {
         DatabaseConstants.colName: 'فاطمة الحمادي',
         DatabaseConstants.colEmail: 'fatima@art.com',
         DatabaseConstants.colPhone: '+967772345678',
-        DatabaseConstants.colProfileImage: 'assets/images/image6.jpg',
+        DatabaseConstants.colProfileImage: 'assets/images/sanaa_img_06.jpg',
         DatabaseConstants.colRole: 'artist',
         DatabaseConstants.colJoinDate: DateTime(2023, 3, 20).toIso8601String(),
         DatabaseConstants.colIsEmailVerified: 1,
@@ -64,7 +64,7 @@ class SeedData {
         DatabaseConstants.colName: 'سارة العريقي',
         DatabaseConstants.colEmail: 'sara@art.com',
         DatabaseConstants.colPhone: '+967773456789',
-        DatabaseConstants.colProfileImage: 'assets/images/image3.jpg',
+        DatabaseConstants.colProfileImage: 'assets/images/sanaa_img_03.jpg',
         DatabaseConstants.colRole: 'artist',
         DatabaseConstants.colJoinDate: DateTime(2024, 1, 10).toIso8601String(),
         DatabaseConstants.colIsEmailVerified: 1,
@@ -76,7 +76,7 @@ class SeedData {
         DatabaseConstants.colName: 'محمد الصنعاني',
         DatabaseConstants.colEmail: 'mohammed@example.com',
         DatabaseConstants.colPhone: '+967774567890',
-        DatabaseConstants.colProfileImage: 'assets/images/image7.jpg',
+        DatabaseConstants.colProfileImage: 'assets/images/sanaa_img_07.jpg',
         DatabaseConstants.colRole: 'user',
         DatabaseConstants.colJoinDate: DateTime(2024, 6, 1).toIso8601String(),
         DatabaseConstants.colIsEmailVerified: 1,
@@ -88,7 +88,7 @@ class SeedData {
         DatabaseConstants.colName: 'المستخدم الحالي',
         DatabaseConstants.colEmail: 'user@example.com',
         DatabaseConstants.colPhone: '+967775678901',
-        DatabaseConstants.colProfileImage: 'assets/images/image7.jpg',
+        DatabaseConstants.colProfileImage: 'assets/images/sanaa_img_07.jpg',
         DatabaseConstants.colRole: 'user',
         DatabaseConstants.colJoinDate: DateTime.now().toIso8601String(),
         DatabaseConstants.colIsEmailVerified: 0,
@@ -170,7 +170,7 @@ class SeedData {
         DatabaseConstants.colCurrency: '\$',
         DatabaseConstants.colCategory: 'منظر طبيعي',
         DatabaseConstants.colTags: ['صنعاء', 'تراث', 'عمارة'],
-        DatabaseConstants.colImageUrl: 'assets/images/image1.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_01.jpg',
         DatabaseConstants.colIsFeatured: 1,
         DatabaseConstants.colIsForSale: 1,
         DatabaseConstants.colViews: 1250,
@@ -190,7 +190,7 @@ class SeedData {
         DatabaseConstants.colCurrency: '\$',
         DatabaseConstants.colCategory: 'تجريدي',
         DatabaseConstants.colTags: ['تجريدي', 'ألوان', 'تعبيري'],
-        DatabaseConstants.colImageUrl: 'assets/images/image2.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_02.jpg',
         DatabaseConstants.colIsFeatured: 1,
         DatabaseConstants.colIsForSale: 1,
         DatabaseConstants.colViews: 980,
@@ -210,7 +210,7 @@ class SeedData {
         DatabaseConstants.colCurrency: '\$',
         DatabaseConstants.colCategory: 'بورتريه',
         DatabaseConstants.colTags: ['بورتريه', 'يمن', 'وجوه'],
-        DatabaseConstants.colImageUrl: 'assets/images/image3.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_03.jpg',
         DatabaseConstants.colIsFeatured: 0,
         DatabaseConstants.colIsForSale: 1,
         DatabaseConstants.colViews: 750,
@@ -231,7 +231,7 @@ class SeedData {
         DatabaseConstants.colCurrency: '\$',
         DatabaseConstants.colCategory: 'رقمي',
         DatabaseConstants.colTags: ['رقمي', 'خيال', 'حديث'],
-        DatabaseConstants.colImageUrl: 'assets/images/image4.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_04.jpg',
         DatabaseConstants.colIsFeatured: 0,
         DatabaseConstants.colIsForSale: 1,
         DatabaseConstants.colViews: 420,
@@ -251,7 +251,7 @@ class SeedData {
         DatabaseConstants.colCurrency: '\$',
         DatabaseConstants.colCategory: 'منظر طبيعي',
         DatabaseConstants.colTags: ['عدن', 'غروب', 'بحر'],
-        DatabaseConstants.colImageUrl: 'assets/images/image5.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_05.jpg',
         DatabaseConstants.colIsFeatured: 1,
         DatabaseConstants.colIsForSale: 1,
         DatabaseConstants.colViews: 890,
@@ -275,7 +275,7 @@ class SeedData {
         DatabaseConstants.colTitle: 'معرض فنون صنعاء 2024',
         DatabaseConstants.colDescription:
             'معرض سنوي يجمع أبرز الفنانين اليمنيين لعرض أعمالهم الفنية المتنوعة',
-        DatabaseConstants.colImageUrl: 'assets/images/image1.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_01.jpg',
         DatabaseConstants.colStartDate: now
             .subtract(const Duration(days: 5))
             .toIso8601String(),
@@ -300,7 +300,7 @@ class SeedData {
         DatabaseConstants.colTitle: 'المعرض الافتراضي للفن الرقمي',
         DatabaseConstants.colDescription:
             'معرض افتراضي يعرض أحدث الأعمال الفنية الرقمية لفنانين يمنيين صاعدين',
-        DatabaseConstants.colImageUrl: 'assets/images/image2.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_02.jpg',
         DatabaseConstants.colStartDate: now.toIso8601String(),
         DatabaseConstants.colEndDate: now
             .add(const Duration(days: 60))
@@ -323,7 +323,7 @@ class SeedData {
         DatabaseConstants.colTitle: 'معرض التراث اليمني',
         DatabaseConstants.colDescription:
             'معرض يحتفي بالتراث الفني اليمني عبر العصور',
-        DatabaseConstants.colImageUrl: 'assets/images/image3.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_03.jpg',
         DatabaseConstants.colStartDate: now
             .add(const Duration(days: 30))
             .toIso8601String(),
@@ -348,7 +348,7 @@ class SeedData {
         DatabaseConstants.colTitle: 'معرض الفن التجريدي',
         DatabaseConstants.colDescription:
             'معرض مفتوح للمشاركة يعرض أعمال الفن التجريدي',
-        DatabaseConstants.colImageUrl: 'assets/images/image4.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_04.jpg',
         DatabaseConstants.colStartDate: now
             .subtract(const Duration(days: 10))
             .toIso8601String(),
@@ -384,7 +384,7 @@ class SeedData {
         DatabaseConstants.colAuthorId: 'user_1',
         DatabaseConstants.colContent:
             'سعيد بمشاركتي في معرض صنعاء للفنون، أتمنى أن تنال أعمالي إعجابكم #فن #صنعاء',
-        DatabaseConstants.colImageUrl: 'assets/images/image1.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_01.jpg',
         DatabaseConstants.colTimestamp: now
             .subtract(const Duration(hours: 2))
             .toIso8601String(),
@@ -394,7 +394,7 @@ class SeedData {
         DatabaseConstants.colAuthorId: 'user_2',
         DatabaseConstants.colContent:
             'العمل جارٍ على لوحتي الجديدة المستوحاة من التراث اليمني الأصيل',
-        DatabaseConstants.colImageUrl: 'assets/images/image2.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_02.jpg',
         DatabaseConstants.colTimestamp: now
             .subtract(const Duration(hours: 5))
             .toIso8601String(),
@@ -413,7 +413,7 @@ class SeedData {
         DatabaseConstants.colAuthorId: 'user_1',
         DatabaseConstants.colContent:
             'مشاركة من ورشتي الأخيرة لتعليم أساسيات الرسم الزيتي',
-        DatabaseConstants.colImageUrl: 'assets/images/image4.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_04.jpg',
         DatabaseConstants.colTimestamp: now
             .subtract(const Duration(days: 2))
             .toIso8601String(),
@@ -422,7 +422,7 @@ class SeedData {
         DatabaseConstants.colId: 'post_5',
         DatabaseConstants.colAuthorId: 'user_2',
         DatabaseConstants.colContent: 'أنهيت للتو هذه اللوحة، ماذا تظنون؟',
-        DatabaseConstants.colImageUrl: 'assets/images/image5.jpg',
+        DatabaseConstants.colImageUrl: 'assets/images/sanaa_img_05.jpg',
         DatabaseConstants.colTimestamp: now
             .subtract(const Duration(days: 3))
             .toIso8601String(),
@@ -537,4 +537,3 @@ class SeedData {
     }
   }
 }
-

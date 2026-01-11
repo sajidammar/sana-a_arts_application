@@ -8,6 +8,10 @@ class AppColors {
   static const Color accentColor = Color(0xFFFF6B35);
   static const Color starGold = Color(0xFFFFD700);
 
+  // Auth Colors (from new Authentication module)
+  static const Color authPrimary = Color(0xFFF57C00); // orange.shade700
+  static const Color authSecondary = Color(0xFFFFB74D); // orange.shade300
+
   // Text Colors
   static const Color textPrimary = Color(0xFF2C1810);
   static const Color textSecondary = Color(0xFF5D4E37);
@@ -108,4 +112,3 @@ class AppColors {
   static Color getSurfaceColor(bool isDark) =>
       isDark ? const Color(0xFF1E1E1E) : backgroundSecondary;
 }
-

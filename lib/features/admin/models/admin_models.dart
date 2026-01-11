@@ -34,11 +34,31 @@ class AdminRequest {
       id: map['id'],
       requesterId: map['requester_id'],
       requestType: map['request_type'],
-      requestData:
-          null, // Basic implementation, parsing logic can be added later
+      // Basic implementation, parsing logic can be added later
+      requestData: null,
       status: map['status'],
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
+    );
+  }
+
+  AdminRequest copyWith({
+    String? id,
+    String? requesterId,
+    String? requestType,
+    Map<String, dynamic>? requestData,
+    String? status,
+    String? createdAt,
+    String? updatedAt,
+  }) {
+    return AdminRequest(
+      id: id ?? this.id,
+      requesterId: requesterId ?? this.requesterId,
+      requestType: requestType ?? this.requestType,
+      requestData: requestData ?? this.requestData,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -83,6 +103,26 @@ class AdminReport {
       reason: map['reason'],
       status: map['status'],
       createdAt: map['created_at'],
+    );
+  }
+
+  AdminReport copyWith({
+    String? id,
+    String? reporterId,
+    String? targetId,
+    String? targetType,
+    String? reason,
+    String? status,
+    String? createdAt,
+  }) {
+    return AdminReport(
+      id: id ?? this.id,
+      reporterId: reporterId ?? this.reporterId,
+      targetId: targetId ?? this.targetId,
+      targetType: targetType ?? this.targetType,
+      reason: reason ?? this.reason,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

@@ -5,6 +5,7 @@ class ChatMessage {
   final String messageText;
   final DateTime timestamp;
   final bool isSeen;
+  final String syncStatus; // synced, pending, failed
 
   ChatMessage({
     this.id,
@@ -13,6 +14,7 @@ class ChatMessage {
     required this.messageText,
     required this.timestamp,
     this.isSeen = false,
+    this.syncStatus = 'synced',
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class ChatMessage {
       'message_text': messageText,
       'timestamp': timestamp.toIso8601String(),
       'is_seen': isSeen ? 1 : 0,
+      'sync_status': syncStatus,
     };
   }
 
@@ -34,6 +37,7 @@ class ChatMessage {
       messageText: map['message_text'],
       timestamp: DateTime.parse(map['timestamp']),
       isSeen: map['is_seen'] == 1,
+      syncStatus: map['sync_status'] ?? 'synced',
     );
   }
 }

@@ -90,10 +90,9 @@ class Workshop {
       tags: List<String>.from(json['tags']),
       requirements: List<String>.from(json['requirements']),
       learningOutcomes: List<String>.from(json['learningOutcomes']),
-      image: json['image'] ?? 'assets/images/image1.jpg',
+      image: json['image'] ?? 'assets/images/sanaa_img_01.jpg',
     );
   }
 
   void updateEnrollment(int i) {}
 }
-

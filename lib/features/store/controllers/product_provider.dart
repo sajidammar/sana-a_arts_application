@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/features/store/data/store_repository.dart';
+import 'package:sanaa_artl/features/store/data/store_repository_impl.dart';
 import 'package:sanaa_artl/features/store/models/product_model.dart';
+import 'package:sanaa_artl/core/utils/result.dart'; // Ensure Result is imported if we use types, though internal logic wraps it
 
 class ProductProvider with ChangeNotifier {
+  final StoreRepository _repository;
+
   List<Product> _products = [];
   List<Product> _filteredProducts = [];
   String _searchQuery = '';
   int _selectedFilter = 0;
+  bool _isLoading = false;
+  String _error = '';
 
   List<Product> get products => _products;
   List<Product> get filteredProducts => _filteredProducts;
   int get selectedFilter => _selectedFilter;
   String get searchQuery => _searchQuery;
+  bool get isLoading => _isLoading;
+  String get error => _error;
 
   final List<String> _filters = [
     'جميع الأعمال',
@@ -23,65 +32,29 @@ class ProductProvider with ChangeNotifier {
 
   List<String> get filters => _filters;
 
-  void loadProducts() {
-    _products = [
-      Product(
-        id: 1,
-        title: "صنعاء العتيقة",
-        artist: "أحمد المقطري",
-        category: "لوحة زيتية",
-        price: 680,
-        originalPrice: 850,
-        discount: 20,
-        rating: 4.8,
-        reviews: 24,
-        description: "لوحة زيتية تجسد جمال العمارة التراثية في صنعاء القديمة",
-        size: "70x100 سم",
-        year: "2024",
-        medium: "ألوان زيتية على كانفاس",
-        isNew: true,
-        inStock: true,
-        image: 'assets/images/image1.jpg',
-      ),
-      Product(
-        id: 2,
-        title: "وجه يمني تراثي",
-        artist: "فاطمة الحضرمي",
-        category: "بورتريه",
-        price: 620,
-        originalPrice: 620,
-        discount: 0,
-        rating: 4.9,
-        reviews: 18,
-        description:
-            "بورتريه لامرأة يمنية بالزي التراثي مرسوم بالألوان المائية",
-        size: "50x70 سم",
-        year: "2024",
-        medium: "ألوان مائية",
-        isNew: false,
-        inStock: true,
-        image: 'assets/images/image2.jpg',
-      ),
-      Product(
-        id: 3,
-        title: "منحوتة جبال اليمن",
-        artist: "سالم المقطري",
-        category: "منحوتة",
-        price: 960,
-        originalPrice: 1200,
-        discount: 20,
-        rating: 4.7,
-        reviews: 12,
-        description: "منحوتة من الحجر الطبيعي تمثل قمم الجبال اليمنية",
-        size: "40x30x25 سم",
-        year: "2023",
-        medium: "حجر طبيعي",
-        isNew: false,
-        inStock: true,
-        image: 'assets/images/image3.jpg',
-      ),
-    ];
+  ProductProvider({StoreRepository? repository})
+    : _repository = repository ?? StoreRepositoryImpl();
+
+  Future<void> loadProducts() async {
+    _isLoading = true;
+    notifyListeners();
+
+    final result = await _repository.getProducts();
+
+    result.fold(
+      (failure) {
+        _error = failure.message;
+        _products = [];
+      },
+      (data) {
+        _products = data;
+        _error = '';
+      },
+    );
+
     _applyFilters();
+    _isLoading = false;
+    notifyListeners();
   }
 
   void setSearchQuery(String query) {
@@ -128,8 +101,13 @@ class ProductProvider with ChangeNotifier {
     }
 
     _filteredProducts = temp;
-    notifyListeners();
+    // Don't verifyListeners here if called from loadProducts which does it.
+    // But since loadProducts calls it before notifyListeners(), it's fine.
+    // Ideally separate UI state updates.
+    // We can call notifyListeners() here since setSearchQuery calls it.
+    // loadProducts calls notifyListeners at end too. Redundant but harmless.
+    // I'll leave notifyListeners out if called from setter, oh wait setters need it.
+    // I'll keep it here but remove explicit notify from setters if simpler.
+    // Actually simpler to allow redundant notifies.
   }
 }
-
-

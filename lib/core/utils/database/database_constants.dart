@@ -3,7 +3,7 @@
 class DatabaseConstants {
   // Database Info
   static const String databaseName = 'sanaa_arts.db';
-  static const int databaseVersion = 9;
+  static const int databaseVersion = 11;
   static const String colCvUrl = 'cv_url';
 
   // Table Names
@@ -29,6 +29,7 @@ class DatabaseConstants {
   static const String colId = 'id';
   static const String colCreatedAt = 'created_at';
   static const String colUpdatedAt = 'updated_at';
+  static const String colSyncStatus = 'sync_status'; // synced, pending, failed
 
   // Users Columns
   static const String colName = 'name';

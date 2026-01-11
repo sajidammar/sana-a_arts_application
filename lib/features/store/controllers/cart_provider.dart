@@ -1,123 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:sanaa_artl/features/store/data/store_repository.dart';
+import 'package:sanaa_artl/features/store/data/store_repository_impl.dart';
 import 'package:sanaa_artl/features/store/models/cart_model.dart';
 import 'package:sanaa_artl/features/store/models/product_model.dart';
 
-
 class CartProvider with ChangeNotifier {
+  final StoreRepository _repository;
+
   List<CartItem> _cartItems = [];
   double _subtotal = 0;
   final double _shipping = 25.0;
   double _tax = 0;
   double _total = 0;
+  String _error = '';
 
   List<CartItem> get cartItems => _cartItems;
   double get subtotal => _subtotal;
   double get shipping => _shipping;
   double get tax => _tax;
   double get total => _total;
+  String get error => _error;
 
-  void loadCartItems() {
-    _cartItems = [
-      CartItem(
-        product: Product(
-          id: 1,
-          title: "لوحة المدينة القديمة",
-          artist: "أحمد محمد الشامي",
-          category: "لوحة زيتية",
-          price: 450.0,
-          originalPrice: 500.0,
-          discount: 10,
-          rating: 4.8,
-          reviews: 24,
-          description: "لوحة زيتية تجسد جمال العمارة التراثية في صنعاء القديمة",
-          size: "80×60 سم",
-          year: "2024",
-          medium: "ألوان زيتية على كانفاس",
-          isNew: true,
-          inStock: true,
-        ),
-        quantity: 1,
-      ),
-      CartItem(
-        product: Product(
-          id: 2,
-          title: "تمثال الأصالة",
-          artist: "سالم المقطري",
-          category: "منحوتة",
-          price: 280.0,
-          originalPrice: 280.0,
-          discount: 0,
-          rating: 4.7,
-          reviews: 12,
-          description: "منحوتة من الحجر الطبيعي تمثل التراث اليمني",
-          size: "40×30×25 سم",
-          year: "2023",
-          medium: "حجر طبيعي",
-          isNew: false,
-          inStock: true,
-        ),
-        quantity: 1,
-      ),
-      CartItem(
-        product: Product(
-          id: 3,
-          title: "كتاب تقنيات الرسم",
-          artist: "مؤسسة فنون صنعاء",
-          category: "كتاب",
-          price: 25.0,
-          originalPrice: 25.0,
-          discount: 0,
-          rating: 4.5,
-          reviews: 8,
-          description: "كتاب تعليمي لتقنيات الرسم والفن التشكيلي",
-          size: "A4",
-          year: "2024",
-          medium: "طباعة فاخرة",
-          isNew: true,
-          inStock: true,
-        ),
-        quantity: 2,
-      ),
-    ];
-    _calculateTotals();
+  CartProvider({StoreRepository? repository})
+    : _repository = repository ?? StoreRepositoryImpl();
+
+  Future<void> loadCartItems() async {
+    final result = await _repository.getCartItems();
+
+    result.fold(
+      (failure) {
+        _error = failure.message;
+      },
+      (items) {
+        _cartItems = items;
+        _calculateTotals();
+      },
+    );
+    notifyListeners();
   }
 
   void _calculateTotals() {
-    _subtotal = _cartItems.fold(0, (sum, item) => sum + (item.product.price * item.quantity));
+    _subtotal = _cartItems.fold(
+      0,
+      (sum, item) => sum + (item.product.price * item.quantity),
+    );
     _tax = _subtotal * 0.15;
     _total = _subtotal + _shipping + _tax;
-    notifyListeners();
+    // Notify listeners handled by caller mostly, but strictly logic should not notify.
+    // loadCartItems notifies.
   }
 
-  void updateQuantity(int index, int newQuantity) {
+  Future<void> updateQuantity(int index, int newQuantity) async {
     if (newQuantity >= 1) {
+      // Optimistic
       _cartItems[index].quantity = newQuantity;
       _calculateTotals();
+      notifyListeners();
+
+      final result = await _repository.updateCartQuantity(
+        _cartItems[index].product.id,
+        newQuantity,
+      );
+      if (!result.isSuccess) {
+        // Revert or show error
+        _error = result.failure.message;
+        notifyListeners();
+      }
     }
   }
 
-  void removeItem(int index) {
+  Future<void> removeItem(int index) async {
+    final product = _cartItems[index].product;
+
+    // Optimistic
     _cartItems.removeAt(index);
     _calculateTotals();
     notifyListeners();
-  }
 
-  void addToCart(Product product) {
-    final existingIndex = _cartItems.indexWhere((item) => item.product.id == product.id);
-    if (existingIndex >= 0) {
-      _cartItems[existingIndex].quantity++;
-    } else {
-      _cartItems.add(CartItem(product: product, quantity: 1));
+    final result = await _repository.removeFromCart(product.id);
+    if (!result.isSuccess) {
+      _error = result.failure.message;
+      // We should reload cart really to be safe
+      await loadCartItems();
     }
-    _calculateTotals();
-    notifyListeners();
   }
 
-  void clearCart() {
+  Future<void> addToCart(Product product) async {
+    // Current logic adds 1 or increments
+    // We rely on repository or provider check?
+    // Repository handles "addToCart" which might just add separate item or merge?
+    // Repo impl currently merges: "if (index >= 0) ... += quantity".
+    // So we just call repo.
+
+    final result = await _repository.addToCart(product, 1);
+
+    if (result.isSuccess) {
+      await loadCartItems(); // Reload to get updated state
+    } else {
+      _error = result.failure.message;
+      notifyListeners();
+    }
+  }
+
+  Future<void> clearCart() async {
     _cartItems.clear();
     _calculateTotals();
     notifyListeners();
+    await _repository.clearCart();
   }
 }
-
-

@@ -96,8 +96,11 @@ class _ReelPlayerItemState extends State<ReelPlayerItem> {
         _controller = VideoPlayerController.networkUrl(
           Uri.parse(widget.reel.videoUrl!),
         );
-      } else {
+      } else if (widget.reel.videoUrl!.startsWith('assets/')) {
         _controller = VideoPlayerController.asset(widget.reel.videoUrl!);
+      } else {
+        // Assume it's a local file path
+        _controller = VideoPlayerController.file(File(widget.reel.videoUrl!));
       }
     } else {
       // Default fallback
@@ -117,11 +120,12 @@ class _ReelPlayerItemState extends State<ReelPlayerItem> {
           _isInitialized = true;
         });
       }
-      // زيادة المشاهدات عند العرض
-      Provider.of<ReelProvider>(
-        context,
-        listen: false,
-      ).incrementViews(widget.reel.id);
+      if (mounted && context.mounted) {
+        Provider.of<ReelProvider>(
+          context,
+          listen: false,
+        ).incrementViews(widget.reel.id);
+      }
     } catch (e) {
       debugPrint('Error initializing video player: $e');
     }

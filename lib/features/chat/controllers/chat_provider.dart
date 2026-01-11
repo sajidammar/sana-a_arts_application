@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sanaa_artl/core/utils/database/database_helper.dart';
 import 'package:sanaa_artl/core/utils/database/database_constants.dart';
+import 'package:sanaa_artl/core/services/connectivity_service.dart';
+import 'package:sanaa_artl/core/services/notification_service.dart';
 import '../models/chat_model.dart';
 
 class ChatProvider extends ChangeNotifier {
@@ -12,6 +14,18 @@ class ChatProvider extends ChangeNotifier {
   List<Conversation> get conversations => _conversations;
   List<ChatMessage> get currentMessages => _currentMessages;
   bool get isLoading => _isLoading;
+
+  ChatProvider() {
+    _setupConnectivityListener();
+  }
+
+  void _setupConnectivityListener() {
+    ConnectivityService().isConnected.addListener(() {
+      if (ConnectivityService().isConnected.value) {
+        syncPendingMessages();
+      }
+    });
+  }
 
   Future<void> loadConversations() async {
     _isLoading = true;
@@ -89,13 +103,25 @@ class ChatProvider extends ChangeNotifier {
       );
     }
 
+    final isOnline = await ConnectivityService().checkCurrentStatus();
+
     // Insert message
     final message = ChatMessage(
       conversationId: conversationId,
       senderId: senderId,
       messageText: text,
       timestamp: now,
+      syncStatus: isOnline ? 'synced' : 'pending',
     );
+
+    if (!isOnline) {
+      await NotificationService().showNotification(
+        id: 2,
+        title: 'جاري الانتظار للإرسال',
+        body: 'سيتم إرسال الرسالة عند الاتصال بالانترنت',
+        isPersistent: true,
+      );
+    }
 
     await db.insert(DatabaseConstants.tableMessages, message.toMap());
 
@@ -118,6 +144,48 @@ class ChatProvider extends ChangeNotifier {
       where: '${DatabaseConstants.colId} = ?',
       whereArgs: [id],
     );
+    await loadConversations();
+  }
+
+  Future<void> syncPendingMessages() async {
+    final db = await _dbHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      DatabaseConstants.tableMessages,
+      where: 'sync_status = ?',
+      whereArgs: ['pending'],
+    );
+
+    final pending = maps.map((map) => ChatMessage.fromMap(map)).toList();
+    if (pending.isEmpty) return;
+
+    for (var msg in pending) {
+      try {
+        await Future.delayed(const Duration(seconds: 1));
+
+        await db.update(
+          DatabaseConstants.tableMessages,
+          {'sync_status': 'synced'},
+          where: 'id = ?',
+          whereArgs: [msg.id],
+        );
+
+        // Refresh UI if needed
+        if (_currentMessages.any((m) => m.id == msg.id)) {
+          await loadMessages(msg.conversationId);
+        }
+
+        await NotificationService().showNotification(
+          id: msg.id ?? 999,
+          title: 'تم إرسال الرسالة ✅',
+          body: 'تم إرسال رسالتك: "${msg.messageText}"',
+        );
+
+        await NotificationService().cancelNotification(2);
+      } catch (e) {
+        // Error syncing message
+      }
+    }
+
     await loadConversations();
   }
 }

@@ -53,8 +53,7 @@ class Instructor with ChangeNotifier {
 
       education: List<String>.from(json['education']),
       achievements: List<String>.from(json['achievements']),
-      imageUrl: json['imageUrl'] ?? 'assets/images/image2.jpg',
+      imageUrl: json['imageUrl'] ?? 'assets/images/sanaa_img_02.jpg',
     );
   }
 }
-

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
+import 'package:sanaa_artl/features/auth/views/login_view.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
-import 'package:sanaa_artl/features/exhibitions/controllers/auth_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:sanaa_artl/core/utils/database/dao/artwork_dao.dart';
 import 'package:sanaa_artl/core/utils/database/dao/artist_dao.dart';
-import 'package:sanaa_artl/features/auth/views/login_page.dart';
 import 'widgets/add_artwork_dialog.dart';
 import 'widgets/exhibition_request_dialog.dart';
 
@@ -37,7 +37,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
     setState(() => _isLoading = true);
 
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = Provider.of<UserProvider>(context, listen: false);
 
       if (authProvider.isAuthenticated && authProvider.currentUser != null) {
         // البحث عن معرف الفنان للمستخدم الحالي
@@ -104,7 +104,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final authProvider = Provider.of<AuthProvider>(context);
+    final authProvider = Provider.of<UserProvider>(context);
     final isDark = themeProvider.isDarkMode;
     final primaryColor = Theme.of(context).primaryColor;
 
@@ -212,7 +212,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
   Widget _buildWelcomeSection(
     bool isDark,
     Color primaryColor,
-    AuthProvider auth,
+    UserProvider auth,
   ) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -274,7 +274,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
   }
 
   /// أزرار الإجراءات
-  Widget _buildActionButtons(Color primaryColor, AuthProvider auth) {
+  Widget _buildActionButtons(Color primaryColor, UserProvider auth) {
     if (!auth.isAuthenticated) {
       return ElevatedButton.icon(
         onPressed: () {
@@ -701,7 +701,7 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
   SliverFillRemaining _buildEmptyState(
     bool isDark,
     Color primaryColor,
-    AuthProvider auth,
+    UserProvider auth,
   ) {
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -804,5 +804,3 @@ class _ArtworksManagementViewState extends State<ArtworksManagementView> {
     );
   }
 }
-
-

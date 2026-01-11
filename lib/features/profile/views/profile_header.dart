@@ -189,14 +189,12 @@ class ProfileHeader extends StatelessWidget {
       return FileImage(File(imagePath));
     }
 
-    // Default to NetworkImage for URLs or other formats
-    try {
-      final uri = Uri.parse(imagePath);
-      if (uri.hasScheme) {
-        return NetworkImage(imagePath);
-      }
-    } catch (_) {}
+    // Check for valid URL scheme
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return NetworkImage(imagePath);
+    }
 
-    return null;
+    // Default fallback
+    return AssetImage(imagePath);
   }
 }

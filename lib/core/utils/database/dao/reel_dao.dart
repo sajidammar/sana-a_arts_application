@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
-import 'package:flutter/foundation.dart';
 import '../database_helper.dart';
 import '../database_constants.dart';
 
@@ -27,10 +26,8 @@ class ReelDao {
         reel,
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint('💾 Reel inserted to DB: $result');
       return result;
     } catch (e) {
-      debugPrint('❌ Error inserting reel: $e');
       rethrow;
     }
   }
@@ -43,10 +40,8 @@ class ReelDao {
         DatabaseConstants.tableReels,
         orderBy: '${DatabaseConstants.colCreatedAt} DESC',
       );
-      debugPrint('🔍 DB query returned ${results.length} reels');
       return results.map((e) => _parseReel(e)).toList();
     } catch (e) {
-      debugPrint('❌ Error querying reels: $e');
       return [];
     }
   }

@@ -16,17 +16,17 @@ class _AdsBannerState extends State<AdsBanner> {
     {
       'title': 'معرض فنون صنعاء',
       'description': 'اكتشف أجمل الأعمال الفنية من فنانين يمنيين مبدعين',
-      'image': 'assets/images/image1.jpg',
+      'image': 'assets/images/sanaa_img_30.jpg',
     },
     {
       'title': 'عروض حصرية',
       'description': 'خصومات تصل إلى 30% على اللوحات الزيتية هذا الأسبوع',
-      'image': 'assets/images/image2.jpg',
+      'image': 'assets/images/sanaa_img_31.jpg',
     },
     {
       'title': 'انضم لمجتمعنا',
       'description': 'شارك إبداعاتك وتواصل مع نخبة من الفنانين المحترفين',
-      'image': 'assets/images/image3.jpg',
+      'image': 'assets/images/sanaa_img_32.jpg',
     },
   ];
 
@@ -197,5 +197,3 @@ class _AdsBannerState extends State<AdsBanner> {
     );
   }
 }
-
-

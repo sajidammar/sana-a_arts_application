@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sanaa_artl/features/profile/views/profile_bio.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,11 +27,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
-      final user = Provider.of<UserProvider1>(context).user;
+      final user = Provider.of<UserProvider>(context).user;
       _nameController = TextEditingController(text: user.name);
       _bioController = TextEditingController(text: user.bio);
       _cvPath = user.cvUrl;
-      _imagePath = user.imageUrl;
+      _imagePath = user.profileImage;
       _isInitialized = true;
     }
   }
@@ -68,7 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   ImageProvider _getImageProvider(String? imagePath) {
     if (imagePath == null || imagePath.isEmpty) {
-      return const AssetImage('assets/images/image1.jpg'); // Fallback
+      return const AssetImage('assets/images/sanaa_img_01.jpg'); // Fallback
     }
 
     if (imagePath.startsWith('assets/')) {
@@ -88,7 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
     } catch (_) {}
 
-    return const AssetImage('assets/images/image1.jpg');
+    return const AssetImage('assets/images/sanaa_img_01.jpg');
   }
 
   @override
@@ -299,31 +298,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       width: double.infinity,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            final userProvider = Provider.of<UserProvider1>(
+                            final userProvider = Provider.of<UserProvider>(
                               context,
                               listen: false,
                             );
-                            userProvider.updateName(_nameController.text);
-                            userProvider.user.bio = _bioController.text;
-                            if (_imagePath != null) {
-                              userProvider.updateImage(_imagePath!);
-                            }
-                            if (_cvPath != null) {
-                              userProvider.updateCvUrl(_cvPath!);
-                            }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'تم حفظ التعديلات بنجاح',
-                                  style: TextStyle(fontFamily: 'Tajawal'),
-                                ),
-                                backgroundColor: primaryColor,
-                              ),
-                            );
-                            Navigator.pop(context);
+                            final success = await userProvider
+                                .updateCurrentUser({
+                                  'name': _nameController.text,
+                                  'bio': _bioController.text,
+                                  'profile_image': _imagePath,
+                                  'cv_url': _cvPath,
+                                });
+
+                            if (mounted) {
+                              if (success) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        'تم حفظ التعديلات بنجاح',
+                                        style: TextStyle(fontFamily: 'Tajawal'),
+                                      ),
+                                      backgroundColor: primaryColor,
+                                    ),
+                                  );
+                                  Navigator.pop(context);
+                                }
+                              } else {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('فشل في حفظ التعديلات'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

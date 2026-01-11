@@ -196,7 +196,6 @@ class _VRCommentsSidebarState extends State<VRCommentsSidebar> {
               ),
               const SizedBox(height: 12),
               ...reasons.map(
-                // ignore: deprecated_member_use
                 (reason) => RadioListTile<String>(
                   title: Text(
                     reason,

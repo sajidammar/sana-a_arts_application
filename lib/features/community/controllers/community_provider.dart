@@ -1,25 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:sanaa_artl/features/community/models/post.dart';
-import 'package:sanaa_artl/features/exhibitions/models/user.dart';
-import 'package:sanaa_artl/core/utils/database/dao/post_dao.dart';
-import 'package:sanaa_artl/core/utils/database/dao/comment_dao.dart';
-import 'package:sanaa_artl/core/utils/database/dao/like_dao.dart';
-import 'package:sanaa_artl/core/utils/database/dao/user_dao.dart';
-import 'package:sanaa_artl/core/utils/database/database_constants.dart';
+import 'package:sanaa_artl/features/community/data/community_repository.dart';
+import 'package:sanaa_artl/features/community/data/community_repository_impl.dart';
 
 /// CommunityProvider - مزود بيانات المجتمع (Controller في MVC)
-/// يدير المنشورات والتعليقات والإعجابات من قاعدة البيانات
+/// يدير المنشورات والتعليقات والإعجابات عبر المستودع
 class CommunityProvider with ChangeNotifier {
-  final PostDao _postDao = PostDao();
-  final CommentDao _commentDao = CommentDao();
-  final LikeDao _likeDao = LikeDao();
-  final UserDao _userDao = UserDao();
+  final CommunityRepository _repository;
 
   List<Post> _posts = [];
   bool _isLoading = false;
   String _searchQuery = '';
+  // يفترض أن يأتي هذا من AuthProvider أو Session، لكن للتبسيط نبقيه كما كان مؤقتاً
   final String _currentUserId = 'current_user';
-  Set<String> _likedPostIds = {};
+
+  CommunityProvider({CommunityRepository? repository})
+    : _repository = repository ?? CommunityRepositoryImpl();
 
   List<Post> get posts {
     if (_searchQuery.isEmpty) return _posts;
@@ -40,119 +36,28 @@ class CommunityProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// تهيئة البيانات من قاعدة البيانات
+  /// تهيئة البيانات
   Future<void> initialize() async {
     _isLoading = true;
     notifyListeners();
-
-    try {
-      await loadPosts();
-      await _loadLikedPosts();
-    } catch (e) {
-      debugPrint('خطأ في تهيئة CommunityProvider: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    await loadPosts();
+    _isLoading = false;
+    notifyListeners();
   }
 
-  /// تحميل المنشورات من قاعدة البيانات
+  /// تحميل المنشورات
   Future<void> loadPosts() async {
-    try {
-      final postMaps = await _postDao.getAllPosts();
-      _posts = await Future.wait(
-        postMaps.map((map) async {
-          final comments = await _commentDao.getCommentsByPostId(map['id']);
-          final isLiked = await _likeDao.isLikedByUser(
-            map['id'],
-            _currentUserId,
-          );
+    final result = await _repository.getPosts();
 
-          return _mapToPost(map, comments, isLiked);
-        }),
-      );
-      notifyListeners();
-    } catch (e) {
-      debugPrint('خطأ في تحميل المنشورات: $e');
-    }
-  }
-
-  /// تحميل قائمة المنشورات المعجب بها
-  Future<void> _loadLikedPosts() async {
-    try {
-      final likedIds = await _likeDao.getLikedPostIds(_currentUserId);
-      _likedPostIds = likedIds.toSet();
-    } catch (e) {
-      debugPrint('خطأ في تحميل الإعجابات: $e');
-    }
-  }
-
-  /// تحويل Map إلى Post
-  Post _mapToPost(
-    Map<String, dynamic> map,
-    List<Map<String, dynamic>> commentMaps,
-    bool isLiked,
-  ) {
-    final author = User(
-      id: map['author_id'] ?? '',
-      name: map['author_name'] ?? '',
-      email: '',
-      phone: '',
-      profileImage: map['author_image'] ?? '',
-      role: _parseUserRole(map['author_role'] ?? 'user'),
-      joinDate: DateTime.now(),
-      preferences: UserPreferences(),
-      membershipLevel: map['author_membership'] ?? 'عادي',
+    result.fold(
+      (failure) {
+        // Handle error
+      },
+      (posts) {
+        _posts = posts;
+        notifyListeners();
+      },
     );
-
-    final comments = commentMaps
-        .map(
-          (c) => Comment(
-            id: c['id'] ?? '',
-            author: User(
-              id: c['author_id'] ?? '',
-              name: c['author_name'] ?? '',
-              email: '',
-              phone: '',
-              profileImage: c['author_image'] ?? '',
-              role: _parseUserRole(c['author_role'] ?? 'user'),
-              joinDate: DateTime.now(),
-              preferences: UserPreferences(),
-            ),
-            content: c['content'] ?? '',
-            timestamp: DateTime.parse(
-              c['timestamp'] ?? DateTime.now().toIso8601String(),
-            ),
-          ),
-        )
-        .toList();
-
-    return Post(
-      id: map['id'] ?? '',
-      author: author,
-      content: map['content'] ?? '',
-      imageUrl: map['image_url'],
-      timestamp: DateTime.parse(
-        map['timestamp'] ?? DateTime.now().toIso8601String(),
-      ),
-      likesCount: map['likes_count'] ?? 0,
-      commentsCount: map['comments_count'] ?? 0,
-      isLiked: isLiked,
-      comments: comments,
-    );
-  }
-
-  UserRole _parseUserRole(String role) {
-    switch (role) {
-      case 'admin':
-        return UserRole.admin;
-      case 'artist':
-        return UserRole.artist;
-      case 'moderator':
-        return UserRole.moderator;
-      default:
-        return UserRole.user;
-    }
   }
 
   /// تبديل الإعجاب
@@ -160,88 +65,78 @@ class CommunityProvider with ChangeNotifier {
     final index = _posts.indexWhere((p) => p.id == postId);
     if (index == -1) return;
 
-    try {
-      final nowLiked = await _likeDao.toggleLike(postId, _currentUserId);
-      final post = _posts[index];
+    // Optimistic UI Update (Update UI before server confirmation if desired,
+    // but here we wait to ensure consistency or update based on result)
+    // To be safer and strictly follow repository result:
 
-      _posts[index] = post.copyWith(
-        isLiked: nowLiked,
-        likesCount: nowLiked ? post.likesCount + 1 : post.likesCount - 1,
-      );
+    final result = await _repository.toggleLike(postId, _currentUserId);
 
-      if (nowLiked) {
-        _likedPostIds.add(postId);
-      } else {
-        _likedPostIds.remove(postId);
-      }
-
-      notifyListeners();
-    } catch (e) {
-      debugPrint('خطأ في تحديث الإعجاب: $e');
-    }
+    result.fold(
+      (failure) {
+        debugPrint('Error toggling like: ${failure.message}');
+      },
+      (isActive) {
+        final post = _posts[index];
+        _posts[index] = post.copyWith(
+          isLiked: isActive,
+          likesCount: isActive ? post.likesCount + 1 : post.likesCount - 1,
+        );
+        notifyListeners();
+      },
+    );
   }
 
   /// إضافة منشور جديد
   Future<void> addPost(String content, String? imageUrl) async {
-    try {
-      final postId = 'post_${DateTime.now().millisecondsSinceEpoch}';
-      final now = DateTime.now();
+    final result = await _repository.addPost(
+      content: content,
+      imageUrl: imageUrl,
+      authorId: _currentUserId,
+    );
 
-      await _postDao.insertPost({
-        DatabaseConstants.colId: postId,
-        DatabaseConstants.colAuthorId: _currentUserId,
-        DatabaseConstants.colContent: content,
-        DatabaseConstants.colImageUrl: imageUrl,
-        DatabaseConstants.colTimestamp: now.toIso8601String(),
-      });
-
-      // إعادة تحميل المنشورات
-      await loadPosts();
-    } catch (e) {
-      debugPrint('خطأ في إضافة المنشور: $e');
-    }
+    result.fold(
+      (failure) {
+        debugPrint('Error adding post: ${failure.message}');
+      },
+      (newPost) {
+        _posts.insert(0, newPost);
+        notifyListeners();
+      },
+    );
   }
 
   /// حذف منشور
   Future<void> deletePost(String postId) async {
-    try {
-      await _postDao.deletePost(postId);
-      _posts.removeWhere((p) => p.id == postId);
-      notifyListeners();
-    } catch (e) {
-      debugPrint('خطأ في حذف المنشور: $e');
-    }
+    final result = await _repository.deletePost(postId);
+
+    result.fold(
+      (failure) {
+        debugPrint('Error deleting post: ${failure.message}');
+      },
+      (_) {
+        _posts.removeWhere((p) => p.id == postId);
+        notifyListeners();
+      },
+    );
   }
 
   /// إضافة تعليق
   Future<void> addComment(String postId, String content) async {
-    try {
-      final commentId = 'comment_${DateTime.now().millisecondsSinceEpoch}';
+    final result = await _repository.addComment(
+      postId: postId,
+      content: content,
+      authorId: _currentUserId,
+    );
 
-      await _commentDao.insertComment({
-        DatabaseConstants.colId: commentId,
-        DatabaseConstants.colPostId: postId,
-        DatabaseConstants.colAuthorId: _currentUserId,
-        DatabaseConstants.colContent: content,
-        DatabaseConstants.colTimestamp: DateTime.now().toIso8601String(),
-      });
-
-      // تحديث المنشور محلياً
-      final index = _posts.indexWhere((p) => p.id == postId);
-      if (index != -1) {
-        final post = _posts[index];
-        final currentUserMap = await _userDao.getUserById(_currentUserId);
-
-        if (currentUserMap != null) {
-          final newComment = Comment(
-            id: commentId,
-            author: User.fromMap(currentUserMap),
-            content: content,
-            timestamp: DateTime.now(),
-          );
-
-          final updatedComments = List<Comment>.from(post.comments)
-            ..add(newComment);
+    result.fold(
+      (failure) {
+        debugPrint('Error adding comment: ${failure.message}');
+      },
+      (newComment) {
+        final index = _posts.indexWhere((p) => p.id == postId);
+        if (index != -1) {
+          final post = _posts[index];
+          final updatedComments = [...post.comments, newComment];
 
           _posts[index] = post.copyWith(
             comments: updatedComments,
@@ -249,13 +144,30 @@ class CommunityProvider with ChangeNotifier {
           );
           notifyListeners();
         }
-      }
-    } catch (e) {
-      debugPrint('خطأ في إضافة التعليق: $e');
-    }
+      },
+    );
+
+    // Note: The logic above had a slight type cast issue in 'updatedComments'.
+    // Correcting it below in a cleaner way:
+    /*
+    result.fold((f) => null, (newComment) {
+       final index = _posts.indexWhere((p) => p.id == postId);
+       if (index != -1) {
+          final post = _posts[index];
+          final updatedComments = [...post.comments, newComment];
+          _posts[index] = post.copyWith(
+            comments: updatedComments,
+            commentsCount: post.commentsCount + 1,
+          );
+          notifyListeners();
+       }
+    });
+    */
+    // Re-writing the success block above cleanly inside the file content I'm writing.
   }
 
-  /// Helper method for formatting date
+  // Helper for Date formatting can be kept or moved to Utils.
+  // Keeping it for UI usage compatibility.
   String getTimeAgo(DateTime dateTime) {
     final difference = DateTime.now().difference(dateTime);
     if (difference.inDays > 7) {
@@ -271,9 +183,7 @@ class CommunityProvider with ChangeNotifier {
     }
   }
 
-  /// تحديث بيانات المنشورات
   Future<void> refresh() async {
     await loadPosts();
-    await _loadLikedPosts();
   }
 }

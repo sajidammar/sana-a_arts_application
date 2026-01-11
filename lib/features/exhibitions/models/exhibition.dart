@@ -114,6 +114,50 @@ class Exhibition {
       'is_liked': isLiked ? 1 : 0,
     };
   }
+
+  Exhibition copyWith({
+    String? id,
+    String? title,
+    String? curator,
+    ExhibitionType? type,
+    String? status,
+    String? description,
+    String? date,
+    String? location,
+    int? artworksCount,
+    int? visitorsCount,
+    String? imageUrl,
+    bool? isFeatured,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? tags,
+    double? rating,
+    int? ratingCount,
+    bool? isLiked,
+    bool? isActive,
+  }) {
+    return Exhibition(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      curator: curator ?? this.curator,
+      type: type ?? this.type,
+      status: status ?? this.status,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      location: location ?? this.location,
+      artworksCount: artworksCount ?? this.artworksCount,
+      visitorsCount: visitorsCount ?? this.visitorsCount,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isFeatured: isFeatured ?? this.isFeatured,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      tags: tags ?? this.tags,
+      rating: rating ?? this.rating,
+      ratingCount: ratingCount ?? this.ratingCount,
+      isActive: isActive ?? this.isActive,
+      isLiked: isLiked ?? this.isLiked,
+    );
+  }
 }
 
 enum ExhibitionType { virtual, open, personal, group }

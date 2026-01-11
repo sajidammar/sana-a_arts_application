@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:sanaa_artl/features/community/models/reel.dart';
 
 class ReelGridItem extends StatelessWidget {
@@ -33,7 +34,17 @@ class ReelGridItem extends StatelessWidget {
               Container(
                 color: primaryColor.withValues(alpha: 0.2),
                 child: reel.thumbnailUrl != null
-                    ? Image.network(reel.thumbnailUrl!, fit: BoxFit.cover)
+                    ? Image(
+                        image: _getImageProvider(reel.thumbnailUrl!),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Center(
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            size: 40,
+                            color: primaryColor.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      )
                     : Center(
                         child: Icon(
                           Icons.movie_outlined,
@@ -58,7 +69,26 @@ class ReelGridItem extends StatelessWidget {
                   ),
                 ),
               ),
-              // معلومات المؤلف
+              // المؤشر الخاص بحالة المزامنة (Pending) - WhatsApp Style
+              if (reel.syncStatus == 'pending')
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.access_time,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ),
+
+              // المعلومات الأساسية
               Positioned(
                 bottom: 12,
                 left: 12,
@@ -70,10 +100,7 @@ class ReelGridItem extends StatelessWidget {
                       backgroundImage:
                           reel.authorAvatar != null &&
                               reel.authorAvatar!.isNotEmpty
-                          ? (reel.authorAvatar!.startsWith('assets')
-                                ? AssetImage(reel.authorAvatar!)
-                                      as ImageProvider
-                                : NetworkImage(reel.authorAvatar!))
+                          ? _getImageProvider(reel.authorAvatar!)
                           : null,
                       child:
                           reel.authorAvatar == null ||
@@ -136,5 +163,21 @@ class ReelGridItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ImageProvider _getImageProvider(String imageUrl) {
+    if (imageUrl.startsWith('assets/')) {
+      return AssetImage(imageUrl);
+    }
+    if (imageUrl.startsWith('http')) {
+      return NetworkImage(imageUrl);
+    }
+    // Check if it's a local file path
+    if (imageUrl.startsWith('/') ||
+        imageUrl.contains(':\\') ||
+        imageUrl.contains(':/')) {
+      return FileImage(File(imageUrl));
+    }
+    return AssetImage(imageUrl);
   }
 }

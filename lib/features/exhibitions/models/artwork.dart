@@ -122,6 +122,54 @@ class Artwork {
       'likes': likes,
     };
   }
+
+  Artwork copyWith({
+    String? id,
+    String? title,
+    String? artist,
+    String? artistId,
+    int? year,
+    String? technique,
+    String? dimensions,
+    String? description,
+    double? rating,
+    int? ratingCount,
+    double? price,
+    String? currency,
+    String? category,
+    List<String>? tags,
+    String? imageUrl,
+    DateTime? createdAt,
+    bool? isFeatured,
+    bool? isForSale,
+    int? views,
+    int? likes,
+    List<ArtworkComment>? comments,
+  }) {
+    return Artwork(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      artistId: artistId ?? this.artistId,
+      year: year ?? this.year,
+      technique: technique ?? this.technique,
+      dimensions: dimensions ?? this.dimensions,
+      description: description ?? this.description,
+      rating: rating ?? this.rating,
+      ratingCount: ratingCount ?? this.ratingCount,
+      price: price ?? this.price,
+      currency: currency ?? this.currency,
+      category: category ?? this.category,
+      tags: tags ?? this.tags,
+      imageUrl: imageUrl ?? this.imageUrl,
+      createdAt: createdAt ?? this.createdAt,
+      isFeatured: isFeatured ?? this.isFeatured,
+      isForSale: isForSale ?? this.isForSale,
+      views: views ?? this.views,
+      likes: likes ?? this.likes,
+      comments: comments ?? this.comments,
+    );
+  }
 }
 
 class ArtworkComment {

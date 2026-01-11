@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:sanaa_artl/features/community/models/reel.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,25 @@ class ReelThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     final primaryColor = Theme.of(context).primaryColor;
+
+    ImageProvider? getAvatarImage() {
+      final imagePath = reel.authorAvatar;
+      if (imagePath == null || imagePath.isEmpty) return null;
+
+      if (imagePath.startsWith('assets/')) {
+        return AssetImage(imagePath);
+      }
+      if (imagePath.startsWith('http')) {
+        return NetworkImage(imagePath);
+      }
+      // Check if it's a local file path
+      if (imagePath.startsWith('/') ||
+          imagePath.contains(':\\') ||
+          imagePath.contains(':/')) {
+        return FileImage(File(imagePath));
+      }
+      return AssetImage(imagePath);
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -48,14 +68,7 @@ class ReelThumbnail extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 38,
                       backgroundColor: primaryColor.withValues(alpha: 0.1),
-                      backgroundImage:
-                          reel.authorAvatar != null &&
-                              reel.authorAvatar!.isNotEmpty
-                          ? (reel.authorAvatar!.startsWith('assets')
-                                ? AssetImage(reel.authorAvatar!)
-                                      as ImageProvider
-                                : NetworkImage(reel.authorAvatar!))
-                          : null,
+                      backgroundImage: getAvatarImage(),
                       child:
                           reel.authorAvatar == null ||
                               reel.authorAvatar!.isEmpty
@@ -65,6 +78,23 @@ class ReelThumbnail extends StatelessWidget {
                   ),
                 ),
                 // أيقونة الفيديو الصغيرة
+                if (reel.syncStatus == 'pending')
+                  Positioned(
+                    top: 5,
+                    right: 5,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.access_time,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                    ),
+                  ),
                 Positioned(
                   bottom: 5,
                   right: 5,

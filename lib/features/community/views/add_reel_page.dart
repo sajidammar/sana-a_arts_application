@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:video_player/video_player.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/features/community/controllers/reel_provider.dart';
 import 'package:sanaa_artl/features/community/models/reel.dart';
+import 'package:sanaa_artl/features/community/views/video_trimmer_view.dart';
+import 'package:sanaa_artl/core/services/storage_service.dart';
+import 'package:sanaa_artl/core/services/connectivity_service.dart';
+import 'package:sanaa_artl/core/services/notification_service.dart';
+import 'package:sanaa_artl/core/controllers/app_status_provider.dart';
 
 class AddReelPage extends StatefulWidget {
   const AddReelPage({super.key});
@@ -20,8 +25,8 @@ class AddReelPage extends StatefulWidget {
 class _AddReelPageState extends State<AddReelPage> {
   final _descriptionController = TextEditingController();
   final _authorNameController = TextEditingController();
+  final _urlController = TextEditingController();
   String? _selectedVideoPath;
-  String? _videoUrl;
   bool _isSubmitting = false;
   bool _isPickingVideo = false;
   final ImagePicker _picker = ImagePicker();
@@ -30,49 +35,106 @@ class _AddReelPageState extends State<AddReelPage> {
   void dispose() {
     _descriptionController.dispose();
     _authorNameController.dispose();
+    _urlController.dispose();
     super.dispose();
   }
 
   Future<void> _pickVideo() async {
+    // التأكد من الصلاحيات أولاً
+    final statusProvider = Provider.of<AppStatusProvider>(
+      context,
+      listen: false,
+    );
+    final storageService = StorageService();
+    bool hasPermission = await storageService.requestPermissions(
+      statusProvider,
+    );
+    if (!hasPermission) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('نحتاج لصلاحية الوصول للملفات لاختيار فيديو'),
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() => _isPickingVideo = true);
     try {
-      final XFile? video = await _picker.pickVideo(source: ImageSource.gallery);
-      if (video != null) {
+      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.video,
+        compressionQuality: 0,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final videoPath = result.files.single.path!;
+        final videoFile = File(videoPath);
+
         // التحقق من مدة الفيديو
-        final controller = VideoPlayerController.file(File(video.path));
+        final controller = VideoPlayerController.file(videoFile);
         await controller.initialize();
         final duration = controller.value.duration;
         await controller.dispose();
 
         if (duration.inSeconds > 90) {
           if (mounted) {
+            // توجيه المستخدم لصفحة القص تلقائياً إذا كان الفيديو طويلاً
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text(
-                  'عذراً، يجب ألا يتجاوز طول الريلز دقيقة ونصف (90 ثانية)',
+                  'الفيديو طويل جداً، سيتم توجيهك لقص 90 ثانية منه',
+                  style: TextStyle(fontFamily: 'Tajawal'),
                 ),
               ),
             );
-          }
-          return;
-        }
 
-        setState(() {
-          _selectedVideoPath = video.path;
-          _videoUrl = null; // نُفضل الملف المحلي
-        });
+            final trimmedPath = await Navigator.push<String>(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoTrimmerView(file: videoFile),
+              ),
+            );
+
+            if (trimmedPath != null) {
+              setState(() {
+                _selectedVideoPath = trimmedPath;
+                _urlController.clear();
+              });
+            }
+          }
+        } else {
+          setState(() {
+            _selectedVideoPath = videoPath;
+            _urlController.clear();
+          });
+        }
       }
     } catch (e) {
-      debugPrint('Error picking video: $e');
+      // If file_picker fails, try image_picker as fallback
+      try {
+        final XFile? video = await _picker.pickVideo(
+          source: ImageSource.gallery,
+        );
+        if (video != null) {
+          setState(() {
+            _selectedVideoPath = video.path;
+            _urlController.clear();
+          });
+        }
+      } catch (e2) {
+        // Fallback picker error
+      }
     } finally {
       setState(() => _isPickingVideo = false);
     }
   }
 
   Future<void> _submit() async {
+    final videoUrl = _urlController.text.trim();
     if (_descriptionController.text.isEmpty ||
         _authorNameController.text.isEmpty ||
-        (_selectedVideoPath == null && _videoUrl == null)) {
+        (_selectedVideoPath == null && videoUrl.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('يرجى ملء جميع الحقول واختيار فيديو')),
       );
@@ -85,23 +147,28 @@ class _AddReelPageState extends State<AddReelPage> {
       String finalVideoUrl = '';
 
       if (_selectedVideoPath != null) {
-        // حفظ الملف محلياً في مجلد التطبيق
-        final directory = await getApplicationDocumentsDirectory();
-        final fileName =
-            'reel_${DateTime.now().millisecondsSinceEpoch}${path.extension(_selectedVideoPath!)}';
-        final savedFile = await File(
-          _selectedVideoPath!,
-        ).copy(path.join(directory.path, fileName));
+        // حفظ الملف في المجلد المخصص SanaaArt Videos
+        final storageService = StorageService();
+        final savedFile = await storageService.saveMediaFile(
+          File(_selectedVideoPath!),
+          StorageService.videosFolder,
+        );
+
+        if (savedFile == null) {
+          throw Exception('فشل في حفظ الفيديو في المجلد المخصص');
+        }
         finalVideoUrl = savedFile.path;
       } else {
-        finalVideoUrl = _videoUrl!;
+        finalVideoUrl = videoUrl;
       }
+
+      final isOnline = await ConnectivityService().checkCurrentStatus();
 
       final newReel = Reel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         authorId: 'user_${DateTime.now().millisecondsSinceEpoch}',
         authorName: _authorNameController.text,
-        authorAvatar: 'assets/images/placeholder_avatar.jpg',
+        authorAvatar: 'assets/images/sanaa_img_01.jpg',
         videoUrl: finalVideoUrl,
         description: _descriptionController.text,
         likes: 0,
@@ -110,18 +177,34 @@ class _AddReelPageState extends State<AddReelPage> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         tags: [],
+        syncStatus: isOnline ? 'synced' : 'pending',
       );
 
-      await Provider.of<ReelProvider>(context, listen: false).addReel(newReel);
+      if (!isOnline) {
+        // إشعار للمستخدم في حالة عدم وجود إنترنت
+        await NotificationService().showNotification(
+          id: 1,
+          title: 'جاري الانتظار للاتصال',
+          body: 'سيتم نشر الريلز تلقائياً عند الاتصال بالانترنت',
+          isPersistent: true,
+        );
+      }
 
-      if (mounted) {
+      if (mounted && context.mounted) {
+        await Provider.of<ReelProvider>(
+          context,
+          listen: false,
+        ).addReel(newReel);
+      }
+
+      if (mounted && context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('تم إضافة الريلز بنجاح!')));
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted && context.mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('خطأ في الإضافة: $e')));
@@ -226,9 +309,43 @@ class _AddReelPageState extends State<AddReelPage> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'الحد الأقصى للمدة: 90 ثانية',
-                    style: TextStyle(fontSize: 11, color: Colors.red),
+                    'الحد الأقصى للمدة في الريلز: 90 ثانية',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.red,
+                      fontFamily: 'Tajawal',
+                    ),
                   ),
+                  if (_selectedVideoPath != null) ...[
+                    const SizedBox(height: 15),
+                    OutlinedButton.icon(
+                      onPressed: () async {
+                        final videoFile = File(_selectedVideoPath!);
+                        final trimmedPath = await Navigator.push<String>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                VideoTrimmerView(file: videoFile),
+                          ),
+                        );
+
+                        if (trimmedPath != null) {
+                          setState(() {
+                            _selectedVideoPath = trimmedPath;
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.content_cut),
+                      label: const Text(
+                        'قص/تعديل المقطع',
+                        style: TextStyle(fontFamily: 'Tajawal'),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        side: BorderSide(color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -239,12 +356,18 @@ class _AddReelPageState extends State<AddReelPage> {
             ),
             const SizedBox(height: 10),
             _buildTextField(
-              controller: TextEditingController(text: _videoUrl),
+              controller: _urlController,
               label: 'رابط الفيديو (URL)',
               icon: Icons.link,
               isDark: isDark,
               hint: 'https://example.com/video.mp4',
-              onChanged: (val) => _videoUrl = val,
+              onChanged: (val) {
+                if (val.isNotEmpty) {
+                  setState(() {
+                    _selectedVideoPath = null;
+                  });
+                }
+              },
             ),
             const SizedBox(height: 20),
             _buildTextField(

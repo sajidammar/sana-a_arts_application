@@ -4,7 +4,7 @@ import 'package:sanaa_artl/features/exhibitions/models/exhibition.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 
 class RequestPersonalPage extends StatefulWidget {
   const RequestPersonalPage({super.key});
@@ -21,7 +21,7 @@ class _RequestPersonalPageState extends State<RequestPersonalPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      final user = context.read<UserProvider1>().currentUser;
+      final user = context.read<UserProvider>().currentUser;
       final provider = context.read<ExhibitionProvider>();
 
       final newExhibition = Exhibition(
@@ -108,5 +108,3 @@ class _RequestPersonalPageState extends State<RequestPersonalPage> {
     );
   }
 }
-
-

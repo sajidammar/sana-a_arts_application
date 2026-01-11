@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sanaa_artl/features/exhibitions/controllers/exhibition_provider.dart';
 import 'package:sanaa_artl/features/settings/controllers/theme_provider.dart';
 import 'package:sanaa_artl/core/themes/app_colors.dart';
-import 'package:sanaa_artl/features/profile/views/user_editing.dart';
+import 'package:sanaa_artl/features/auth/controllers/user_controller.dart';
 
 import 'widgets/hero_section.dart';
 import 'widgets/current_exhibitions_section.dart';
@@ -32,7 +32,7 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _animationController.forward();
-      final userProvider = context.read<UserProvider1>();
+      final userProvider = context.read<UserProvider>();
       final exhibitionProvider = context.read<ExhibitionProvider>();
 
       exhibitionProvider.loadExhibitions();
@@ -95,5 +95,3 @@ class _ExhibitionHomePageState extends State<ExhibitionHomePage>
     );
   }
 }
-
-
